@@ -1,14 +1,14 @@
 from typing import Type, List, Callable, Dict
 from pathlib import Path
 from abc import ABC
+import os
 import string
 
 from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
-
-from subjects import TestSubject, TestSubjectFactory, load_function_from_class
+from debugging_framework.subjects import TestSubject, TestSubjectFactory, load_function_from_class
 
 
 class MPITestSubject(TestSubject, ABC):
@@ -22,13 +22,18 @@ class MPITestSubject(TestSubject, ABC):
         self.id = bug_id
 
     @classmethod
+    def get_dir(cls) -> Path:
+        repo_dir = os.path.dirname(os.path.abspath(__file__))
+        return Path(repo_dir) / Path(cls.base_path)
+
+    @classmethod
     def harness_function(cls, input_str: str):
         param = list(map(int, str(input_str).strip().split()))
         return param
 
     @classmethod
     def ground_truth(cls) -> Callable:
-        solution_file_path = cls.base_path / Path("reference1.py")
+        solution_file_path = cls.get_dir() / Path("reference1.py")
         return load_function_from_class(
             solution_file_path,
             cls.implementation_class_name,
@@ -36,7 +41,7 @@ class MPITestSubject(TestSubject, ABC):
         )
 
     def get_implementation(self) -> Callable:
-        imp_file_path = self.base_path / Path(f"prog_{self.id}/buggy.py")
+        imp_file_path = self.get_dir() / Path(f"prog_{self.id}/buggy.py")
 
         return load_function_from_class(
             imp_file_path,
@@ -65,7 +70,7 @@ class GCDTestSubject(MPITestSubject):
 
 class SquareRootTestSubject(MPITestSubject):
     name = "SquareRoot"
-    base_path = Path("./resources/mpi/problem_10_Square-root")
+    base_path = Path("./student_assignments/problem_10_Square-root")
     implementation_function_name = "floorSqrt"
     default_grammar: Grammar = {
         "<start>": ["<input>"],
@@ -79,9 +84,25 @@ class SquareRootTestSubject(MPITestSubject):
     default_test_inputs = ["4", "5"]
 
 
+class EratosthenesTestSubject(MPITestSubject):
+    name = "Sieve-of-Eratosthenes"
+    base_path = Path("./student_assignments/problem_2_Sieve-of-Eratosthenes")
+    implementation_function_name = "sieveOfEratosthenes"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<integer>"],
+        "<integer>": ["<one_nine><maybe_digits>", "0"],
+        "<one_nine>": [str(num) for num in range(1, 10)],
+        "<digit>": list(string.digits),
+        "<maybe_digits>": ["", "<digits>"],
+        "<digits>": ["<digit>", "<digit><digits>"],
+    }
+    default_test_inputs = ["10", "35"]
+
+
 class MiddleTestSubject(MPITestSubject):
     name = "Middle"
-    base_path = Path("./resources/mpi/problem_7_Middle-of-Three")
+    base_path = Path("./student_assignments/problem_7_Middle-of-Three")
     implementation_function_name = "middle"
     default_grammar: Grammar = {
         "<start>": ["<input>"],
@@ -118,17 +139,18 @@ class MPITestSubjectFactory(TestSubjectFactory):
                     subjects.append(subject)
                 except Exception as e:
                     print(f"Subject {subject_id} could not be built.")
+                    print(e)
 
         return subjects
 
+    @staticmethod
     def _build_subject(
-        self,
         subject_type,
         subject_id,
         err_def: Dict[Exception, OracleResult] = None,
         default_oracle: OracleResult = None,
     ) -> MPITestSubject:
-        subject_path = subject_type.base_path / Path(f"prog_{subject_id}/buggy.py")
+        subject_path = subject_type.get_dir() / Path(f"prog_{subject_id}/buggy.py")
 
         reference = subject_type.ground_truth()
 
@@ -138,8 +160,8 @@ class MPITestSubjectFactory(TestSubjectFactory):
             subject_type.implementation_function_name,
         )
 
-        error_def = err_def or {TimeoutError: OracleResult.UNDEF}
-        def_oracle = default_oracle or OracleResult.BUG
+        error_def = err_def or {TimeoutError: OracleResult.UNDEFINED}
+        def_oracle = default_oracle or OracleResult.FAILING
 
         oracle = construct_oracle(
             loaded_function,
