@@ -1,28 +1,28 @@
-#User function Template for python3
+# User function Template for python3
 class Solution:
     def removeVowels(self, S):
-        resstring=""
+        resstring = ""
         for i in S:
             if i in "aeiouAEIOU":
                 pass
             else:
-                resstring+=i
+                resstring += i
         return resstring
 
 
-#{ 
- # Driver Code Starts
-#Initial Template for Python 3
+# {
+# Driver Code Starts
+# Initial Template for Python 3
 
-if __name__ == '__main__':
-	T=int(input())
-	for i in range(T):
-		s = input()
-		
-		ob = Solution()	
-		answer = ob.removeVowels(s)
-		
-		print(answer)
+if __name__ == "__main__":
+    T = int(input())
+    for i in range(T):
+        s = input()
+
+        ob = Solution()
+        answer = ob.removeVowels(s)
+
+        print(answer)
 
 
 # } Driver Code Ends

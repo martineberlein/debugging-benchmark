@@ -1,8 +1,10 @@
-#User function Template for python3
+# User function Template for python3
+
 
 class Solution:
     def count_divisors(self, N):
         import math
+
         count = 0
         if N % 3 == 0:
             count += 1
@@ -19,15 +21,14 @@ class Solution:
         return count
 
 
-#{ 
- # Driver Code Starts
-#Initial Template for Python 3#Back-end complete function Template for Python 3#Initial Template for Python 3
+# {
+# Driver Code Starts
+# Initial Template for Python 3#Back-end complete function Template for Python 3#Initial Template for Python 3
 
-if __name__ == '__main__': 
-    t = int (input ())
-    for _ in range (t):
+if __name__ == "__main__":
+    t = int(input())
+    for _ in range(t):
         N = int(input())
-       
 
         ob = Solution()
         print(ob.count_divisors(N))

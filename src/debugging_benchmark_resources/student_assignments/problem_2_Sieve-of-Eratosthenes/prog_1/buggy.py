@@ -1,4 +1,5 @@
-#User function Template for python3
+# User function Template for python3
+
 
 class Solution:
     def is_prime(self, num):
@@ -6,6 +7,7 @@ class Solution:
             if num % i == 0:
                 return False
         return True
+
     def sieveOfEratosthenes(self, N):
         ans = []
         for i in range(2, N):
@@ -14,11 +16,11 @@ class Solution:
         return ans
 
 
-#{ 
- # Driver Code Starts
-#Initial Template for Python 3
+# {
+# Driver Code Starts
+# Initial Template for Python 3
 
-if __name__ == '__main__': 
+if __name__ == "__main__":
     t = int(input())
     for _ in range(t):
         N = int(input())

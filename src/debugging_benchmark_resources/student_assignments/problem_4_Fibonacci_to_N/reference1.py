@@ -1,8 +1,9 @@
-#User function Template for python3
+# User function Template for python3
+
 
 class Solution:
-    def nFibonacci(self,N):
-        #code here
+    def nFibonacci(self, N):
+        # code here
         result = [0, 1]
         while True:
             if result[-2] + result[-1] <= N:
@@ -12,18 +13,17 @@ class Solution:
         return result
 
 
+# {
+# Driver Code Starts
+# Initial Template for Python 3
 
-#{ 
- # Driver Code Starts
-#Initial Template for Python 3
-
-if __name__=='__main__':
-    t=int(input())
+if __name__ == "__main__":
+    t = int(input())
     for _ in range(t):
-        N=int(input())
-        ob=Solution()
-        ans=ob.nFibonacci(N)
+        N = int(input())
+        ob = Solution()
+        ans = ob.nFibonacci(N)
         for i in ans:
-            print(i,end=" ")
+            print(i, end=" ")
         print()
 # } Driver Code Ends

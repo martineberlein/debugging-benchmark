@@ -1,25 +1,27 @@
-#User function Template for python3
+# User function Template for python3
+
 
 class Solution:
     def sieveOfEratosthenes(self, N):
-        #code here 
-        primes=[1]*(N+1)
-        primes[0]=primes[1] = 0
-        ans=[]
-        for i in range(2,N):
-            if primes[i]==1:
-                for j in range(2*i,N+1,i):
-                    primes[j]=0
+        # code here
+        primes = [1] * (N + 1)
+        primes[0] = primes[1] = 0
+        ans = []
+        for i in range(2, N):
+            if primes[i] == 1:
+                for j in range(2 * i, N + 1, i):
+                    primes[j] = 0
         for i in range(len(primes)):
-            if primes[i] == 1:ans.append(i)
-        return ans 
+            if primes[i] == 1:
+                ans.append(i)
+        return ans
 
 
-#{ 
- # Driver Code Starts
-#Initial Template for Python 3
+# {
+# Driver Code Starts
+# Initial Template for Python 3
 
-if __name__ == '__main__': 
+if __name__ == "__main__":
     t = int(input())
     for _ in range(t):
         N = int(input())
