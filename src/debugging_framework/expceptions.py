@@ -1,0 +1,3 @@
+class UnexpectedResultError(Exception):
+    pass
+

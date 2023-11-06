@@ -1,12 +1,9 @@
 from typing import Callable, Dict, Type, Optional, Tuple
 
-from debugging_benchmark.oracle import OracleResult
-from debugging_benchmark.input import Input
-from debugging_benchmark.timeout_manager import ManageTimeout
-
-
-class UnexpectedResultError(Exception):
-    pass
+from debugging_framework.oracle import OracleResult
+from debugging_framework.input import Input
+from debugging_framework.timeout_manager import ManageTimeout
+from debugging_framework.expceptions import UnexpectedResultError
 
 
 def construct_oracle(
@@ -14,12 +11,12 @@ def construct_oracle(
     program_oracle: Optional[Callable],
     error_definitions: Optional[Dict[Type[Exception], OracleResult]] = None,
     timeout: float = 1,
-    default_oracle_result: OracleResult = OracleResult.UNDEF,
+    default_oracle_result: OracleResult = OracleResult.UNDEFINED,
     harness_function: Callable = None,
 ) -> Callable[[Input], OracleResult]:
     error_definitions = error_definitions or {}
     default_oracle_result = (
-        OracleResult.BUG if not error_definitions else default_oracle_result
+        OracleResult.FAILING if not error_definitions else default_oracle_result
     )
 
     if not isinstance(error_definitions, dict):
@@ -61,7 +58,7 @@ def _construct_functional_oracle(
                 raise UnexpectedResultError("Results do not match")
         except Exception as e:
             return error_definitions.get(type(e), default_oracle_result), e
-        return OracleResult.NO_BUG, None
+        return OracleResult.PASSING, None
 
     return oracle
 
@@ -80,6 +77,6 @@ def _construct_failure_oracle(
                 program_under_test(*param)
         except Exception as e:
             return error_definitions.get(type(e), default_oracle_result)
-        return OracleResult.NO_BUG
+        return OracleResult.PASSING
 
     return oracle

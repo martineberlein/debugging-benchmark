@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Set, Union, List
 from collections import defaultdict
 
-from debugging_benchmark.input import Input
+from debugging_framework.input import Input
 
 
 class TResultMonad:

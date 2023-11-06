@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Callable, Union, Sequence, Optional, Set, List, Tuple
 
-from debugging_benchmark.input import Input
-from debugging_benchmark.oracle import OracleResult
-from debugging_benchmark.report import TResultMonad, Report
+from debugging_framework.input import Input
+from debugging_framework.oracle import OracleResult
+from debugging_framework.report import TResultMonad, Report
 
 
 class ExecutionHandler(ABC):

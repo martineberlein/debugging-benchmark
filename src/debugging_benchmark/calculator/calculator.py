@@ -4,8 +4,8 @@ import string
 
 from fuzzingbook.Grammars import Grammar
 
-from debugging_benchmark.oracle import OracleResult
-from debugging_benchmark.input import Input
+from debugging_framework.oracle import OracleResult
+from debugging_framework.input import Input
 
 
 def arith_eval(inp: Union[Input, str]) -> float:
