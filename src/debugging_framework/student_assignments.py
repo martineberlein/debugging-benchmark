@@ -5,8 +5,8 @@ import string
 
 from fuzzingbook.Grammars import Grammar
 
-from debugging_benchmark.oracle import OracleResult
-from debugging_benchmark.oracle_construction import construct_oracle
+from debugging_framework.oracle import OracleResult
+from debugging_framework.oracle_construction import construct_oracle
 
 from subjects import TestSubject, TestSubjectFactory, load_function_from_class
 

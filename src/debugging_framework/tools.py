@@ -10,8 +10,8 @@ from fuzzingbook.ProbabilisticGrammarFuzzer import (
 from fuzzingbook.Parser import EarleyParser
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
 
-from debugging_benchmark.execution_handler import SingleExecutionHandler
-from debugging_benchmark.report import MultipleFailureReport, Report
+from debugging_framework.execution_handler import SingleExecutionHandler
+from debugging_framework.report import MultipleFailureReport, Report
 
 
 class Tool(ABC):
