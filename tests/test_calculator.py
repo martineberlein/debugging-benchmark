@@ -1,11 +1,15 @@
 import unittest
 
-from fuzzingbook.Parser import EarleyParser, tree_to_string
+from fuzzingbook.Parser import EarleyParser, tree_to_string, is_valid_grammar
 from debugging_framework.oracle import OracleResult
 from debugging_benchmark.calculator.calculator import grammar, initial_inputs, oracle
 
 
 class TestCalculator(unittest.TestCase):
+
+    def test_calculator_grammar(self):
+        self.assertTrue(is_valid_grammar(grammar))
+
     def test_calculator_initial_inputs(self):
         parser = EarleyParser(grammar)
 
