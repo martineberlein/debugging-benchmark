@@ -29,6 +29,7 @@ grammar: Grammar = {
     "<function>": ["sqrt", "sin", "cos", "tan"],
     "<number>": ["<maybe_minus><one_nine><maybe_digits>"],
     "<maybe_minus>": ["", "-"],
+    "<maybe_frac>": ["", ".<digits>"],
     "<one_nine>": [str(num) for num in range(1, 10)],
     "<digit>": list(string.digits),
     "<maybe_digits>": ["", "<digits>"],
