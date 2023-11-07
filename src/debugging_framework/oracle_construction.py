@@ -5,6 +5,8 @@ from debugging_framework.input import Input
 from debugging_framework.timeout_manager import ManageTimeout
 from debugging_framework.expceptions import UnexpectedResultError
 
+import contextlib
+
 
 def construct_oracle(
     program_under_test: Callable,
@@ -49,9 +51,12 @@ def _construct_functional_oracle(
         # param = list(map(int, str(inp).strip().split()))  # This might become a problem
         param = harness_function(str(inp)) if harness_function else str(inp)
 
+
         try:
             with ManageTimeout(timeout):
-                produced_result = program_under_test(*param)
+                #silencing the stdout for PuT
+                with contextlib.redirect_stdout(None):              
+                    produced_result = program_under_test(*param)
 
             expected_result = program_oracle(*param)
             if expected_result != produced_result:
@@ -70,13 +75,15 @@ def _construct_failure_oracle(
     default_oracle_result: OracleResult,
     harness_function: Callable,
 ):
-    def oracle(inp: Input) -> OracleResult:
+    def oracle(inp: Input) -> Tuple[OracleResult, Optional[Exception]]:
         param = harness_function(str(inp)) if harness_function else str(inp)
         try:
             with ManageTimeout(timeout):
-                program_under_test(*param)
+                #silencing the stdout for PuT
+                with contextlib.redirect_stdout(None):
+                    program_under_test(*param)
         except Exception as e:
-            return error_definitions.get(type(e), default_oracle_result)
-        return OracleResult.PASSING
+            return error_definitions.get(type(e), default_oracle_result), e
+        return OracleResult.PASSING, None
 
     return oracle
