@@ -92,7 +92,8 @@ class NPrTestSubject(MPITestSubject):
         "<start>": ["<input>"],
         "<input>": ["<first> <second>"],
         "<first>": ["<integer>"],
-        "<second>": ["<integer>"],
+        "<second>": ["<one_to_twenty>"],
+        "<one_to_twenty>": ["<one_nine>", "1<one_nine>", "20"],
         "<integer>": ["<one_nine><maybe_digits>"],
         "<one_nine>": [str(num) for num in range(1, 10)],
         "<digit>": list(string.digits),
@@ -100,6 +101,38 @@ class NPrTestSubject(MPITestSubject):
         "<digits>": ["<digit>", "<digit><digits>"],
     }
     default_test_inputs = ["2 1", "3 3"]
+
+
+class FibonacciTestSubject(MPITestSubject):
+    name = "Fibonacci"
+    base_path = Path("./student_assignments/problem_4_Fibonacci_to_N")
+    implementation_function_name = "nFibonacci"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<integer>"],
+        "<integer>": ["<one_nine><maybe_digits>"],
+        "<one_nine>": [str(num) for num in range(1, 10)],
+        "<digit>": list(string.digits),
+        "<maybe_digits>": ["", "<digits>"],
+        "<digits>": ["<digit>", "<digit><digits>"],
+    }
+    default_test_inputs = ["1", "5"]
+
+
+class NumberOfDivisorsTestSubject(MPITestSubject):
+    name = "Number-of-Divisors"
+    base_path = Path("./student_assignments/problem_5_Number-of-divisors")
+    implementation_function_name = "count_divisors"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<integer>"],
+        "<integer>": ["<one_nine><maybe_digits>"],
+        "<one_nine>": [str(num) for num in range(1, 10)],
+        "<digit>": list(string.digits),
+        "<maybe_digits>": ["", "<digits>"],
+        "<digits>": ["<digit>", "<digit><digits>"],
+    }
+    default_test_inputs = ["6", "10"]
 
 
 class MiddleTestSubject(MPITestSubject):
@@ -194,7 +227,7 @@ class MPITestSubjectFactory(TestSubjectFactory):
 
 
 def main():
-    subject_type = NPrTestSubject
+    subject_type = NumberOfDivisorsTestSubject
     subjects = MPITestSubjectFactory([subject_type]).build()
 
     def_inputs = subject_type.default_test_inputs
