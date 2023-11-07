@@ -52,7 +52,7 @@ class MPITestSubject(TestSubject, ABC):
 
 class GCDTestSubject(MPITestSubject):
     name = "GCD"
-    base_path = Path("./resources/mpi/problem_1_GCD")
+    base_path = Path("./student_assignments/problem_1_GCD")
     implementation_function_name = "gcd"
     default_grammar: Grammar = {
         "<start>": ["<input>"],
