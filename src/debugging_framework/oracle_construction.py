@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Type, Optional, Tuple
+from typing import Callable, Dict, Type, Optional, Tuple, Any
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
@@ -8,6 +8,13 @@ from debugging_framework.expceptions import UnexpectedResultError
 import contextlib
 
 
+def execute_program(program, param, timeout) -> Any:
+    with ManageTimeout(timeout):
+        # silencing the stdout for PuT
+        with contextlib.redirect_stdout(None):
+            return program(*param)
+
+
 def construct_oracle(
     program_under_test: Callable,
     program_oracle: Optional[Callable],
@@ -15,7 +22,7 @@ def construct_oracle(
     timeout: float = 1,
     default_oracle_result: OracleResult = OracleResult.UNDEFINED,
     harness_function: Callable = None,
-) -> Callable[[Input], OracleResult]:
+) -> Callable[[Input], Tuple[OracleResult, Optional[Exception]]]:
     error_definitions = error_definitions or {}
     default_oracle_result = (
         OracleResult.FAILING if not error_definitions else default_oracle_result
@@ -47,18 +54,15 @@ def _construct_functional_oracle(
     default_oracle_result: OracleResult,
     harness_function: Callable,
 ):
+
     def oracle(inp: Input) -> Tuple[OracleResult, Optional[Exception]]:
         # param = list(map(int, str(inp).strip().split()))  # This might become a problem
         param = harness_function(str(inp)) if harness_function else str(inp)
 
-
         try:
-            with ManageTimeout(timeout):
-                #silencing the stdout for PuT
-                with contextlib.redirect_stdout(None):              
-                    produced_result = program_under_test(*param)
+            produced_result = execute_program(program_under_test, param, timeout)
+            expected_result = execute_program(program_oracle, param, timeout)
 
-            expected_result = program_oracle(*param)
             if expected_result != produced_result:
                 raise UnexpectedResultError("Results do not match")
         except Exception as e:
