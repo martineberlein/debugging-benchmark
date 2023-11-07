@@ -1,9 +1,9 @@
 from typing import List, Type
 import logging
 
-from results import initialize_dataframe
-from tools import Tool
-from subjects import TestSubject
+from debugging_framework.results import initialize_dataframe
+from debugging_framework.tools import Tool
+from debugging_framework.subjects import TestSubject
 
 
 VLOGGER = logging.getLogger("evaluation")
@@ -42,32 +42,3 @@ class Evaluation:
 
         VLOGGER.info(f"Saving results to {OUT_FILE}")
         df_results.to_pickle(OUT_FILE)
-
-
-def main():
-    from subjects_mpi import (
-        GCDTestSubject,
-        SquareRootTestSubject,
-        MiddleTestSubject,
-        MPITestSubjectFactory,
-    )
-    from tools import EvoGFuzzEvaluationTool, InputsFromHellEvaluationFuzzer
-
-    subjects = MPITestSubjectFactory(
-        [GCDTestSubject, SquareRootTestSubject, MiddleTestSubject]
-    ).build()
-    tools = [EvoGFuzzEvaluationTool, InputsFromHellEvaluationFuzzer]
-
-    Evaluation(tools=tools, subjects=subjects, repetitions=10, timeout=3600).run()
-
-
-def main2():
-    from subjects_mpi import GCDTestSubject, MPITestSubjectFactory
-
-    subjects = MPITestSubjectFactory([GCDTestSubject]).build()
-    for sub in subjects:
-        print(sub.name, sub.id)
-
-
-if __name__ == "__main__":
-    main()
