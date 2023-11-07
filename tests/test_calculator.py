@@ -6,7 +6,6 @@ from debugging_benchmark.calculator.calculator import grammar, initial_inputs, o
 
 
 class TestCalculator(unittest.TestCase):
-
     def test_calculator_grammar(self):
         self.assertTrue(is_valid_grammar(grammar))
 
@@ -18,11 +17,14 @@ class TestCalculator(unittest.TestCase):
                 self.assertEqual(inp, tree_to_string(tree))
 
     def test_calculator_oracle(self):
-        inputs = [("sqrt(-900)", OracleResult.FAILING), ("cos(10)", OracleResult.PASSING)]
+        inputs = [
+            ("sqrt(-900)", OracleResult.FAILING),
+            ("cos(10)", OracleResult.PASSING),
+        ]
 
         for inp, expected_result in inputs:
             self.assertEqual(oracle(inp), expected_result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

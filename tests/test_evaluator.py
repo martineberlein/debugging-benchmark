@@ -3,7 +3,11 @@ import unittest
 import pandas as pd
 
 from debugging_framework.evaluator import Evaluation
-from debugging_benchmark.student_assignments import GCDTestSubject, MPITestSubjectFactory
+from debugging_benchmark.student_assignments import (
+    GCDTestSubject,
+    EratosthenesTestSubject,
+    MPITestSubjectFactory,
+)
 from debugging_framework.tools import InputsFromHellEvaluationFuzzer
 
 
@@ -13,13 +17,13 @@ class TestEvaluator(unittest.TestCase):
             InputsFromHellEvaluationFuzzer,
         ]
 
-        subjects = MPITestSubjectFactory(
-            [GCDTestSubject]
-        ).build()
+        subjects = MPITestSubjectFactory([EratosthenesTestSubject]).build()
 
-        result = Evaluation(tools=tools, subjects=subjects[0:1], repetitions=1, timeout=3600).run()
+        result = Evaluation(
+            tools=tools, subjects=subjects[0:1], repetitions=1, timeout=3600
+        ).run()
         self.assertTrue(isinstance(result, pd.DataFrame))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
