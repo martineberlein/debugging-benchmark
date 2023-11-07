@@ -68,23 +68,7 @@ class GCDTestSubject(MPITestSubject):
     default_test_inputs = ["10 2", "4 4"]
 
 
-class SquareRootTestSubject(MPITestSubject):
-    name = "SquareRoot"
-    base_path = Path("./student_assignments/problem_10_Square-root")
-    implementation_function_name = "floorSqrt"
-    default_grammar: Grammar = {
-        "<start>": ["<input>"],
-        "<input>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>", "0"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
-    default_test_inputs = ["4", "5"]
-
-
-class EratosthenesTestSubject(MPITestSubject):
+class SieveOfEratosthenesTestSubject(MPITestSubject):
     name = "Sieve-of-Eratosthenes"
     base_path = Path("./student_assignments/problem_2_Sieve-of-Eratosthenes")
     implementation_function_name = "sieveOfEratosthenes"
@@ -98,6 +82,24 @@ class EratosthenesTestSubject(MPITestSubject):
         "<digits>": ["<digit>", "<digit><digits>"],
     }
     default_test_inputs = ["10", "35"]
+
+
+class NPrTestSubject(MPITestSubject):
+    name = "nPr"
+    base_path = Path("./student_assignments/problem_3_nPr")
+    implementation_function_name = "nPr"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<first> <second>"],
+        "<first>": ["<integer>"],
+        "<second>": ["<integer>"],
+        "<integer>": ["<one_nine><maybe_digits>"],
+        "<one_nine>": [str(num) for num in range(1, 10)],
+        "<digit>": list(string.digits),
+        "<maybe_digits>": ["", "<digits>"],
+        "<digits>": ["<digit>", "<digit><digits>"],
+    }
+    default_test_inputs = ["2 1", "3 3"]
 
 
 class MiddleTestSubject(MPITestSubject):
@@ -117,6 +119,22 @@ class MiddleTestSubject(MPITestSubject):
         "<digits>": ["<digit>", "<digit><digits>"],
     }
     default_test_inputs = ["978 518 300", "162 934 200"]
+
+
+class SquareRootTestSubject(MPITestSubject):
+    name = "SquareRoot"
+    base_path = Path("./student_assignments/problem_10_Square-root")
+    implementation_function_name = "floorSqrt"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<integer>"],
+        "<integer>": ["<one_nine><maybe_digits>", "0"],
+        "<one_nine>": [str(num) for num in range(1, 10)],
+        "<digit>": list(string.digits),
+        "<maybe_digits>": ["", "<digits>"],
+        "<digits>": ["<digit>", "<digit><digits>"],
+    }
+    default_test_inputs = ["4", "5"]
 
 
 class MPITestSubjectFactory(TestSubjectFactory):
@@ -176,7 +194,15 @@ class MPITestSubjectFactory(TestSubjectFactory):
 
 
 def main():
-    subjects = MPITestSubjectFactory([GCDTestSubject]).build()
+    subject_type = NPrTestSubject
+    subjects = MPITestSubjectFactory([subject_type]).build()
+
+    def_inputs = subject_type.default_test_inputs
+    print("Ground Truth")
+    for inp in def_inputs:
+        param = subject_type.harness_function(inp)
+        print(subject_type.ground_truth()(*param))
+
     for subject in subjects:
         print(f"Subject {subject.id}")
         param = subject.to_dict()

@@ -4,7 +4,6 @@ import pandas as pd
 
 from debugging_framework.evaluator import Evaluation
 from debugging_benchmark.student_assignments import (
-    GCDTestSubject,
     EratosthenesTestSubject,
     MPITestSubjectFactory,
 )
