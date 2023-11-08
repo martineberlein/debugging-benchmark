@@ -11,6 +11,10 @@ from debugging_benchmark.student_assignments import (
     GCDTestSubject,
     NPrTestSubject,
     FibonacciTestSubject,
+    BubbleSortTestSubject,
+    PalindromeTestSubject,
+    RemoveVowelTestSubject,
+    MergeStringsTestSubject
 )
 
 
@@ -23,6 +27,10 @@ class TestStudentAssignments(unittest.TestCase):
             SieveOfEratosthenesTestSubject,
             MiddleTestSubject,
             FibonacciTestSubject,
+            BubbleSortTestSubject,
+            PalindromeTestSubject,
+            RemoveVowelTestSubject,
+            MergeStringsTestSubject
         ]
 
     def test_subject_grammars(self):
