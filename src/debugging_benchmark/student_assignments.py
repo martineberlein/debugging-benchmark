@@ -154,10 +154,8 @@ class BubbleSortTestSubject(MPITestSubject):
 
     @classmethod
     def harness_function(cls, input_str: str):
-        #input = "5\n4 1 3 9 7"
         n = int(input_str.splitlines()[0])
         arr = list(map(int, str(input_str.splitlines()[1]).strip().split()))
-        #output = 5 [4, 1, 3, 9, 7] als Tuple 
         return (arr, n)
 
 class MiddleTestSubject(MPITestSubject):
@@ -206,11 +204,11 @@ class RemoveVowelTestSubject(MPITestSubject):
     implementation_function_name = "removeVowels"
     default_grammar: Grammar = {
         "<start>": ["<input>"],
-        "<input>": ["<word> <maybe_word>"],
-        "<maybe_word>": ["<word> <maybe_word>", ""],
-        "<word>": ["<character><maybe_character>"],        
-        "<character>": list(string.ascii_lowercase),
-        "<maybe_character>": ["<character><maybe_character>", ""],        
+        "<input>": ["<word><maybe_word>"],
+        "<maybe_word>": [" <word><maybe_word>", ""],
+        "<word>": ["<char><maybe_char>"],        
+        "<char>": list(string.ascii_lowercase),
+        "<maybe_char>": ["<char><maybe_char>", ""]     
     }
     default_test_inputs = ["welcome to avicenna", "hello my name is martin"]
 
@@ -220,7 +218,6 @@ class RemoveVowelTestSubject(MPITestSubject):
     def harness_function(cls, input_str: str):
         return input_str
 
-  
 class SquareRootTestSubject(MPITestSubject):
     name = "SquareRoot"
     base_path = Path("./student_assignments/problem_10_Square-root")
@@ -249,8 +246,6 @@ class MergeStringsTestSubject(MPITestSubject):
     }
     default_test_inputs = ["abc def", "hello bye"]
 
-    #eigentlich nicht nötig, aber per default wird ja was gemacht
-    #in oracle wird gecheckt ob es eine harness function gibt aber per default gibt es eine oder? line 60
     @classmethod
     def harness_function(cls, input_str: str):
         S1, S2 = map(str, str(input_str).strip().split())
