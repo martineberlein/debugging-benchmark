@@ -33,7 +33,7 @@ class Evaluation:
         return Path(out_file).resolve()
 
     def initialize_result_dataframe(self) -> pd.DataFrame:
-        subject_names = [(sub.name, sub.id) for sub in self.subjects]
+        subject_names = [(sub.name, sub.bug_id) for sub in self.subjects]
         tool_names = [tool.name for tool in self.tools]
         return initialize_dataframe(subject_names, tool_names, self.repetitions)
 
@@ -42,7 +42,7 @@ class Evaluation:
 
         for subject in self.subjects:
             VLOGGER.info(
-                f"Evaluating Subject {subject.name}_{subject.id}"
+                f"Evaluating Subject {subject.name}_{subject.bug_id}"
             )
 
             param = subject.to_dict()
@@ -50,7 +50,7 @@ class Evaluation:
                 for i in range(1, self.repetitions + 1):
                     report = tool(**param).run()
                     df_results.at[
-                        (i, tool.name), (subject.name, subject.id)
+                        (i, tool.name), (subject.name, subject.bug_id)
                     ] = report.to_dict()
 
         if self.out_file:

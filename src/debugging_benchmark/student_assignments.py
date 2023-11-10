@@ -19,7 +19,7 @@ class MPITestSubject(TestSubject, ABC):
 
     def __init__(self, oracle, bug_id):
         super().__init__(oracle=oracle)
-        self.id = bug_id
+        self.bug_id = bug_id
 
     @classmethod
     def get_dir(cls) -> Path:
@@ -237,7 +237,7 @@ def main():
         print(subject_type.ground_truth()(*param))
 
     for subject in subjects:
-        print(f"Subject {subject.id}")
+        print(f"Subject {subject.bug_id}")
         param = subject.to_dict()
         oracle = param.get("oracle")
         for inp in param.get("initial_inputs"):
