@@ -8,6 +8,7 @@ from debugging_framework.oracle_construction import (
 )
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
+from debugging_framework.timeout_manager import ManageTimeout
 
 
 grammar: Grammar = {
@@ -172,6 +173,73 @@ class TestConstructOracle(unittest.TestCase):
 
         oracle_result, _ = my_oracle(Input.from_str(grammar, "1 1"))
         self.assertEqual(oracle_result, OracleResult.FAILING)
+
+    @unittest.skip
+    def test_oracle_sigkill(self):
+        """
+        Raises SIGKILL due to excessive Memory Consumption
+        Needs to be fixed
+        :return:
+        """
+        from debugging_benchmark.student_assignments import SieveOfEratosthenesTestSubject
+        print(SieveOfEratosthenesTestSubject.ground_truth()(4713133176770))
+
+    @unittest.skip
+    def test_timeout_manager(self):
+        """
+        Raises SIGKILL due to excessive Memory Consumption
+        Needs to be fixed
+        :return:
+        """
+        def sieveOfEratosthenes(N):
+            is_prime = [True] * (N + 1)
+            for i in range(2, N):
+                if is_prime[i]:
+                    for j in range(i * i, N + 1, i):
+                        is_prime[j] = False
+
+            # Get the list of primes
+            result = []
+            for i in range(2, N + 1):
+                if is_prime[i]:
+                    result.append(i)
+            return result
+
+        with ManageTimeout(1):
+            print(sieveOfEratosthenes(4713133176770))
+
+    def test_fix(self):
+        """
+        Possible Fix?
+        :return:
+        """
+        def sieveOfEratosthenes(N):
+            # Create the sieve
+            is_prime = [True] * (N + 1)
+            for i in range(2, N):
+                if is_prime[i]:
+                    for j in range(i * i, N + 1, i):
+                        is_prime[j] = False
+
+            # Get the list of primes
+            result = []
+            for i in range(2, N + 1):
+                if is_prime[i]:
+                    result.append(i)
+            return result
+
+        from concurrent.futures import ProcessPoolExecutor, TimeoutError as FuturesTimeoutError
+
+        # Use ProcessPoolExecutor to apply timeout to a function call
+        with ProcessPoolExecutor() as executor:
+            future = executor.submit(sieveOfEratosthenes, 4713133176770)
+            try:
+                result = future.result(timeout=1)  # Timeout after 1 second
+                print(result)
+            except FuturesTimeoutError:
+                print("Function call timed out")
+            except Exception as e:
+                print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":

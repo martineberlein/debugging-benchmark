@@ -1,0 +1,6 @@
+tests4py~=0.0.6
+fuzzingbook~=1.2
+numpy~=1.26.1
+pandas~=2.1.2
+psutil~=5.9.6
+setuptools~=68.2.0
