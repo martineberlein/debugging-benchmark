@@ -5,7 +5,7 @@ from pathlib import Path
 
 from debugging_framework.results import initialize_dataframe
 from debugging_framework.tools import Tool
-from debugging_framework.subjects import TestSubject
+from debugging_framework.subjects import BenchmarkProgram
 
 
 VLOGGER = logging.getLogger("evaluation")
@@ -20,7 +20,7 @@ OUT_FILE = "results.pkl"
 class Evaluation:
     def __init__(self, tools, subjects, repetitions, timeout, out_file: Optional[Union[str, Path]] = None):
         self.tools: List[Type[Tool]] = tools
-        self.subjects: List[TestSubject] = subjects
+        self.subjects: List[BenchmarkProgram] = subjects
         self.repetitions: int = repetitions
         self.timeout: int = timeout
         self.out_file = self.resolve_path(out_file) if out_file else out_file

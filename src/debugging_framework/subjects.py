@@ -7,6 +7,34 @@ from abc import ABC, abstractmethod
 from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
 
+class BenchmarkProgram(ABC):
+    name: str
+    bug_id: int
+
+    @abstractmethod
+    def get_name(self) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_grammar(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_initial_inputs(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_oracle(self):
+        raise NotImplementedError
+
+    def to_dict(self):
+        return {
+            "grammar": self.get_grammar(),
+            "oracle": self.get_oracle(),
+            "initial_inputs": self.get_initial_inputs(),
+        }
+
+
 class TestSubject(ABC):
     name: str
     bug_id: int
