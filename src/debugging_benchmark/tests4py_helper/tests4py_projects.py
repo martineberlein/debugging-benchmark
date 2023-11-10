@@ -8,8 +8,9 @@ from tests4py.projects import Project
 
 from fuzzingbook.Grammars import Grammar
 
+from debugging_benchmark.tests4py_helper.tests4py_grammars import grammar_pysnooper
 from debugging_benchmark.refactory import BenchmarkProgram, BenchmarkRepository
-from debugging_benchmark.tests4py_benchmark.tests4py_api import build_project
+from debugging_benchmark.tests4py_helper.tests4py_api import build_project
 
 
 class Tests4PyProject:
@@ -23,8 +24,8 @@ class Tests4PyProject:
 @dataclass
 class Pysnooper2Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_2
-    grammar = project.grammar
-    initial_inputs = ["-d1\n-T\n"]
+    grammar = grammar_pysnooper
+    initial_inputs = ["-otest.log -cint=str"]
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs)
@@ -33,8 +34,21 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
 @dataclass
 class Pysnooper3Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_3
-    grammar = project.grammar
-    initial_inputs = ["-d1\n-T\n"]
+    grammar = grammar_pysnooper
+    initial_inputs = ["-otest7.log -d1 -ptest"]
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs)
+
+
+@dataclass
+class YoutubeDL1Tests4PyProject(Tests4PyProject):
+    project: Project = api.youtubedl_1
+    # grammar = grammar_pysnooper
+    initial_inputs = [
+        "-q !is_live\n-d {\\'is_live\\':False}",
+        "-q \\'test>?0\\'\n-d {}",
+    ]
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs)

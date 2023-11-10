@@ -52,7 +52,7 @@ def map_result(result: TestResult) -> OracleResult:
 def run_project_from_dir(project_dir: Path, inp: Union[str, Input]) -> RunReport:
     """Run the project from the given directory with the provided input."""
     args = get_test_arguments(inp)
-    print(args)
+    # print(args)
     return api.run_project(project_dir, args, invoke_oracle=True)
 
 

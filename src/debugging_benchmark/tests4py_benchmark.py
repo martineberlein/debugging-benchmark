@@ -9,8 +9,8 @@ from tests4py.projects import Project
 from fuzzingbook.Grammars import Grammar
 
 from debugging_benchmark.refactory import BenchmarkProgram, BenchmarkRepository
-from debugging_benchmark.tests4py_benchmark.tests4py_api import build_project, construct_oracle
-from debugging_benchmark.tests4py_benchmark.tests4py_projects import (
+from debugging_benchmark.tests4py_helper.tests4py_api import build_project, construct_oracle
+from debugging_benchmark.tests4py_helper.tests4py_projects import (
     Tests4PyProject,
     Pysnooper2Tests4PyProject,
     Pysnooper3Tests4PyProject
@@ -89,6 +89,22 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 
 
 class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
+
+    def __init__(self):
+        self.name = "Tests4Py-Pysnooper"
+        self.projects: List[Tests4PyProject] = [
+            Pysnooper2Tests4PyProject(),
+            Pysnooper3Tests4PyProject(),
+        ]
+
+    def get_grammar_for_project(self, project: Tests4PyProject):
+        return project.grammar
+
+    def get_t4p_project(self) -> List[Tests4PyProject]:
+        return self.projects
+
+
+class YoutubeDLBenchmarkRepository(Tests4PyBenchmarkRepository):
 
     def __init__(self):
         self.name = "Tests4Py-Pysnooper"
