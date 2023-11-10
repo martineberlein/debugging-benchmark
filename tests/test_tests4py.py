@@ -1,17 +1,31 @@
 import unittest
+from typing import Union
 
-from fuzzingbook.GrammarFuzzer import GrammarFuzzer
+from fuzzingbook.GrammarFuzzer import GrammarFuzzer, is_valid_grammar
 from fuzzingbook.Parser import EarleyParser, tree_to_string
 
 from debugging_framework.oracle import OracleResult
-from debugging_benchmark.tests4py_benchmark import PysnooperBenchmarkRepository
+from debugging_benchmark.tests4py_benchmark import PysnooperBenchmarkRepository, YoutubeDLBenchmarkRepository
 
 
 class TestTests4Py(unittest.TestCase):
 
     def setUp(self):
-        repo = PysnooperBenchmarkRepository()
-        self.subjects = repo.build()
+        repositories = [
+            # PysnooperBenchmarkRepository(),
+            YoutubeDLBenchmarkRepository()
+        ]
+        self.subjects = []
+        for repo in repositories:
+            subjects = repo.build()
+            for subject in subjects:
+                self.subjects.append(subject)
+
+        print(self.subjects)
+
+    def test_tests4py_valid_grammars(self):
+        for subject in self.subjects:
+            self.assertTrue(is_valid_grammar(subject.grammar))
 
     def test_tests4py_initial_inputs_parsing(self):
         for subject in self.subjects:
@@ -28,12 +42,12 @@ class TestTests4Py(unittest.TestCase):
                 inp = fuzzer.fuzz()
                 print(inp, subject.oracle(inp))
 
-    def test_tests4py_build(self):
+    def test_tests4py_verify_oracle(self):
         for subject in self.subjects:
             for inp in subject.initial_inputs:
-                oracle = subject.oracle
-                print(inp, oracle)
-                self.assertIsInstance(oracle(inp), OracleResult)
+                oracle, exception = subject.oracle(inp)
+                self.assertIsInstance(oracle, OracleResult)
+                self.assertIsInstance(exception, Union[Exception, None])
 
 
 if __name__ == '__main__':

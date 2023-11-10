@@ -8,7 +8,7 @@ from tests4py.projects import Project
 
 from fuzzingbook.Grammars import Grammar
 
-from debugging_benchmark.tests4py_helper.tests4py_grammars import grammar_pysnooper
+from debugging_benchmark.tests4py_helper.tests4py_grammars import grammar_pysnooper, grammar_youtube_dl_1
 from debugging_benchmark.refactory import BenchmarkProgram, BenchmarkRepository
 from debugging_benchmark.tests4py_helper.tests4py_api import build_project
 
@@ -44,10 +44,11 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
 @dataclass
 class YoutubeDL1Tests4PyProject(Tests4PyProject):
     project: Project = api.youtubedl_1
-    # grammar = grammar_pysnooper
+    grammar = grammar_youtube_dl_1
     initial_inputs = [
-        "-q !is_live\n-d {\\'is_live\\':False}",
-        "-q \\'test>?0\\'\n-d {}",
+        "-q '!like_count' -d {'dislike_count': 85}",
+        "-q '!is_live' -d {'is_live': False}",
+        "-q 'test >? 0' -d {}",
     ]
 
     def __post_init__(self):
@@ -55,6 +56,6 @@ class YoutubeDL1Tests4PyProject(Tests4PyProject):
 
 
 if __name__ == "__main__":
-    pro = Pysnooper2Tests4PyProject()
+    pro = YoutubeDL1Tests4PyProject()
     print(pro.initial_inputs)
 
