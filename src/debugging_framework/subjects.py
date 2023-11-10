@@ -9,7 +9,7 @@ from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
 class TestSubject(ABC):
     name: str
-    id: int
+    bug_id: int
 
     def __init__(self, grammar=None, oracle=None, test_inputs=None):
         self.grammar = grammar or self.default_grammar

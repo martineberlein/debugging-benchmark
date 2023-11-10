@@ -19,7 +19,7 @@ class MPITestSubject(TestSubject, ABC):
 
     def __init__(self, oracle, bug_id):
         super().__init__(oracle=oracle)
-        self.id = bug_id
+        self.bug_id = bug_id
 
     @classmethod
     def get_dir(cls) -> Path:
@@ -135,6 +135,29 @@ class NumberOfDivisorsTestSubject(MPITestSubject):
     default_test_inputs = ["6", "10"]
 
 
+class BubbleSortTestSubject(MPITestSubject):
+    name = "BubbleSort"
+    base_path = Path("./student_assignments/problem_6_Bubble-Sort")
+    implementation_function_name = "bubbleSort"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        #TODO: mit mehr integer fürs array beginnen?
+        "<input>": ["<integer>\n<integer><maybe_integer>"],
+        "<integer>": ["<one_nine><maybe_digits>", "0"],
+        "<maybe_integer>": ["", " <integer><maybe_integer>"],
+        "<one_nine>": [str(num) for num in range(1, 10)],
+        "<digit>": list(string.digits),
+        "<maybe_digits>": ["", "<digits>"],
+        "<digits>": ["<digit>", "<digit><digits>"],
+    }
+    default_test_inputs = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+
+    @classmethod
+    def harness_function(cls, input_str: str):
+        n = int(input_str.splitlines()[0])
+        arr = list(map(int, str(input_str.splitlines()[1]).strip().split()))
+        return (arr, n)
+
 class MiddleTestSubject(MPITestSubject):
     name = "Middle"
     base_path = Path("./student_assignments/problem_7_Middle-of-Three")
@@ -154,6 +177,47 @@ class MiddleTestSubject(MPITestSubject):
     default_test_inputs = ["978 518 300", "162 934 200"]
 
 
+
+class PalindromeTestSubject(MPITestSubject):
+    name = "Palindrome"
+    base_path = Path("./student_assignments/problem_8_Palindrome-String")
+    implementation_function_name = "isPalindrome"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<valid>", "<invalid>"],
+        "<valid>": ["a<valid>a", "b<valid>b", "c<valid>c", "<character>", ""],
+        "<character>": list(string.ascii_lowercase),
+        "<invalid>": ["<character><maybe_character>"],
+        "<maybe_character>": ["<character><maybe_character>", ""]
+    }
+    default_test_inputs = ["abba", "abc"]
+
+    #eigentlich nicht nötig, aber per default wird ja was gemacht
+    #in oracle wird gecheckt ob es eine harness function gibt aber per default gibt es eine oder? line 60
+    @classmethod
+    def harness_function(cls, input_str: str):
+        return input_str
+
+class RemoveVowelTestSubject(MPITestSubject):
+    name = "Remove Vowel"
+    base_path = Path("./student_assignments/problem_9_Remove-vowels-from-string")
+    implementation_function_name = "removeVowels"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<word><maybe_word>"],
+        "<maybe_word>": [" <word><maybe_word>", ""],
+        "<word>": ["<char><maybe_char>"],        
+        "<char>": list(string.ascii_lowercase),
+        "<maybe_char>": ["<char><maybe_char>", ""]     
+    }
+    default_test_inputs = ["welcome to avicenna", "hello my name is martin"]
+
+    #eigentlich nicht nötig, aber per default wird ja was gemacht
+    #in oracle wird gecheckt ob es eine harness function gibt aber per default gibt es eine oder? line 60
+    @classmethod
+    def harness_function(cls, input_str: str):
+        return input_str
+
 class SquareRootTestSubject(MPITestSubject):
     name = "SquareRoot"
     base_path = Path("./student_assignments/problem_10_Square-root")
@@ -169,7 +233,24 @@ class SquareRootTestSubject(MPITestSubject):
     }
     default_test_inputs = ["4", "5"]
 
+class MergeStringsTestSubject(MPITestSubject):
+    name = "Merge Strings"
+    base_path = Path("./student_assignments/problem_11_Merge-two-strings")
+    implementation_function_name = "merge"
+    default_grammar: Grammar = {
+        "<start>": ["<input>"],
+        "<input>": ["<word> <word>"],
+        "<word>": ["<character><maybe_character>"],        
+        "<character>": list(string.ascii_lowercase),
+        "<maybe_character>": ["<character><maybe_character>", ""],        
+    }
+    default_test_inputs = ["abc def", "hello bye"]
 
+    @classmethod
+    def harness_function(cls, input_str: str):
+        S1, S2 = map(str, str(input_str).strip().split())
+        return (S1, S2)
+  
 class MPITestSubjectFactory(TestSubjectFactory):
     def __init__(self, test_subject_types: List[Type[MPITestSubject]]):
         self.test_subject_types = test_subject_types
@@ -237,7 +318,7 @@ def main():
         print(subject_type.ground_truth()(*param))
 
     for subject in subjects:
-        print(f"Subject {subject.id}")
+        print(f"Subject {subject.bug_id}")
         param = subject.to_dict()
         oracle = param.get("oracle")
         for inp in param.get("initial_inputs"):
