@@ -5,16 +5,15 @@ from fuzzingbook.GrammarFuzzer import GrammarFuzzer, is_valid_grammar
 from fuzzingbook.Parser import EarleyParser, tree_to_string
 
 from debugging_framework.oracle import OracleResult
-from debugging_benchmark.tests4py_benchmark import PysnooperBenchmarkRepository, YoutubeDLBenchmarkRepository
+from debugging_benchmark.tests4py_benchmark import (
+    PysnooperBenchmarkRepository,
+    YoutubeDLBenchmarkRepository,
+)
 
 
 class TestTests4Py(unittest.TestCase):
-
     def setUp(self):
-        repositories = [
-            PysnooperBenchmarkRepository(),
-            YoutubeDLBenchmarkRepository()
-        ]
+        repositories = [PysnooperBenchmarkRepository(), YoutubeDLBenchmarkRepository()]
         self.subjects = []
         for repo in repositories:
             subjects = repo.build()
@@ -51,5 +50,5 @@ class TestTests4Py(unittest.TestCase):
                 self.assertIsInstance(exception, Union[Exception, None])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
