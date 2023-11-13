@@ -3,7 +3,7 @@ import logging
 
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
-    BenchmarkRepository
+    BenchmarkRepository,
 )
 
 from debugging_framework.tools import Tool
@@ -22,7 +22,13 @@ def main():
 
     subjects = PysnooperBenchmarkRepository().build()
 
-    report = Evaluation(tools=tools, subjects=subjects, repetitions=1, timeout=3600).run()
+    report = Evaluation(
+        tools=tools,
+        subjects=subjects,
+        repetitions=1,
+        timeout=3600,
+        tool_param={"max_non_terminals": 8, "max_generated_inputs": 100},
+    ).run()
 
     print(report)
 
