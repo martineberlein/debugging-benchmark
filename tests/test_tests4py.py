@@ -12,7 +12,7 @@ class TestTests4Py(unittest.TestCase):
 
     def setUp(self):
         repositories = [
-            # PysnooperBenchmarkRepository(),
+            PysnooperBenchmarkRepository(),
             YoutubeDLBenchmarkRepository()
         ]
         self.subjects = []
@@ -37,10 +37,11 @@ class TestTests4Py(unittest.TestCase):
     def test_tests4py_input_generation(self):
         for subject in self.subjects:
             fuzzer = GrammarFuzzer(subject.grammar)
-            for _ in range(100):
-                print("---")
+            for _ in range(10):
                 inp = fuzzer.fuzz()
-                print(inp, subject.oracle(inp))
+                oracle, exception = subject.oracle(inp)
+                self.assertIsInstance(oracle, OracleResult)
+                self.assertIsInstance(exception, Union[Exception, None])
 
     def test_tests4py_verify_oracle(self):
         for subject in self.subjects:
