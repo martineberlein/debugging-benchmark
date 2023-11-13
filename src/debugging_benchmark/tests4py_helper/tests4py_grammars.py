@@ -36,3 +36,35 @@ grammar_pysnooper: Grammar = {
     "<t_function>": ["repr", "str", "int"],
     "<ws>": [" "]
 }
+
+grammar_youtube_dl_1 = {
+    "<start>": ["<match_str>"],
+    "<match_str>": ["-q <query> -d <dict>"],
+    "<query>": ["<par><stmt_list><par>"],
+    "<dict>": ["{<dict_list>}"],
+    "<stmt_list>": ["<stmt> & <stmt_list>", "<stmt>"],
+    "<stmt>": ["<bool_stmt>", "<comp_stmt>"],
+    "<bool_stmt>": ["<unary_op><name>"],
+    "<unary_op>": ["!", ""],
+    "<comp_stmt>": ["<name> <comp_op><optional> <int>"],
+    "<optional>": ["?", ""],
+    "<comp_op>": ["<", ">", "<=", ">=", "=", "!="],
+    "<dict_list>": ["<kv>, <dict_list>", "<kv>", ""],
+    "<kv>": ["<par><name><par>: <value>"],
+    "<par>": ["'"],
+    "<value>": ["<bool>", "<int>", "'<string>'", "''"],
+    "<bool>": ["True", "False", "None"],
+    "<name>": [
+        "is_live",
+        "like_count",
+        "description",
+        "title",
+        "dislike_count",
+        "test",
+        "other",
+    ],
+    "<digit>": [str(i) for i in range(10)],
+    "<int>": ["<int><digit>", "<digit>"],
+    "<string>": ["<string><char>", "<char>"],
+    "<char>": [str(char) for char in string.ascii_letters],
+}

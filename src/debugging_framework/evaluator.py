@@ -1,11 +1,11 @@
-from typing import List, Type, Optional, Union
+from typing import List, Type, Optional, Union, Dict
 import logging
 import pandas as pd
 from pathlib import Path
 
 from debugging_framework.results import initialize_dataframe
 from debugging_framework.tools import Tool
-from debugging_framework.subjects import TestSubject
+from debugging_framework.subjects import BenchmarkProgram
 
 
 VLOGGER = logging.getLogger("evaluation")
@@ -18,12 +18,25 @@ OUT_FILE = "results.pkl"
 
 
 class Evaluation:
-    def __init__(self, tools, subjects, repetitions, timeout, out_file: Optional[Union[str, Path]] = None):
+    def __init__(
+        self,
+        tools,
+        subjects,
+        repetitions,
+        timeout,
+        out_file: Optional[Union[str, Path]] = None,
+            tool_param=None,
+    ):
         self.tools: List[Type[Tool]] = tools
-        self.subjects: List[TestSubject] = subjects
+        self.subjects: List[BenchmarkProgram] = subjects
         self.repetitions: int = repetitions
         self.timeout: int = timeout
         self.out_file = self.resolve_path(out_file) if out_file else out_file
+        self.tool_param = (
+            tool_param
+            if tool_param
+            else {}
+        )
 
     @staticmethod
     def resolve_path(out_file: Union[str, Path]) -> Path:
@@ -41,11 +54,9 @@ class Evaluation:
         df_results = self.initialize_result_dataframe()
 
         for subject in self.subjects:
-            VLOGGER.info(
-                f"Evaluating Subject {subject.name}_{subject.bug_id}"
-            )
+            VLOGGER.info(f"Evaluating Subject {subject.name}_{subject.bug_id}")
+            param = {**subject.to_dict(), **self.tool_param}
 
-            param = subject.to_dict()
             for tool in self.tools:
                 for i in range(1, self.repetitions + 1):
                     report = tool(**param).run()

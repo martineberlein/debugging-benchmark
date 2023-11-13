@@ -8,10 +8,9 @@ def check_directory_exists(path):
 
 
 class TestRefactory(unittest.TestCase):
-
     def test_question1_refactory_benchmark_repository(self):
         repo = Question1RefactoryBenchmarkRepository()
-        self.assertEqual(repo.name,"RefactoryQ1")
+        self.assertEqual(repo.name, "RefactoryQ1")
         self.assertTrue(check_directory_exists(repo.get_dir()))
 
     def test_question1_build_test_programs(self):
@@ -22,5 +21,5 @@ class TestRefactory(unittest.TestCase):
             self.assertTrue(isinstance(test_subject, RefactoryBenchmarkProgram))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

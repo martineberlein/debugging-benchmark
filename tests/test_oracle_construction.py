@@ -181,7 +181,10 @@ class TestConstructOracle(unittest.TestCase):
         Needs to be fixed
         :return:
         """
-        from debugging_benchmark.student_assignments import SieveOfEratosthenesTestSubject
+        from debugging_benchmark.student_assignments import (
+            SieveOfEratosthenesTestSubject,
+        )
+
         print(SieveOfEratosthenesTestSubject.ground_truth()(4713133176770))
 
     @unittest.skip
@@ -191,6 +194,7 @@ class TestConstructOracle(unittest.TestCase):
         Needs to be fixed
         :return:
         """
+
         def sieveOfEratosthenes(N):
             is_prime = [True] * (N + 1)
             for i in range(2, N):
@@ -213,6 +217,7 @@ class TestConstructOracle(unittest.TestCase):
         Possible Fix?
         :return:
         """
+
         def sieveOfEratosthenes(N):
             # Create the sieve
             is_prime = [True] * (N + 1)
@@ -228,7 +233,10 @@ class TestConstructOracle(unittest.TestCase):
                     result.append(i)
             return result
 
-        from concurrent.futures import ProcessPoolExecutor, TimeoutError as FuturesTimeoutError
+        from concurrent.futures import (
+            ProcessPoolExecutor,
+            TimeoutError as FuturesTimeoutError,
+        )
 
         # Use ProcessPoolExecutor to apply timeout to a function call
         with ProcessPoolExecutor() as executor:

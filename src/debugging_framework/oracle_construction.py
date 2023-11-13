@@ -75,7 +75,7 @@ def _construct_functional_oracle(
 def _construct_failure_oracle(
     program_under_test: Callable,
     error_definitions: Dict[Type[Exception], OracleResult],
-    timeout: int,
+    timeout: float,
     default_oracle_result: OracleResult,
     harness_function: Callable,
 ):
@@ -83,7 +83,7 @@ def _construct_failure_oracle(
         param = harness_function(str(inp)) if harness_function else str(inp)
         try:
             with ManageTimeout(timeout):
-                #silencing the stdout for PuT
+                # silencing the stdout for PuT
                 with contextlib.redirect_stdout(None):
                     program_under_test(*param)
         except Exception as e:

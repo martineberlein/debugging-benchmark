@@ -37,7 +37,7 @@ class GrammarBasedEvaluationTool(Tool, ABC):
         grammar,
         oracle,
         initial_inputs,
-        max_nonterminals: int = 5,
+        max_non_terminals: int = 5,
         max_generated_inputs: int = 10000,
         **kwargs
     ):
@@ -45,7 +45,7 @@ class GrammarBasedEvaluationTool(Tool, ABC):
         self.report = MultipleFailureReport(name=type(self).__name__)
         self.execution_handler = SingleExecutionHandler(self.oracle)
 
-        self.max_nonterminals = max_nonterminals
+        self.max_non_terminals = max_non_terminals
         self.max_generated_inputs = max_generated_inputs
 
 
@@ -53,7 +53,7 @@ class GrammarBasedEvaluationFuzzer(GrammarBasedEvaluationTool):
     name = "GrammarBasedFuzzer"
 
     def run(self) -> Report:
-        fuzzer = GrammarFuzzer(self.grammar, max_nonterminals=self.max_nonterminals)
+        fuzzer = GrammarFuzzer(self.grammar, max_nonterminals=self.max_non_terminals)
 
         test_inputs = set()
         for _ in range(self.max_generated_inputs):
@@ -72,7 +72,7 @@ class InputsFromHellEvaluationFuzzer(GrammarBasedEvaluationTool):
             EarleyParser(self.grammar)
         ).mine_probabilistic_grammar(inputs=self.initial_inputs)
         fuzzer = ProbabilisticGrammarFuzzer(
-            prob_grammar, max_nonterminals=self.max_nonterminals
+            prob_grammar, max_nonterminals=self.max_non_terminals
         )
 
         test_inputs = set()
@@ -88,7 +88,7 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
     name = "ISLaGrammarBasedFuzzer"
 
     def run(self) -> Report:
-        fuzzer = ISLaGrammarFuzzer(self.grammar, max_nonterminals=self.max_nonterminals)
+        fuzzer = ISLaGrammarFuzzer(self.grammar, max_nonterminals=self.max_non_terminals)
 
         test_inputs = set()
         for _ in range(self.max_generated_inputs):

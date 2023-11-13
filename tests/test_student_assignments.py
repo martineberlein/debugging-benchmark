@@ -16,7 +16,7 @@ from debugging_benchmark.student_assignments import (
     BubbleSortTestSubject,
     PalindromeTestSubject,
     RemoveVowelTestSubject,
-    MergeStringsTestSubject
+    MergeStringsTestSubject,
 )
 
 
@@ -32,11 +32,11 @@ class TestStudentAssignments(unittest.TestCase):
             BubbleSortTestSubject,
             PalindromeTestSubject,
             RemoveVowelTestSubject,
-            MergeStringsTestSubject
+            MergeStringsTestSubject,
         ]
 
     def test_subject_valid_grammars(self):
-        #geht theoretisch auch erste variante?
+        # geht theoretisch auch erste variante?
         for subject in self.subjects:
             self.assertTrue(is_valid_grammar(subject.default_grammar))
 
@@ -53,7 +53,6 @@ class TestStudentAssignments(unittest.TestCase):
                     for tree in parser.parse(inp):
                         self.assertEqual(inp, tree_to_string(tree))
 
-
     def test_subject_build(self):
         subjects = MPITestSubjectFactory(self.subjects).build()
 
@@ -64,7 +63,7 @@ class TestStudentAssignments(unittest.TestCase):
                 param = subject.to_dict()
                 oracle = param.get("oracle")
                 for inp in param.get("initial_inputs"):
-                    #kann man das schöner machen? oracle(inp)[0]
+                    # kann man das schöner machen? oracle(inp)[0]
                     result, opt_excp = oracle(inp)
                     self.assertIsInstance(result, OracleResult)
                     # self.assertEqual(subject.id % 2, 0)

@@ -1,4 +1,4 @@
-from typing import List, Callable, Union
+from typing import List, Callable, Union, Tuple, Optional
 from pathlib import Path
 import logging
 import shlex
@@ -58,19 +58,25 @@ def run_project_from_dir(project_dir: Path, inp: Union[str, Input]) -> RunReport
 
 def construct_oracle(
     project: Project, work_dir: Path = DEFAULT_WORK_DIR
-) -> Callable[[Union[str, Input]], OracleResult]:
+) -> Callable[[Union[str, Input]], Tuple[OracleResult, Optional[Exception]]]:
     """Construct an oracle for the given project."""
 
-    def oracle(inp: Union[str, Input]) -> OracleResult:
+    def oracle(inp: Union[str, Input]) -> Tuple[OracleResult, Optional[Exception]]:
         project_dir = work_dir / project.get_identifier()
         report: RunReport = run_project_from_dir(project_dir, inp)
+        exception = (
+            Tests4PySubjectException(report.feedback)
+            if report.feedback
+            else None
+        )
         print("test_result:", report.test_result)
-        ex = Tests4PySubjectException(report.feedback)
-        print("feedback:", ex, type(ex))
+        print("feedback:", report.feedback)
         print("successful:", report.successful)
         print("raised:", report.raised)
+        result = map_result(report.test_result) if report.successful else OracleResult.UNDEFINED
         return (
-            map_result(report.test_result) if report.successful else OracleResult.UNDEFINED
+            result,
+            exception
         )
 
     return oracle
