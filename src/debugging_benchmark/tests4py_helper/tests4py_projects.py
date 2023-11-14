@@ -25,7 +25,11 @@ class Tests4PyProject:
 class Pysnooper2Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_2
     grammar = grammar_pysnooper
-    initial_inputs = ["-o='test.log' -c=int=str "]
+    initial_inputs = [
+        "-o='test.log' -c=int=str ",
+        "-d=7 -p='test' -w='e.nest2' -c=bool=str,int=str -O ",
+        "-o -d=7 -p='1' -w='e.nest2' -c=bool=str,int=str -T ",
+    ]
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs)
@@ -35,7 +39,9 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
 class Pysnooper3Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_3
     grammar = grammar_pysnooper
-    initial_inputs = ["-o='test7.log' -d=1 -p='test' "]
+    initial_inputs = [
+        "-o='test7.log' -d=1 -p='test' ",
+    ]
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs)
