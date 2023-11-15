@@ -10,7 +10,7 @@ from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
 from debugging_framework.subjects import load_object_dynamically, load_function_from_class
 
-from debugging_benchmark.refactory import BenchmarkRepository, BenchmarkProgram
+from debugging_benchmark.core import BenchmarkRepository, BenchmarkProgram
 
 class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     #komplett kopiert von RefactoryBenchmarkProgram
@@ -45,32 +45,12 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
 
 
 class StudentAssignmentRepository(BenchmarkRepository, ABC):
-    #init funktion mit subject types??
-    #oder wie kommen wir an die?
 
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A StudentAssignment-Benchmark-Repository needs to have a unique name."
         )
-    
-    #diese 4 doppeln sich nach BenchmarkRepository verschieben?
-    #oder könnten diese in zusätzlicihen TestRepos nicht gebraucht werden?
-    @staticmethod
-    def get_grammar() -> Grammar:
-        raise NotImplementedError
-    
-    @staticmethod
-    def get_initial_inputs() -> List[str]:
-        raise NotImplementedError
-
-    @staticmethod
-    def harness_function(input_str: str) -> Sequence[Any]:
-        raise NotImplementedError
-    
-    @abstractmethod
-    def get_implementation_function_name(self):
-        raise NotImplementedError
     
     def get_dir(self) -> Path:
         repo_dir = os.path.dirname(os.path.abspath(__file__))
@@ -79,6 +59,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
     def get_ground_truth_location(self):
         return os.path.join(self.get_dir(), Path("reference1.py"))
     
+    #TODO: Solution als attribute oder var
     def load_ground_truth(self):
         path_to_ground_truth = self.get_ground_truth_location()
         return load_function_from_class(
@@ -86,7 +67,8 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
             "Solution",
             self.get_implementation_function_name()
         )
-
+    
+    #TODO: Solution als attribute oder var
     def load_implementation(self, bug_id) -> Callable:
         path_to_implementation = os.path.join(self.get_dir(),Path(f"prog_{bug_id}/buggy.py"))
 
@@ -104,6 +86,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
     ) -> StudentAssignmentBenchmarkProgram:
         ground_truth = self.load_ground_truth()
         program = self.load_implementation(bug_id)
+        print(program)
         oracle = construct_oracle(
             program,
             ground_truth,
@@ -139,12 +122,13 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
                     err_def,
                     default_oracle
                 )
+                
                 constructed_test_programs.append(subject)
             except Exception as e:
                     print(f"Subject {bug_id} could not be built.")
-                    print(e)
-            
-            return constructed_test_programs    
+                    print(e)            
+                
+        return constructed_test_programs    
     
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass

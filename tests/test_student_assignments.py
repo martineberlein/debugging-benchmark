@@ -33,6 +33,7 @@ class TestStudentAssignments(unittest.TestCase):
     def test_build_NPr(self):
         repo = NPrStudentAssignmentBenchmarkRepository()
         programs = repo.build()
+        print(len(programs))
         for program in programs:
             self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
  

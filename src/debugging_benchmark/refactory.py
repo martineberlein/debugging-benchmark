@@ -11,30 +11,7 @@ from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
 from debugging_framework.subjects import load_object_dynamically
 
-
-class BenchmarkProgram(ABC):
-    @abstractmethod
-    def get_name(self) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_grammar(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_initial_inputs(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_oracle(self):
-        raise NotImplementedError
-
-    def to_dict(self):
-        return {
-            "grammar": self.get_grammar(),
-            "oracle": self.get_oracle(),
-            "initial_inputs": self.get_initial_inputs(),
-        }
+from debugging_benchmark.core import BenchmarkProgram, BenchmarkRepository
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):
@@ -68,38 +45,12 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         return self.oracle
 
 
-class BenchmarkRepository(ABC):
-    @abstractmethod
-    def get_dir(self) -> Path:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all_test_programs(self) -> List[BenchmarkProgram]:
-        raise NotImplementedError
-
-
 class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A Refactory-Benchmark-Repository needs to have a unique name."
         )
-
-    @staticmethod
-    def get_grammar() -> Grammar:
-        raise NotImplementedError
-
-    @staticmethod
-    def get_initial_inputs() -> List[str]:
-        raise NotImplementedError
-
-    @staticmethod
-    def harness_function(input_str: str) -> Sequence[Any]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_implementation_function_name(self):
-        raise NotImplementedError
 
     def get_dir(self) -> Path:
         this_file_path_dir = os.path.dirname(os.path.abspath(__file__))
