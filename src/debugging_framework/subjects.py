@@ -38,11 +38,19 @@ class TestSubjectFactory(ABC):
 
 def load_module_dynamically(path: Union[str, Path]):
     # Step 1: Convert file path to module name
-    file_path = str(path.absolute())
+    #TODO: prüfen und besser
+    file_path = ""
+    if isinstance(path, Path):
+        file_path = str(path.absolute())
+    elif isinstance(path, str):
+        file_path = str(path)
+    else:
+        raise TypeError("path should be from type Path or str")
+    
     module_name = file_path.replace("/", ".").rstrip(".py")
 
     # Step 2: Load module dynamically
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    spec = importlib.util.spec_from_file_location(module_name, file_path) 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
