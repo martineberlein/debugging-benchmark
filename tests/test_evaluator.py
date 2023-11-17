@@ -3,10 +3,7 @@ import unittest
 import pandas as pd
 
 from debugging_framework.evaluator import Evaluation
-from debugging_benchmark.student_assignments import (
-    SieveOfEratosthenesTestSubject,
-    MPITestSubjectFactory,
-)
+from debugging_benchmark.student_assignments import SieveOfEratosthenesStudentAssignmentBenchmarkRepository
 from debugging_framework.tools import InputsFromHellEvaluationFuzzer
 
 
@@ -16,7 +13,7 @@ class TestEvaluator(unittest.TestCase):
             InputsFromHellEvaluationFuzzer,
         ]
 
-        subjects = MPITestSubjectFactory([SieveOfEratosthenesTestSubject]).build()
+        subjects = SieveOfEratosthenesStudentAssignmentBenchmarkRepository().build()
 
         result = Evaluation(
             tools=tools, subjects=subjects[0:1], repetitions=1, timeout=3600

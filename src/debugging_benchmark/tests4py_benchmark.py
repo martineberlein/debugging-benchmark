@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import List, Callable
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
 from tests4py import api
 from tests4py.projects import Project
@@ -10,7 +9,10 @@ from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.subjects import BenchmarkProgram
 from debugging_benchmark.refactory import BenchmarkRepository
-from debugging_benchmark.tests4py_helper.tests4py_api import build_project, construct_oracle
+from debugging_benchmark.tests4py_helper.tests4py_api import (
+    build_project,
+    construct_oracle,
+)
 from debugging_benchmark.tests4py_helper.tests4py_projects import (
     Tests4PyProject,
     Pysnooper2Tests4PyProject,
@@ -20,7 +22,6 @@ from debugging_benchmark.tests4py_helper.tests4py_projects import (
 
 
 class Tests4PyBenchmarkProgram(BenchmarkProgram):
-
     def __init__(
         self,
         name: str,
@@ -52,7 +53,6 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
 
 
 class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
-
     def get_dir(self) -> Path:
         pass
 
@@ -68,8 +68,9 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
         raise NotImplementedError()
 
     @staticmethod
-    def _construct_benchmark_program(t4p_project: Tests4PyProject) -> Tests4PyBenchmarkProgram:
-
+    def _construct_benchmark_program(
+        t4p_project: Tests4PyProject,
+    ) -> Tests4PyBenchmarkProgram:
         oracle = construct_oracle(t4p_project.project)
         return Tests4PyBenchmarkProgram(
             name=t4p_project.project.project_name,
@@ -91,7 +92,6 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 
 
 class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
-
     def __init__(self):
         self.name = "Tests4Py-Pysnooper"
         self.projects: List[Tests4PyProject] = [
@@ -107,7 +107,6 @@ class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
 
 
 class YoutubeDLBenchmarkRepository(Tests4PyBenchmarkRepository):
-
     def __init__(self):
         self.name = "Tests4Py-YoutubeDL"
         self.projects: List[Tests4PyProject] = [
