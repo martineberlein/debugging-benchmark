@@ -45,7 +45,7 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
 
 class BenchmarkRepository(ABC):
     @abstractmethod
-    def get_dir(self) -> Path:
+    def get_dir(self) -> str:
         raise NotImplementedError
 
     @abstractmethod
@@ -86,8 +86,7 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
     def load_ground_truth(self):
         path_to_ground_truth = self.get_ground_truth_location()
         return load_object_dynamically(
-            path_to_ground_truth,
-            self.get_implementation_function_name()
+            path_to_ground_truth, self.get_implementation_function_name()
         )
 
     def load_implementation(
@@ -154,6 +153,7 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
 
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass
+
 
 class Question1RefactoryBenchmarkRepository(RefactoryBenchmarkRepository):
     def __init__(self):
