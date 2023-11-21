@@ -8,7 +8,7 @@ from tests4py.projects import Project
 
 from fuzzingbook.Grammars import Grammar
 
-from debugging_benchmark.tests4py_helper.tests4py_grammars import grammar_pysnooper
+from debugging_benchmark.tests4py_helper.tests4py_grammars import grammar_pysnooper, grammar_youtube_dl_1
 from debugging_benchmark.refactory import BenchmarkProgram, BenchmarkRepository
 from debugging_benchmark.tests4py_helper.tests4py_api import build_project
 
@@ -25,7 +25,11 @@ class Tests4PyProject:
 class Pysnooper2Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_2
     grammar = grammar_pysnooper
-    initial_inputs = ["-otest.log -cint=str"]
+    initial_inputs = [
+        "-o='test.log' -c=int=str ",
+        "-d=7 -p='test' -w='e.nest2' -c=bool=str,int=str -O ",
+        "-o -d=7 -p='1' -w='e.nest2' -c=bool=str,int=str -T ",
+    ]
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs)
@@ -35,7 +39,9 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
 class Pysnooper3Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_3
     grammar = grammar_pysnooper
-    initial_inputs = ["-otest7.log -d1 -ptest"]
+    initial_inputs = [
+        "-o='test7.log' -d=1 -p='test' ",
+    ]
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs)
@@ -44,10 +50,11 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
 @dataclass
 class YoutubeDL1Tests4PyProject(Tests4PyProject):
     project: Project = api.youtubedl_1
-    # grammar = grammar_pysnooper
+    grammar = grammar_youtube_dl_1
     initial_inputs = [
-        "-q !is_live\n-d {\\'is_live\\':False}",
-        "-q \\'test>?0\\'\n-d {}",
+        "-q '!like_count' -d {'dislike_count': 85}",
+        "-q '!is_live' -d {'is_live': False}",
+        "-q 'test >? 0' -d {}",
     ]
 
     def __post_init__(self):
@@ -55,6 +62,6 @@ class YoutubeDL1Tests4PyProject(Tests4PyProject):
 
 
 if __name__ == "__main__":
-    pro = Pysnooper2Tests4PyProject()
+    pro = YoutubeDL1Tests4PyProject()
     print(pro.initial_inputs)
 

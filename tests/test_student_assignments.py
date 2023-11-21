@@ -54,7 +54,6 @@ class TestStudentAssignments(unittest.TestCase):
                     for tree in parser.parse(inp):
                         self.assertEqual(inp, tree_to_string(tree))
 
-
     def test_subject_build(self):
         for program in self.programs:
             with self.subTest(program):
