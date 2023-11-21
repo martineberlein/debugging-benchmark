@@ -8,9 +8,9 @@ from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.subjects import load_object_dynamically, load_function_from_class
+from debugging_framework.subjects import load_function_from_class
 
-from debugging_benchmark.core import BenchmarkRepository, BenchmarkProgram
+from debugging_benchmark.benchmark import BenchmarkRepository, BenchmarkProgram
 
 class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     #komplett kopiert von RefactoryBenchmarkProgram
@@ -59,22 +59,18 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
     def get_ground_truth_location(self):
         return os.path.join(self.get_dir(), Path("reference1.py"))
     
-    #TODO: Solution als attribute oder var
     def load_ground_truth(self):
         path_to_ground_truth = self.get_ground_truth_location()
         return load_function_from_class(
             path_to_ground_truth,
-            "Solution",
             self.get_implementation_function_name()
         )
     
-    #TODO: Solution als attribute oder var
     def load_implementation(self, bug_id) -> Callable:
         path_to_implementation = os.path.join(self.get_dir(),Path(f"prog_{bug_id}/buggy.py"))
 
         return load_function_from_class(
             path_to_implementation,
-            "Solution",
             self.get_implementation_function_name()
         )
     
@@ -86,7 +82,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
     ) -> StudentAssignmentBenchmarkProgram:
         ground_truth = self.load_ground_truth()
         program = self.load_implementation(bug_id)
-        print(program)
+        
         oracle = construct_oracle(
             program,
             ground_truth,
@@ -112,9 +108,6 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         
         constructed_test_programs: List[StudentAssignmentBenchmarkProgram] = []
         
-        #alle auf einmal builden oder für jeden type einzeln build aufrufen?
-        #haben hier auch noch keinen zugriff auf alle types -> besser nur für aktuellen type
-        #for subject_type in self.test_subject_types:
         for bug_id in range(1,11):
             try:
                 subject = self._construct_test_program(

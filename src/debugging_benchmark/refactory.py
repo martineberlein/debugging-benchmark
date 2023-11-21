@@ -11,7 +11,7 @@ from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
 from debugging_framework.subjects import load_object_dynamically
 
-from debugging_benchmark.core import BenchmarkProgram, BenchmarkRepository
+from debugging_benchmark.benchmark import BenchmarkProgram, BenchmarkRepository
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):

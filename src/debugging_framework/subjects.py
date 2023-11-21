@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
+import ast
 
 class BenchmarkProgram(ABC):
     name: str
@@ -66,7 +67,6 @@ class TestSubjectFactory(ABC):
 
 def load_module_dynamically(path: Union[str, Path]):
     # Step 1: Convert file path to module name
-    #TODO: prüfen und besser
     file_path = ""
     if isinstance(path, Path):
         file_path = str(path.absolute())
@@ -92,13 +92,23 @@ def load_object_dynamically(path: Union[str, Path], object_name: str):
 
 
 def load_function_from_class(
-    path: Union[str, Path], class_name: str, function_name: str
+    path: Union[str, Path], function_name: str
 ):
+    class_name = get_class_name(path)
     class_ = load_object_dynamically(path, class_name)
     function = getattr(class_(), function_name)
 
     return function
 
+def get_class_name(path: Union[str, Path]) -> str:
+    #gets all class names in the file
+    #TODO: encoding? 
+    data = Path(path).read_text()
+    tree = ast.parse(data)
+    classes = [node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
+    
+    #returns only the first class
+    return classes[0]
 
 def population_coverage(
     population: List[Tuple[int, int]], function: Callable
