@@ -1,15 +1,23 @@
 import importlib.util
 import sys
-from typing import Union, List, Callable, Tuple, Set
+import ast
+
+from typing import Union, List, Callable, Tuple, Set, Sequence, Any
 from pathlib import Path
 from abc import ABC, abstractmethod
-
+from fuzzingbook.Grammars import Grammar
 from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
-
 class BenchmarkProgram(ABC):
-    name: str
-    bug_id: int
+    def __init__(
+        self,
+        name: str,
+        grammar: Grammar,
+        oracle: Callable,
+    ):
+        self.name = name
+        self.grammar = grammar
+        self.oracle = oracle
 
     @abstractmethod
     def get_name(self) -> str:
@@ -34,39 +42,33 @@ class BenchmarkProgram(ABC):
             "initial_inputs": self.get_initial_inputs(),
         }
 
-
-class TestSubject(ABC):
-    name: str
-    bug_id: int
-
-    def __init__(self, grammar=None, oracle=None, test_inputs=None):
-        self.grammar = grammar or self.default_grammar
-        self.oracle = oracle or self.default_oracle()
-        self.test_inputs = test_inputs or self.default_test_inputs
-
-    default_grammar = {}
-    default_test_inputs = []
-
-    def default_oracle(self):
-        raise ValueError("Default Oracle not implemented")
-
-    def to_dict(self):
-        return {
-            "grammar": self.grammar,
-            "oracle": self.oracle,
-            "initial_inputs": self.test_inputs,
-        }
-
-
-class TestSubjectFactory(ABC):
+class BenchmarkRepository(ABC):
     @abstractmethod
-    def build(self) -> List[TestSubject]:
+    def get_dir(self) -> Path:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_all_test_programs(self) -> List[BenchmarkProgram]:
+        raise NotImplementedError
+
+    @staticmethod
+    def get_grammar() -> Grammar:
+        raise NotImplementedError
+    
+    @staticmethod
+    def get_initial_inputs() -> List[str]:
+        raise NotImplementedError
+
+    @staticmethod
+    def harness_function(input_str: str) -> Sequence[Any]:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def get_implementation_function_name(self):
+        raise NotImplementedError
 
 def load_module_dynamically(path: Union[str, Path]):
     # Step 1: Convert file path to module name
-    #TODO: prüfen und besser
     file_path = ""
     if isinstance(path, Path):
         file_path = str(path.absolute())
@@ -92,13 +94,23 @@ def load_object_dynamically(path: Union[str, Path], object_name: str):
 
 
 def load_function_from_class(
-    path: Union[str, Path], class_name: str, function_name: str
+    path: Union[str, Path], function_name: str
 ):
+    class_name = get_class_name(path)
     class_ = load_object_dynamically(path, class_name)
     function = getattr(class_(), function_name)
 
     return function
 
+def get_class_name(path: Union[str, Path]) -> str:
+    #gets all class names in the file
+    #TODO: encoding? 
+    data = Path(path).read_text()
+    tree = ast.parse(data)
+    classes = [node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
+    
+    #returns only the first class
+    return classes[0]
 
 def population_coverage(
     population: List[Tuple[int, int]], function: Callable

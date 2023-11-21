@@ -5,7 +5,19 @@ from fuzzingbook.Parser import EarleyParser
 from fuzzingbook.GrammarFuzzer import tree_to_string
 
 from debugging_framework.oracle import OracleResult
-from debugging_benchmark.student_assignments import *
+from debugging_benchmark.student_assignments import (
+    NPrStudentAssignmentBenchmarkRepository,
+    SquareRootAssignmentBenchmarkRepository,
+    GCDStudentAssignmentBenchmarkRepository,
+    SieveOfEratosthenesStudentAssignmentBenchmarkRepository,
+    MiddleAssignmentBenchmarkRepository,
+    FibonacciStudentAssignmentBenchmarkRepository,
+    BubbleSortAssignmentBenchmarkRepository,
+    PalindromeAssignmentBenchmarkRepository,
+    RemoveVowelAssignmentBenchmarkRepository,
+    MergeStringsAssignmentBenchmarkRepository,
+    StudentAssignmentBenchmarkProgram
+)
 
 
 class TestStudentAssignments(unittest.TestCase):
