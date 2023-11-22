@@ -38,6 +38,13 @@ def cookiecutter_harness_function(inp: Union[str, Input]) -> List[str]:
     return parts if parts else []
 
 
+def tests_4py_api_harness_function(inp: Union[str, Input]) -> List[str]:
+    parts = shlex.split(str(inp))
+    if parts and parts[-1] == "":
+        parts.pop()
+    return parts if parts else []
+
+
 @dataclass
 class Pysnooper2Tests4PyProject(Tests4PyProject):
     project: Project = api.pysnooper_2
@@ -71,9 +78,27 @@ class CookieCutter2Tests4PyProject(Tests4PyProject):
     project: Project = api.cookiecutter_2
     grammar = project.grammar
     initial_inputs = [
-        '{"full_name":"Marius Smytzek","email":"mariussmtzek@cispa.de","github_username":"smythi93","project_name":"Test4Py Project","repo_name":"t4p","project_short_description":"The t4p project","release_date":"2022-12-25","year":"2022","version":"0.1"}\npre:echo,pre1\npre:echo,pre2',
+        # Passing
+        '{"full_name":"Marius Smytzek",'
+        '"email":"mariussmtzek@cispa.de",'
+        '"github_username":"smythi93",'
+        '"project_name":"Test4Py Project",'
+        '"repo_name":"t4p",'
+        '"project_short_description":"The t4p project",'
+        '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
+        'pre:echo,pre1\n'
+        'pre:echo,pre2',
+        # Passing
+        '{"full_name":"Martin Eberlein",'
+        '"email":"mariussmtzek@cispa.de",'
+        '"github_username":"smythi93",'
+        '"project_name":"Test4Py Project",'
+        '"repo_name":"t4p",'
+        '"project_short_description":"The t4p project",'
+        '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
+        'pre:echo,pre1',
     ]
-    harness_function: Callable = cookiecutter_harness_function
+    harness_function: HARNESS_FUNCTION = cookiecutter_harness_function
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
@@ -84,9 +109,27 @@ class CookieCutter3Tests4PyProject(Tests4PyProject):
     project: Project = api.cookiecutter_3
     grammar = project.grammar
     initial_inputs = [
-        '{"full_name":"Marius Smytzek","email":"mariussmtzek@cispa.de","github_username":"smythi93","project_name":"Test4Py Project","repo_name":"t4p","project_short_description":"The t4p project","release_date":"2022-12-25","year":"2022","version":"0.1"}\npre:echo,pre1\npre:echo,pre2',
+        # Passing
+        '{"full_name":"Marius Smytzek",'
+        '"email":"mariussmtzek@cispa.de",'
+        '"github_username":"smythi93",'
+        '"project_name":"Test4Py Project",'
+        '"repo_name":"t4p",'
+        '"project_short_description":"The t4p project",'
+        '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
+        'pre:echo,pre1\n'
+        'pre:echo,pre2',
+        # Passing
+        '{"full_name":"Martin Eberlein",'
+        '"email":"mariussmtzek@cispa.de",'
+        '"github_username":"smythi93",'
+        '"project_name":"Test4Py Project",'
+        '"repo_name":"t4p",'
+        '"project_short_description":"The t4p project",'
+        '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
+        'pre:echo,pre1',
     ]
-    harness_function: Callable = cookiecutter_harness_function
+    harness_function: HARNESS_FUNCTION = cookiecutter_harness_function
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
@@ -97,9 +140,41 @@ class CookieCutter4Tests4PyProject(Tests4PyProject):
     project: Project = api.cookiecutter_4
     grammar = project.grammar
     initial_inputs = [
-        '{"full_name":"Marius Smytzek","email":"mariussmtzek@cispa.de","github_username":"smythi93","project_name":"Test4Py Project","repo_name":"t4p","project_short_description":"The t4p project","release_date":"2022-12-25","year":"2022","version":"0.1"}\npre:echo,pre1\npre:echo,pre2',
+        # Passing
+        '{"full_name":"Marius Smytzek",'
+        '"email":"mariussmtzek@cispa.de",'
+        '"github_username":"smythi93",'
+        '"project_name":"Test4Py Project",'
+        '"repo_name":"t4p",'
+        '"project_short_description":"The t4p project",'
+        '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
+        'pre:echo,pre1\n'
+        'pre:echo,pre2',
+        # Passing
+        '{"full_name":"Martin Eberlein",'
+        '"email":"mariussmtzek@cispa.de",'
+        '"github_username":"smythi93",'
+        '"project_name":"Test4Py Project",'
+        '"repo_name":"t4p",'
+        '"project_short_description":"The t4p project",'
+        '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
+        'pre:echo,pre1',
     ]
-    harness_function: Callable = cookiecutter_harness_function
+    harness_function: HARNESS_FUNCTION = cookiecutter_harness_function
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+
+
+@dataclass
+class FastAPI1Tests4PyProject(Tests4PyProject):
+    project: Project = api.fastapi_1
+    grammar = project.grammar
+    initial_inputs = [
+        "-o\"{'foo':'test'}\" -d",
+        "-o\"{'foo':'test'}\"",
+    ]
+    harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
 
     def __post_init__(self):
         super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
