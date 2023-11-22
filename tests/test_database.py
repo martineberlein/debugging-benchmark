@@ -2,6 +2,8 @@ import unittest
 from debugging_benchmark.database import DatabaseHelper
 from debugging_benchmark.student_assignments import GCDStudentAssignmentBenchmarkRepository
 
+from debugging_framework.oracle import OracleResult
+
 class TestStudentAssignments(unittest.TestCase):
     def setUp(self):
         self._instance = DatabaseHelper.instance()
@@ -39,8 +41,19 @@ class TestStudentAssignments(unittest.TestCase):
     def test_7_delete_program(self):     
         for program in self._programs:
             self._instance.delete_program(program)
-        
 
+    def test_8_get_count_inputs(self):
+        program = self._programs[0]
+        program_id = self._instance.insert_program(program)
+        test_input = "test"
+        self._instance.insert_passing_input(program_id, test_input+"1")
+        self._instance.insert_passing_input(program_id, test_input+"2")
+        self._instance.insert_failing_input(program_id, test_input+"3")
+        counts = self._instance.get_count_inputs(program_id)
+        print(counts)
+
+    def test_9_insert_input(self):
+        self._instance.insert_input(12, "test12", OracleResult.PASSING)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,12 +1,21 @@
-import sqlite3
-from typing import Union, List
-from debugging_benchmark.refactory import RefactoryBenchmarkProgram
-from debugging_benchmark.student_assignments import StudentAssignmentBenchmarkProgram
+from typing import List, Union, Callable
+from debugging_framework.oracle import OracleResult
 
-from debugging_benchmark.benchmark import BenchmarkProgram
+import sqlite3
+
+from debugging_framework.benchmark import BenchmarkProgram
 
 #Singleton
 class DatabaseHelper:
+    '''
+    Creation:   db = DatabaseHelper().instance() to create an DatabaseHelper.
+    Insertion:  db.insert_program() returns the prog_id. Gets used for assigning the Inputs to the correct Program.
+                db.insert_input() and db.insert_many_inputs() are the preferred ways of adding new Inputs to the db
+    Query Data: db.get_failing_inputs_from_program()
+                db.get_passing_inputs_from_program()
+                db.get_inputs_from_program()
+    '''
+    #TODO: Everywhere program is accepted, accept prog_id aswell
     _instance = None
 
     def __init__(self):
@@ -21,7 +30,6 @@ class DatabaseHelper:
                              name text
                             ); """)
         
-        #jeder input einzeln vllt gibts da ne bessere möglichkeit
         cursor.execute(""" CREATE TABLE IF NOT EXISTS failing_inputs(
                              id integer PRIMARY KEY,
                              program_id integer,
@@ -45,6 +53,10 @@ class DatabaseHelper:
         return sqlite3.connect("inputs.db")
     
     def get_program_id(self, program: BenchmarkProgram) -> int:
+        '''
+        Returns the program_id. 
+        The ID is used for correctly assigning programs to their corresponding inputs in the db
+        '''
         try:
             conn = self.get_conn()
             with conn:
@@ -65,6 +77,9 @@ class DatabaseHelper:
             conn.close()
     
     def get_passing_inputs_from_program(self, program: BenchmarkProgram) -> List[str]:
+        '''
+        Returns a List of the passing inputs of the program.
+        '''
         try:
             conn = self.get_conn()
             inputs = []
@@ -85,6 +100,9 @@ class DatabaseHelper:
             conn.close()
 
     def get_failing_inputs_from_program(self, program: BenchmarkProgram) -> List[str]:
+        '''
+        Returns a List of the failing inputs of the program.
+        '''
         try:
             conn = self.get_conn()
             inputs = []
@@ -105,12 +123,24 @@ class DatabaseHelper:
             conn.close()
     
     def get_inputs_from_program(self, program: BenchmarkProgram) -> List[str]:
+        '''
+        Returns a List of all inputs of the program.
+        '''
         failing_inputs = self.get_failing_inputs_from_program(program)
         passing_inputs = self.get_passing_inputs_from_program(program)
 
         return [*failing_inputs, *passing_inputs]
     
     def insert_program(self, program: BenchmarkProgram) -> int:
+        '''
+        Inserts a Program to the db and returns its prog_id.
+        The prog_id gets used to identify the corresponding inputs to the program.
+        It is IMPORTANT that the programs have distinct NAMES.
+        Because if a program with the same name is already in the db the new program does NOT get added
+        and instead the prog_id of the former program is returned!
+        '''
+        #maybe add more comparing factors for programs -> oracle, grammar
+        #but for now name should be enough if BenchmarkProgram and BenchmarkRepository are used like intended
         try:
             conn = self.get_conn()
             with conn:
@@ -136,6 +166,11 @@ class DatabaseHelper:
             conn.close()
     
     def insert_passing_input(self, program_id: int, passing_input: str):
+        '''
+        Inserts a passing input in the db.
+        Only used internally.
+        Please use insert_inputs() or insert_many_inputs()
+        '''
         try:
             conn = self.get_conn()
             with conn:
@@ -157,6 +192,11 @@ class DatabaseHelper:
             conn.close()
 
     def insert_failing_input(self, program_id: int, failing_input: str):
+        '''
+        Inserts a failing input in the db.
+        Only used internally.
+        Please use insert_inputs() or insert_many_inputs()
+        '''
         try:
             conn = self.get_conn()
             with conn:
@@ -176,6 +216,82 @@ class DatabaseHelper:
         finally:
             cursor.close()
             conn.close()
+
+    def insert_input(self, program_id: int, inp: str, oracle: Union[Callable, OracleResult]):
+        '''
+        Preferred way of inserting a Input into the db
+        '''
+        try:
+            conn = self.get_conn()
+            with conn:
+                cursor = conn.cursor()
+                if isinstance(oracle, Callable):
+                    oracle_result = oracle(inp)
+                elif isinstance(oracle, OracleResult):
+                    oracle_result = oracle
+                else:
+                    raise TypeError("hallo")
+                
+                match oracle_result:
+                    case OracleResult.PASSING:
+                        self.insert_passing_input(program_id, inp)
+
+                    case OracleResult.FAILING:
+                        self.insert_failing_input(program_id, inp)
+
+        except sqlite3.Error as error:
+            print("Failed to insert failing input into db:", error)
+        
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_count_inputs(self, program_id: int) -> dict:
+        '''
+        Only used internally.
+        Returns the counts for passing and failing inputs as a dict.
+        Keys: "pass" and "fail"
+        '''
+        try:
+            conn = self.get_conn()
+            with conn:
+                cursor = conn.cursor()
+                data = cursor.execute("SELECT * FROM failing_inputs WHERE program_id = ?", (program_id,)).fetchall()
+                count_fail = len(data)
+
+                data = cursor.execute("SELECT * FROM passing_inputs WHERE program_id = ?", (program_id,)).fetchall()
+
+                count_pass = len(data)
+
+                return {"pass": count_pass, "fail": count_fail}
+
+        except sqlite3.Error as error:
+            print("Failed to insert failing input into db:", error)
+        
+        finally:
+            cursor.close()
+            conn.close()
+    
+    def insert_many_inputs(self, program_id: int, inputs: List[str], oracle: Union[Callable, OracleResult], max_pass:int = 5, max_fail:int = 5):
+        '''
+        Preferred way of inserting many inputs into the db.
+        Checks if the input is passing or failing and stops if max_pass and max_fail are reached.
+        '''
+        for inp in inputs:
+            counts = self.get_count_inputs(program_id)
+            
+            if isinstance(oracle, Callable):
+                oracle_result = oracle(inp)
+            elif isinstance(oracle, OracleResult):
+                oracle_result = oracle
+            
+            if counts["pass"] < max_pass and oracle_result == OracleResult.PASSING:
+                self.insert_passing_input(program_id, inp)
+            elif counts["fail"] < max_fail and oracle_result == OracleResult.FAILING:
+                self.insert_failing_input(program_id, inp)
+
+            if counts["pass"] >= max_pass and counts["fail"] >= max_fail:
+                break
 
     def delete_program(self, program: BenchmarkProgram):
         '''
@@ -197,5 +313,3 @@ class DatabaseHelper:
 
         except sqlite3.Error as error:
                 print("Failed to delete program from db:", error)
-
-
