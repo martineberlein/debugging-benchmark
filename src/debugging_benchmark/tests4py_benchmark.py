@@ -2,9 +2,6 @@ from pathlib import Path
 from typing import List, Callable
 from abc import ABC, abstractmethod
 
-from tests4py import api
-from tests4py.projects import Project
-
 from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.benchmark import BenchmarkProgram
@@ -18,6 +15,9 @@ from debugging_benchmark.tests4py_helper.tests4py_projects import (
     Pysnooper2Tests4PyProject,
     Pysnooper3Tests4PyProject,
     YoutubeDL1Tests4PyProject,
+    Middle1Tests4PyProject,
+    Middle2Tests4PyProject,
+    CalculatorTests4PyProject,
 )
 
 
@@ -124,14 +124,47 @@ class YoutubeDLBenchmarkRepository(Tests4PyBenchmarkRepository):
         return self.projects
 
 
-def main():
-    project: Project = api.pysnooper_2
-    print(project.project_name, project.bug_id)
-    print(project.grammar)
+class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-Middle"
+        self.projects: List[Tests4PyProject] = [
+            Middle1Tests4PyProject(),
+            Middle2Tests4PyProject(),
+        ]
 
-    repo = PysnooperBenchmarkRepository()
-    print(repo.name)
-    subjects = repo.build()
+    def get_grammar_for_project(self, project: Tests4PyProject):
+        return project.grammar
+
+    def get_t4p_project(self) -> List[Tests4PyProject]:
+        return self.projects
+
+
+class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-Calculator"
+        self.projects: List[Tests4PyProject] = [
+            CalculatorTests4PyProject()
+        ]
+
+    def get_grammar_for_project(self, project: Tests4PyProject):
+        return project.grammar
+
+    def get_t4p_project(self) -> List[Tests4PyProject]:
+        return self.projects
+
+
+def main():
+    repos: List[Tests4PyBenchmarkRepository] = [
+        # YoutubeDLBenchmarkRepository(),
+        MiddleBenchmarkRepository(),
+        CalculatorBenchmarkRepository()
+    ]
+
+    subjects = []
+    for repo in repos:
+        _subjects = repo.build()
+        subjects += _subjects
+
     for subject in subjects:
         print(subject)
         for inp in subject.initial_inputs:

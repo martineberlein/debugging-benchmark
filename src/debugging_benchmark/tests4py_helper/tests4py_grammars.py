@@ -10,7 +10,7 @@ grammar_pysnooper: Grammar = {
         "<output><depth><prefix><watch><custom_repr><overwrite><thread_info>"
     ],
     "<output>": ["-o<ws>", "-o='<path>'<ws>", ""],
-    #"<variables>": ["-v<variable_list><ws>", ""],
+    # "<variables>": ["-v<variable_list><ws>", ""],
     "<depth>": ["-d=<int><ws>", ""],
     "<prefix>": ["-p='<str>'<ws>", ""],
     "<watch>": ["-w='<variable_list>'<ws>", ""],
@@ -34,7 +34,7 @@ grammar_pysnooper: Grammar = {
     "<predicate>": ["<p_function>=<t_function>"],
     "<p_function>": ["int", "str", "float", "bool"],
     "<t_function>": ["repr", "str", "int"],
-    "<ws>": [" "]
+    "<ws>": [" "],
 }
 
 grammar_youtube_dl_1 = {
