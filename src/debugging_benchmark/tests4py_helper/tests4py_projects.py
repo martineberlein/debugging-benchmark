@@ -8,13 +8,15 @@ from tests4py.projects import Project
 
 from fuzzingbook.Grammars import Grammar
 
-from debugging_benchmark.tests4py_helper.tests4py_grammars import grammar_pysnooper, grammar_youtube_dl_1
+from debugging_benchmark.tests4py_helper.tests4py_grammars import (
+    grammar_pysnooper,
+    grammar_youtube_dl_1,
+)
 from debugging_benchmark.refactory import BenchmarkProgram, BenchmarkRepository
 from debugging_benchmark.tests4py_helper.tests4py_api import build_project
 
 
 class Tests4PyProject:
-
     def __init__(self, project: Project, grammar: Grammar, initial_inputs: List[str]):
         self.project = project
         self.grammar = grammar
@@ -61,7 +63,45 @@ class YoutubeDL1Tests4PyProject(Tests4PyProject):
         super().__init__(self.project, self.grammar, self.initial_inputs)
 
 
-if __name__ == "__main__":
-    pro = YoutubeDL1Tests4PyProject()
-    print(pro.initial_inputs)
+@dataclass
+class Middle1Tests4PyProject(Tests4PyProject):
+    project: Project = api.middle_1
+    grammar = project.grammar
+    initial_inputs = [
+        "4 2 5",
+        "2 4 5"
+    ]
 
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs)
+
+
+@dataclass
+class Middle2Tests4PyProject(Tests4PyProject):
+    project: Project = api.middle_2
+    grammar = project.grammar
+    initial_inputs = [
+        "4 2 5",
+        "2 4 5"
+    ]
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs)
+
+
+@dataclass
+class CalculatorTests4PyProject(Tests4PyProject):
+    project: Project = api.calculator_1
+    grammar = project.grammar
+    initial_inputs = [
+        "cos(-900)",
+        "sqrt(-100)",
+    ]
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs)
+
+
+if __name__ == "__main__":
+    pro = Middle2Tests4PyProject()
+    print(pro.grammar)
