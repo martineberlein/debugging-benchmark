@@ -21,6 +21,7 @@ from debugging_benchmark.tests4py_helper.tests4py_projects import (
     CookieCutter2Tests4PyProject,
     CookieCutter3Tests4PyProject,
     CookieCutter4Tests4PyProject,
+    FastAPI1Tests4PyProject,
 )
 
 
@@ -116,6 +117,20 @@ class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
             CookieCutter2Tests4PyProject(),
             CookieCutter3Tests4PyProject(),
             CookieCutter4Tests4PyProject(),
+        ]
+
+    def get_grammar_for_project(self, project: Tests4PyProject):
+        return project.grammar
+
+    def get_t4p_project(self) -> List[Tests4PyProject]:
+        return self.projects
+
+
+class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-FastAPI"
+        self.projects: List[Tests4PyProject] = [
+            FastAPI1Tests4PyProject()
         ]
 
     def get_grammar_for_project(self, project: Tests4PyProject):
