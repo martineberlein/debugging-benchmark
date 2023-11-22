@@ -1,6 +1,5 @@
-from pathlib import Path
-from typing import List, Callable
-from abc import ABC, abstractmethod
+from typing import List, Callable, Union
+import shlex
 from dataclasses import dataclass
 
 from tests4py import api
@@ -8,6 +7,8 @@ from tests4py.projects import Project
 
 from fuzzingbook.Grammars import Grammar
 
+from debugging_framework.input import Input
+from debugging_framework.types import HARNESS_FUNCTION
 from debugging_benchmark.tests4py_helper.tests4py_grammars import (
     grammar_pysnooper,
     grammar_youtube_dl_1,
@@ -17,10 +18,24 @@ from debugging_benchmark.tests4py_helper.tests4py_api import build_project
 
 
 class Tests4PyProject:
-    def __init__(self, project: Project, grammar: Grammar, initial_inputs: List[str]):
+    def __init__(self, project: Project, grammar: Grammar, initial_inputs: List[str], harness_function: HARNESS_FUNCTION):
         self.project = project
         self.grammar = grammar
         self.initial_inputs = initial_inputs
+        self.harness_function: HARNESS_FUNCTION = harness_function
+
+
+def pysnooper_harness_function(inp: Union[str, Input]) -> List[str]:
+    """Parse input into a list of arguments."""
+    parts = shlex.split(str(inp))
+    return [part for part in parts if part]
+
+
+def cookiecutter_harness_function(inp: Union[str, Input]) -> List[str]:
+    parts = str(inp).split("\n")
+    if parts and parts[-1] == "":
+        parts.pop()
+    return parts if parts else []
 
 
 @dataclass
@@ -32,9 +47,10 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
         "-d=7 -p='test' -w='e.nest2' -c=bool=str,int=str -O ",
         "-o -d=7 -p='1' -w='e.nest2' -c=bool=str,int=str -T ",
     ]
+    harness_function: Callable = pysnooper_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs)
+        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
 
 
 @dataclass
@@ -44,9 +60,49 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
     initial_inputs = [
         "-o='test7.log' -d=1 -p='test' ",
     ]
+    harness_function: Callable = pysnooper_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs)
+        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+
+
+@dataclass
+class CookieCutter2Tests4PyProject(Tests4PyProject):
+    project: Project = api.cookiecutter_2
+    grammar = project.grammar
+    initial_inputs = [
+        '{"full_name":"Marius Smytzek","email":"mariussmtzek@cispa.de","github_username":"smythi93","project_name":"Test4Py Project","repo_name":"t4p","project_short_description":"The t4p project","release_date":"2022-12-25","year":"2022","version":"0.1"}\npre:echo,pre1\npre:echo,pre2',
+    ]
+    harness_function: Callable = cookiecutter_harness_function
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+
+
+@dataclass
+class CookieCutter3Tests4PyProject(Tests4PyProject):
+    project: Project = api.cookiecutter_3
+    grammar = project.grammar
+    initial_inputs = [
+        '{"full_name":"Marius Smytzek","email":"mariussmtzek@cispa.de","github_username":"smythi93","project_name":"Test4Py Project","repo_name":"t4p","project_short_description":"The t4p project","release_date":"2022-12-25","year":"2022","version":"0.1"}\npre:echo,pre1\npre:echo,pre2',
+    ]
+    harness_function: Callable = cookiecutter_harness_function
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+
+
+@dataclass
+class CookieCutter4Tests4PyProject(Tests4PyProject):
+    project: Project = api.cookiecutter_4
+    grammar = project.grammar
+    initial_inputs = [
+        '{"full_name":"Marius Smytzek","email":"mariussmtzek@cispa.de","github_username":"smythi93","project_name":"Test4Py Project","repo_name":"t4p","project_short_description":"The t4p project","release_date":"2022-12-25","year":"2022","version":"0.1"}\npre:echo,pre1\npre:echo,pre2',
+    ]
+    harness_function: Callable = cookiecutter_harness_function
+
+    def __post_init__(self):
+        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
 
 
 @dataclass
@@ -103,5 +159,5 @@ class CalculatorTests4PyProject(Tests4PyProject):
 
 
 if __name__ == "__main__":
-    pro = Middle2Tests4PyProject()
+    pro = CookieCutter2Tests4PyProject()
     print(pro.grammar)

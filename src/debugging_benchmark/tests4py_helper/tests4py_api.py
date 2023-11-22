@@ -1,7 +1,6 @@
 from typing import List, Callable, Union, Tuple, Optional
 from pathlib import Path
 import logging
-import shlex
 
 from tests4py import api, logger
 from tests4py.projects import Project
@@ -11,16 +10,11 @@ from tests4py.api.report import TestResult
 from debugging_framework.input import Input
 from debugging_framework.oracle import OracleResult
 from debugging_framework.expceptions import Tests4PySubjectException
+from debugging_framework.types import HARNESS_FUNCTION
 
 
 # Set default working directory
 DEFAULT_WORK_DIR = Path("/tmp")
-
-
-def get_test_arguments(inp: Union[str, Input]) -> List[str]:
-    """Parse input into a list of arguments."""
-    parts = shlex.split(str(inp))
-    return [part for part in parts if part]
 
 
 def build_project(
@@ -34,12 +28,6 @@ def build_project(
     assert compile_report.successful
 
 
-def run_project(project: Project, work_dir: Path, inp: Union[str, Input]) -> RunReport:
-    """Run the given project with the provided input."""
-    project_dir = work_dir / project.get_identifier()
-    return run_project_from_dir(project_dir, inp)
-
-
 def map_result(result: TestResult) -> OracleResult:
     """Map test result to Oracle result."""
     return {
@@ -49,21 +37,20 @@ def map_result(result: TestResult) -> OracleResult:
     }.get(result, OracleResult.UNDEFINED)
 
 
-def run_project_from_dir(project_dir: Path, inp: Union[str, Input]) -> RunReport:
+def run_project_from_dir(project_dir: Path, inp: Union[str, Input], harness_function: HARNESS_FUNCTION) -> RunReport:
     """Run the project from the given directory with the provided input."""
-    args = get_test_arguments(inp)
-    # print(args)
+    args = harness_function(inp)
     return api.run_project(project_dir, args, invoke_oracle=True)
 
 
 def construct_oracle(
-    project: Project, work_dir: Path = DEFAULT_WORK_DIR
+    project: Project, harness_function: HARNESS_FUNCTION, work_dir: Path = DEFAULT_WORK_DIR
 ) -> Callable[[Union[str, Input]], Tuple[OracleResult, Optional[Exception]]]:
     """Construct an oracle for the given project."""
 
     def oracle(inp: Union[str, Input]) -> Tuple[OracleResult, Optional[Exception]]:
         project_dir = work_dir / project.get_identifier()
-        report: RunReport = run_project_from_dir(project_dir, inp)
+        report: RunReport = run_project_from_dir(project_dir, str(inp), harness_function=harness_function)
         exception = (
             Tests4PySubjectException(report.feedback) if report.feedback else None
         )
