@@ -88,7 +88,9 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
     name = "ISLaGrammarBasedFuzzer"
 
     def run(self) -> Report:
-        fuzzer = ISLaGrammarFuzzer(self.grammar, max_nonterminals=self.max_non_terminals)
+        fuzzer = ISLaGrammarFuzzer(
+            self.grammar, max_nonterminals=self.max_non_terminals
+        )
 
         test_inputs = set()
         for _ in range(self.max_generated_inputs):
@@ -97,4 +99,3 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.execution_handler.label_strings(test_inputs, self.report)
         self.generated_inputs = test_inputs
         return self.report
-

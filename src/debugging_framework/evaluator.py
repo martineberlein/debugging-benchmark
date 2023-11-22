@@ -25,18 +25,14 @@ class Evaluation:
         repetitions,
         timeout,
         out_file: Optional[Union[str, Path]] = None,
-            tool_param=None,
+        tool_param=None,
     ):
         self.tools: List[Type[Tool]] = tools
         self.subjects: List[BenchmarkProgram] = subjects
         self.repetitions: int = repetitions
         self.timeout: int = timeout
         self.out_file = self.resolve_path(out_file) if out_file else out_file
-        self.tool_param = (
-            tool_param
-            if tool_param
-            else {}
-        )
+        self.tool_param = tool_param if tool_param else {}
 
     @staticmethod
     def resolve_path(out_file: Union[str, Path]) -> Path:

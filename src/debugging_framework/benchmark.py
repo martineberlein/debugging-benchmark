@@ -11,11 +11,7 @@ from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
 class BenchmarkProgram(ABC):
     def __init__(
-        self,
-        name: str,
-        grammar: Grammar,
-        oracle: Callable,
-        initial_inputs: List[str]
+        self, name: str, grammar: Grammar, oracle: Callable, initial_inputs: List[str]
     ):
         self.name = name
         self.grammar = grammar
@@ -45,6 +41,7 @@ class BenchmarkProgram(ABC):
             "initial_inputs": self.get_initial_inputs(),
         }
 
+
 class BenchmarkRepository(ABC):
     @abstractmethod
     def get_dir(self) -> Path:
@@ -57,7 +54,7 @@ class BenchmarkRepository(ABC):
     @staticmethod
     def get_grammar() -> Grammar:
         raise NotImplementedError
-    
+
     @staticmethod
     def get_initial_inputs() -> List[str]:
         raise NotImplementedError
@@ -65,10 +62,11 @@ class BenchmarkRepository(ABC):
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
         raise NotImplementedError
-    
+
     @abstractmethod
     def get_implementation_function_name(self):
         raise NotImplementedError
+
 
 def load_module_dynamically(path: Union[str, Path]):
     # Step 1: Convert file path to module name
@@ -79,11 +77,11 @@ def load_module_dynamically(path: Union[str, Path]):
         file_path = str(path)
     else:
         raise TypeError("path should be from type Path or str")
-    
+
     module_name = file_path.replace("/", ".").rstrip(".py")
 
     # Step 2: Load module dynamically
-    spec = importlib.util.spec_from_file_location(module_name, file_path) 
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
@@ -96,24 +94,24 @@ def load_object_dynamically(path: Union[str, Path], object_name: str):
     return getattr(module, object_name)
 
 
-def load_function_from_class(
-    path: Union[str, Path], function_name: str
-):
+def load_function_from_class(path: Union[str, Path], function_name: str):
     class_name = get_class_name(path)
     class_ = load_object_dynamically(path, class_name)
     function = getattr(class_(), function_name)
 
     return function
 
+
 def get_class_name(path: Union[str, Path]) -> str:
-    #gets all class names in the file
-    #TODO: encoding? 
+    # gets all class names in the file
+    # TODO: encoding?
     data = Path(path).read_text()
     tree = ast.parse(data)
     classes = [node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
-    
-    #returns only the first class
+
+    # returns only the first class
     return classes[0]
+
 
 def population_coverage(
     population: List[Tuple[int, int]], function: Callable
