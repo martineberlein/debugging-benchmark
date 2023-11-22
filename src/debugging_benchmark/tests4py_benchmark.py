@@ -30,6 +30,7 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
+        super().__init__(name, grammar, oracle)
         self.name = name
         self.bug_id = bug_id
         self.grammar = grammar
@@ -53,7 +54,6 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
 
 
 class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
-
     def get_implementation_function_name(self):
         pass
 
@@ -96,7 +96,6 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 
 
 class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
-
     def __init__(self):
         self.name = "Tests4Py-Pysnooper"
         self.projects: List[Tests4PyProject] = [
