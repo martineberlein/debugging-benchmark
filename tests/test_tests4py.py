@@ -9,6 +9,7 @@ from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
     # YoutubeDLBenchmarkRepository,
+    CookieCutterBenchmarkRepository,
 )
 
 
@@ -19,7 +20,8 @@ class TestTests4Py(unittest.TestCase):
     def setUpClass(cls):
         repositories = [
             PysnooperBenchmarkRepository(),
-            # YoutubeDLBenchmarkRepository()
+            CookieCutterBenchmarkRepository()
+            # YoutubeDLBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
