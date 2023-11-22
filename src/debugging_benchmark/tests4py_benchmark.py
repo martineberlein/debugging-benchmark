@@ -151,6 +151,7 @@ class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
 
 def main():
     repos: List[Tests4PyBenchmarkRepository] = [
+        # YoutubeDLBenchmarkRepository(),
         MiddleBenchmarkRepository(),
         CalculatorBenchmarkRepository()
     ]
