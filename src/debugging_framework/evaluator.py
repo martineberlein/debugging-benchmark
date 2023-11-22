@@ -5,7 +5,7 @@ from pathlib import Path
 
 from debugging_framework.results import initialize_dataframe
 from debugging_framework.tools import Tool
-from debugging_framework.subjects import BenchmarkProgram
+from debugging_framework.benchmark import BenchmarkProgram
 
 
 VLOGGER = logging.getLogger("evaluation")

@@ -8,12 +8,11 @@ from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.subjects import load_function_from_class
+from debugging_framework.benchmark import load_function_from_class
 
-from debugging_benchmark.benchmark import BenchmarkRepository, BenchmarkProgram
+from debugging_framework.benchmark import BenchmarkRepository, BenchmarkProgram
 
 class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
-    #komplett kopiert von RefactoryBenchmarkProgram
     def __init__(
         self,
         name: str,
@@ -22,11 +21,9 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        self.name = name
+        super().__init__(name, grammar, oracle)
         self.bug_id = bug_id
-        self.grammar = grammar
         self.initial_inputs = initial_inputs
-        self.oracle = oracle
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"

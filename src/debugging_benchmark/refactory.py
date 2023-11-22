@@ -9,9 +9,9 @@ from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.subjects import load_object_dynamically
+from debugging_framework.benchmark import load_object_dynamically
 
-from debugging_benchmark.benchmark import BenchmarkProgram, BenchmarkRepository
+from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):
@@ -23,11 +23,9 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        self.name = name
+        super().__init__(name, grammar, oracle)
         self.bug_id = bug_id
-        self.grammar = grammar
         self.initial_inputs = initial_inputs
-        self.oracle = oracle
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"

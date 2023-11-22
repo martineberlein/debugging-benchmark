@@ -1,7 +1,6 @@
 import unittest
 from debugging_benchmark.database import DatabaseHelper
 from debugging_benchmark.student_assignments import GCDStudentAssignmentBenchmarkRepository
-from debugging_benchmark.refactory import Question1RefactoryBenchmarkRepository
 
 class TestStudentAssignments(unittest.TestCase):
     def setUp(self):

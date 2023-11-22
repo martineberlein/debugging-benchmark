@@ -8,7 +8,7 @@ from tests4py.projects import Project
 
 from fuzzingbook.Grammars import Grammar
 
-from debugging_framework.subjects import BenchmarkProgram
+from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.refactory import BenchmarkRepository
 from debugging_benchmark.tests4py_helper.tests4py_api import build_project, construct_oracle
 from debugging_benchmark.tests4py_helper.tests4py_projects import (
