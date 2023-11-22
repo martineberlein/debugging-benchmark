@@ -65,19 +65,18 @@ def construct_oracle(
         project_dir = work_dir / project.get_identifier()
         report: RunReport = run_project_from_dir(project_dir, inp)
         exception = (
-            Tests4PySubjectException(report.feedback)
-            if report.feedback
-            else None
+            Tests4PySubjectException(report.feedback) if report.feedback else None
         )
         print("test_result:", report.test_result)
         print("feedback:", report.feedback)
         print("successful:", report.successful)
         print("raised:", report.raised)
-        result = map_result(report.test_result) if report.successful else OracleResult.UNDEFINED
-        return (
-            result,
-            exception
+        result = (
+            map_result(report.test_result)
+            if report.successful
+            else OracleResult.UNDEFINED
         )
+        return (result, exception)
 
     return oracle
 
@@ -109,13 +108,13 @@ def youtubedl_1_test():
     oracle = construct_oracle(project)
     assert oracle("-q !is_live\n-d {\\'is_live\\':False}") == OracleResult.FAILING
     assert oracle("-q \\'test>?0\\'\n-d {}") == OracleResult.PASSING
-    #assert oracle("1 2") == OracleResult.UNDEF
+    # assert oracle("1 2") == OracleResult.UNDEF
 
 
 if __name__ == "__main__":
     logger.LOGGER.setLevel(logging.ERROR)
 
     # Run tests
-    #pysnooper_2_test()
+    # pysnooper_2_test()
     middle_1_test()
-    #youtubedl_1_test()
+    # youtubedl_1_test()

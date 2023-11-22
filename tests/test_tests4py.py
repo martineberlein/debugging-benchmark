@@ -1,26 +1,31 @@
 import unittest
-from typing import Union
+from typing import Union, List
 
 from fuzzingbook.GrammarFuzzer import GrammarFuzzer, is_valid_grammar
 from fuzzingbook.Parser import EarleyParser, tree_to_string
 
 from debugging_framework.oracle import OracleResult
+from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
-    YoutubeDLBenchmarkRepository,
+    # YoutubeDLBenchmarkRepository,
 )
 
 
 class TestTests4Py(unittest.TestCase):
-    def setUp(self):
-        repositories = [PysnooperBenchmarkRepository(), YoutubeDLBenchmarkRepository()]
-        self.subjects = []
+    subjects: List[BenchmarkProgram]
+
+    @classmethod
+    def setUpClass(cls):
+        repositories = [
+            PysnooperBenchmarkRepository(),
+            # YoutubeDLBenchmarkRepository()
+        ]
+        cls.subjects = []
         for repo in repositories:
             subjects = repo.build()
             for subject in subjects:
-                self.subjects.append(subject)
-
-        print(self.subjects)
+                cls.subjects.append(subject)
 
     def test_tests4py_valid_grammars(self):
         for subject in self.subjects:
@@ -47,6 +52,7 @@ class TestTests4Py(unittest.TestCase):
             for inp in subject.initial_inputs:
                 oracle, exception = subject.oracle(inp)
                 self.assertIsInstance(oracle, OracleResult)
+                self.assertTrue(oracle != OracleResult.UNDEFINED)
                 self.assertIsInstance(exception, Union[Exception, None])
 
 

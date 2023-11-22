@@ -9,7 +9,9 @@ from fuzzingbook.Grammars import Grammar
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.subjects import load_object_dynamically, BenchmarkProgram
+from debugging_framework.benchmark import load_object_dynamically
+
+from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):
@@ -21,11 +23,8 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        self.name = name
+        super().__init__(name, grammar, oracle, initial_inputs)
         self.bug_id = bug_id
-        self.grammar = grammar
-        self.initial_inputs = initial_inputs
-        self.oracle = oracle
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"
@@ -43,38 +42,12 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         return self.oracle
 
 
-class BenchmarkRepository(ABC):
-    @abstractmethod
-    def get_dir(self) -> Path:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all_test_programs(self) -> List[BenchmarkProgram]:
-        raise NotImplementedError
-
-
 class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A Refactory-Benchmark-Repository needs to have a unique name."
         )
-
-    @staticmethod
-    def get_grammar() -> Grammar:
-        raise NotImplementedError
-
-    @staticmethod
-    def get_initial_inputs() -> List[str]:
-        raise NotImplementedError
-
-    @staticmethod
-    def harness_function(input_str: str) -> Sequence[Any]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_implementation_function_name(self):
-        raise NotImplementedError
 
     def get_dir(self) -> Path:
         this_file_path_dir = os.path.dirname(os.path.abspath(__file__))
@@ -86,7 +59,8 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
     def load_ground_truth(self):
         path_to_ground_truth = self.get_ground_truth_location()
         return load_object_dynamically(
-            path_to_ground_truth, self.get_implementation_function_name()
+            path_to_ground_truth,
+            self.get_implementation_function_name()
         )
 
     def load_implementation(
@@ -154,10 +128,9 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass
 
-
 class Question1RefactoryBenchmarkRepository(RefactoryBenchmarkRepository):
     def __init__(self):
-        self.name = "RefactoryQ1"
+        self.name: str = "RefactoryQ1"
         self._implementation_function_name: str = "search"
 
     def get_implementation_function_name(self):

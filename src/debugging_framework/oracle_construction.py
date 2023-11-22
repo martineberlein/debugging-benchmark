@@ -54,7 +54,6 @@ def _construct_functional_oracle(
     default_oracle_result: OracleResult,
     harness_function: Callable,
 ):
-
     def oracle(inp: Input) -> Tuple[OracleResult, Optional[Exception]]:
         # param = list(map(int, str(inp).strip().split()))  # This might become a problem
         param = harness_function(str(inp)) if harness_function else str(inp)
