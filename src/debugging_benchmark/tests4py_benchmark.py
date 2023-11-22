@@ -53,6 +53,10 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
 
 
 class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
+
+    def get_implementation_function_name(self):
+        pass
+
     def get_dir(self) -> Path:
         pass
 
@@ -92,6 +96,7 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 
 
 class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
+
     def __init__(self):
         self.name = "Tests4Py-Pysnooper"
         self.projects: List[Tests4PyProject] = [
