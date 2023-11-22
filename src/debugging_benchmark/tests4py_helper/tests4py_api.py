@@ -52,7 +52,7 @@ def construct_oracle(
         project_dir = work_dir / project.get_identifier()
         report: RunReport = run_project_from_dir(project_dir, str(inp), harness_function=harness_function)
         exception = (
-            Tests4PySubjectException(report.feedback) if report.feedback else None
+            Tests4PySubjectException(report.feedback) if report.feedback or report.test_result == TestResult.FAILING else None
         )
         print("test_result:", report.test_result)
         print("feedback:", report.feedback)
