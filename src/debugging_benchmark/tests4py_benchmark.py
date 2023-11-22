@@ -18,6 +18,9 @@ from debugging_benchmark.tests4py_helper.tests4py_projects import (
     Middle1Tests4PyProject,
     Middle2Tests4PyProject,
     CalculatorTests4PyProject,
+    CookieCutter2Tests4PyProject,
+    CookieCutter3Tests4PyProject,
+    CookieCutter4Tests4PyProject,
 )
 
 
@@ -71,7 +74,7 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
     def _construct_benchmark_program(
         t4p_project: Tests4PyProject,
     ) -> Tests4PyBenchmarkProgram:
-        oracle = construct_oracle(t4p_project.project)
+        oracle = construct_oracle(t4p_project.project, harness_function=t4p_project.harness_function)
         return Tests4PyBenchmarkProgram(
             name=t4p_project.project.project_name,
             bug_id=t4p_project.project.bug_id,
@@ -97,6 +100,22 @@ class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
         self.projects: List[Tests4PyProject] = [
             Pysnooper2Tests4PyProject(),
             Pysnooper3Tests4PyProject(),
+        ]
+
+    def get_grammar_for_project(self, project: Tests4PyProject):
+        return project.grammar
+
+    def get_t4p_project(self) -> List[Tests4PyProject]:
+        return self.projects
+
+
+class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-CookieCutter"
+        self.projects: List[Tests4PyProject] = [
+            CookieCutter2Tests4PyProject(),
+            CookieCutter3Tests4PyProject(),
+            CookieCutter4Tests4PyProject(),
         ]
 
     def get_grammar_for_project(self, project: Tests4PyProject):
@@ -152,8 +171,9 @@ class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
 def main():
     repos: List[Tests4PyBenchmarkRepository] = [
         # YoutubeDLBenchmarkRepository(),
-        MiddleBenchmarkRepository(),
-        CalculatorBenchmarkRepository()
+        CookieCutterBenchmarkRepository(),
+        # MiddleBenchmarkRepository(),
+        # CalculatorBenchmarkRepository()
     ]
 
     subjects = []
