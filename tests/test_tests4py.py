@@ -5,7 +5,7 @@ from fuzzingbook.GrammarFuzzer import GrammarFuzzer, is_valid_grammar
 from fuzzingbook.Parser import EarleyParser, tree_to_string
 
 from debugging_framework.oracle import OracleResult
-from debugging_framework.subjects import BenchmarkProgram
+from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
     # YoutubeDLBenchmarkRepository,
