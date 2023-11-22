@@ -30,12 +30,8 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        super().__init__(name, grammar, oracle)
-        self.name = name
+        super().__init__(name, grammar, oracle,  initial_inputs)
         self.bug_id = bug_id
-        self.grammar = grammar
-        self.initial_inputs = initial_inputs
-        self.oracle = oracle
 
     def __repr__(self):
         return f"Program({self.name}_{self.bug_id})"

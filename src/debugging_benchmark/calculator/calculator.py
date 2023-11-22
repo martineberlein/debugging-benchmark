@@ -50,9 +50,8 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
         initial_inputs_: List[str],
         oracle_: Callable,
     ):
-        super().__init__(name, grammar_, oracle_)
+        super().__init__(name, grammar_, oracle_, initial_inputs_)
         self.bug_id = bug_id
-        self.initial_inputs = initial_inputs_
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"

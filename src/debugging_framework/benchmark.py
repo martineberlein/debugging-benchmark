@@ -8,16 +8,19 @@ from abc import ABC, abstractmethod
 from fuzzingbook.Grammars import Grammar
 from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
+
 class BenchmarkProgram(ABC):
     def __init__(
         self,
         name: str,
         grammar: Grammar,
         oracle: Callable,
+        initial_inputs: List[str]
     ):
         self.name = name
         self.grammar = grammar
         self.oracle = oracle
+        self.initial_inputs = initial_inputs
 
     @abstractmethod
     def get_name(self) -> str:

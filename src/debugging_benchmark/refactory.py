@@ -23,9 +23,8 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        super().__init__(name, grammar, oracle)
+        super().__init__(name, grammar, oracle, initial_inputs)
         self.bug_id = bug_id
-        self.initial_inputs = initial_inputs
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"

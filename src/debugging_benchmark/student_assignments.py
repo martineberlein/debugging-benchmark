@@ -12,6 +12,7 @@ from debugging_framework.benchmark import load_function_from_class
 
 from debugging_framework.benchmark import BenchmarkRepository, BenchmarkProgram
 
+
 class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     def __init__(
         self,
@@ -21,9 +22,8 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        super().__init__(name, grammar, oracle)
+        super().__init__(name, grammar, oracle, initial_inputs)
         self.bug_id = bug_id
-        self.initial_inputs = initial_inputs
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"
