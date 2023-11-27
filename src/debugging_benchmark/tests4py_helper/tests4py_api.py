@@ -1,8 +1,7 @@
-from typing import List, Callable, Union, Tuple, Optional
+from typing import Callable, Union, Tuple, Optional
 from pathlib import Path
-import logging
 
-from tests4py import api, logger
+from tests4py import api
 from tests4py.projects import Project
 from tests4py.api.test import RunReport
 from tests4py.api.report import TestResult
@@ -74,42 +73,3 @@ def construct_oracle(
         return result, exception
 
     return oracle
-
-
-def pysnooper_2_test():
-    """Test for the pysnooper_2 project."""
-    project: Project = api.pysnooper_2
-    # build_project(project)
-    oracle = construct_oracle(project)
-    assert oracle("-otest.log\n-cint=str") == OracleResult.FAILING
-    assert oracle("-d1\n-T") == OracleResult.PASSING
-    assert oracle("-aTest") == OracleResult.UNDEFINED
-
-
-def middle_1_test():
-    """Test for the middle_1 project."""
-    project: Project = api.middle_1
-    build_project(project)
-    oracle = construct_oracle(project)
-    assert oracle("2 1 3") == OracleResult.FAILING
-    assert oracle("1 2 3") == OracleResult.PASSING
-    assert oracle("1 2") == OracleResult.UNDEFINED
-
-
-def youtubedl_1_test():
-    """Test for the middle_1 project."""
-    project: Project = api.youtubedl_1
-    build_project(project)
-    oracle = construct_oracle(project)
-    assert oracle("-q !is_live\n-d {\\'is_live\\':False}") == OracleResult.FAILING
-    assert oracle("-q \\'test>?0\\'\n-d {}") == OracleResult.PASSING
-    # assert oracle("1 2") == OracleResult.UNDEF
-
-
-if __name__ == "__main__":
-    logger.LOGGER.setLevel(logging.ERROR)
-
-    # Run tests
-    # pysnooper_2_test()
-    middle_1_test()
-    # youtubedl_1_test()
