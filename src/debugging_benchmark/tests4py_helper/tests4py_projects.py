@@ -18,7 +18,13 @@ from debugging_benchmark.tests4py_helper.tests4py_api import build_project
 
 
 class Tests4PyProject:
-    def __init__(self, project: Project, grammar: Grammar, initial_inputs: List[str], harness_function: HARNESS_FUNCTION):
+    def __init__(
+        self,
+        project: Project,
+        grammar: Grammar,
+        initial_inputs: List[str],
+        harness_function: HARNESS_FUNCTION,
+    ):
         self.project = project
         self.grammar = grammar
         self.initial_inputs = initial_inputs
@@ -57,7 +63,9 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
     harness_function: Callable = pysnooper_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -70,7 +78,9 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
     harness_function: Callable = pysnooper_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -86,8 +96,8 @@ class CookieCutter2Tests4PyProject(Tests4PyProject):
         '"repo_name":"t4p",'
         '"project_short_description":"The t4p project",'
         '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
-        'pre:echo,pre1\n'
-        'pre:echo,pre2',
+        "pre:echo,pre1\n"
+        "pre:echo,pre2",
         # Passing
         '{"full_name":"Martin Eberlein",'
         '"email":"mariussmtzek@cispa.de",'
@@ -96,12 +106,14 @@ class CookieCutter2Tests4PyProject(Tests4PyProject):
         '"repo_name":"t4p",'
         '"project_short_description":"The t4p project",'
         '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
-        'pre:echo,pre1',
+        "pre:echo,pre1",
     ]
     harness_function: HARNESS_FUNCTION = cookiecutter_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -117,8 +129,8 @@ class CookieCutter3Tests4PyProject(Tests4PyProject):
         '"repo_name":"t4p",'
         '"project_short_description":"The t4p project",'
         '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
-        'pre:echo,pre1\n'
-        'pre:echo,pre2',
+        "pre:echo,pre1\n"
+        "pre:echo,pre2",
         # Passing
         '{"full_name":"Martin Eberlein",'
         '"email":"mariussmtzek@cispa.de",'
@@ -127,12 +139,14 @@ class CookieCutter3Tests4PyProject(Tests4PyProject):
         '"repo_name":"t4p",'
         '"project_short_description":"The t4p project",'
         '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
-        'pre:echo,pre1',
+        "pre:echo,pre1",
     ]
     harness_function: HARNESS_FUNCTION = cookiecutter_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -148,8 +162,8 @@ class CookieCutter4Tests4PyProject(Tests4PyProject):
         '"repo_name":"t4p",'
         '"project_short_description":"The t4p project",'
         '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
-        'pre:echo,pre1\n'
-        'pre:echo,pre2',
+        "pre:echo,pre1\n"
+        "pre:echo,pre2",
         # Passing
         '{"full_name":"Martin Eberlein",'
         '"email":"mariussmtzek@cispa.de",'
@@ -158,12 +172,14 @@ class CookieCutter4Tests4PyProject(Tests4PyProject):
         '"repo_name":"t4p",'
         '"project_short_description":"The t4p project",'
         '"release_date":"2022-12-25","year":"2022","version":"0.1"}\n'
-        'pre:echo,pre1',
+        "pre:echo,pre1",
     ]
     harness_function: HARNESS_FUNCTION = cookiecutter_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -177,7 +193,9 @@ class FastAPI1Tests4PyProject(Tests4PyProject):
     harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs, self.harness_function)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -198,26 +216,26 @@ class YoutubeDL1Tests4PyProject(Tests4PyProject):
 class Middle1Tests4PyProject(Tests4PyProject):
     project: Project = api.middle_1
     grammar = project.grammar
-    initial_inputs = [
-        "4 2 5",
-        "2 4 5"
-    ]
+    initial_inputs = ["4 2 5", "2 4 5"]
+    harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
 class Middle2Tests4PyProject(Tests4PyProject):
     project: Project = api.middle_2
     grammar = project.grammar
-    initial_inputs = [
-        "4 2 5",
-        "2 4 5"
-    ]
+    initial_inputs = ["4 2 5", "2 4 5"]
+    harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 @dataclass
@@ -228,9 +246,12 @@ class CalculatorTests4PyProject(Tests4PyProject):
         "cos(-900)",
         "sqrt(-100)",
     ]
+    harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
 
     def __post_init__(self):
-        super().__init__(self.project, self.grammar, self.initial_inputs)
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
 
 
 if __name__ == "__main__":

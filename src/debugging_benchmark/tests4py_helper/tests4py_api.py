@@ -37,22 +37,30 @@ def map_result(result: TestResult) -> OracleResult:
     }.get(result, OracleResult.UNDEFINED)
 
 
-def run_project_from_dir(project_dir: Path, inp: Union[str, Input], harness_function: HARNESS_FUNCTION) -> RunReport:
+def run_project_from_dir(
+    project_dir: Path, inp: Union[str, Input], harness_function: HARNESS_FUNCTION
+) -> RunReport:
     """Run the project from the given directory with the provided input."""
     args = harness_function(inp)
     return api.run_project(project_dir, args, invoke_oracle=True)
 
 
 def construct_oracle(
-    project: Project, harness_function: HARNESS_FUNCTION, work_dir: Path = DEFAULT_WORK_DIR
+    project: Project,
+    harness_function: HARNESS_FUNCTION,
+    work_dir: Path = DEFAULT_WORK_DIR,
 ) -> Callable[[Union[str, Input]], Tuple[OracleResult, Optional[Exception]]]:
     """Construct an oracle for the given project."""
 
     def oracle(inp: Union[str, Input]) -> Tuple[OracleResult, Optional[Exception]]:
         project_dir = work_dir / project.get_identifier()
-        report: RunReport = run_project_from_dir(project_dir, str(inp), harness_function=harness_function)
+        report: RunReport = run_project_from_dir(
+            project_dir, str(inp), harness_function=harness_function
+        )
         exception = (
-            Tests4PySubjectException("An Exception was triggered.") if report.feedback or report.test_result == TestResult.FAILING else None
+            Tests4PySubjectException("An Exception was triggered.")
+            if report.feedback or report.test_result == TestResult.FAILING
+            else None
         )
         print("test_result:", report.test_result)
         print("feedback:", report.feedback)
