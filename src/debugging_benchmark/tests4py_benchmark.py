@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import List, Callable
-from abc import ABC
 
 from fuzzingbook.Grammars import Grammar
 
@@ -56,7 +55,7 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
         return self.oracle
 
 
-class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
+class Tests4PyBenchmarkRepository(BenchmarkRepository):
     def __init__(self, projects: List[Tests4PyProject]):
         self.projects = projects
 
@@ -68,10 +67,6 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass
-
-    @staticmethod
-    def get_grammar_for_project(project: Tests4PyProject):
-        return project.grammar
 
     def get_t4p_project(self) -> List[Tests4PyProject]:
         return self.projects
