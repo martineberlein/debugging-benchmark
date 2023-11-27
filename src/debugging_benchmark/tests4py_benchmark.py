@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List, Callable
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from fuzzingbook.Grammars import Grammar
 
@@ -22,6 +22,9 @@ from debugging_benchmark.tests4py_helper.tests4py_projects import (
     CookieCutter3Tests4PyProject,
     CookieCutter4Tests4PyProject,
     FastAPI1Tests4PyProject,
+    ExpressionTests4PyProject,
+    Markup1Tests4PyProject,
+    Markup2Tests4PyProject,
 )
 
 
@@ -151,12 +154,35 @@ class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
         super().__init__(projects)
 
 
+class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-ToyExample"
+        projects: List[Tests4PyProject] = [
+            CalculatorTests4PyProject(),
+            ExpressionTests4PyProject(),
+            Markup1Tests4PyProject(),
+            Markup2Tests4PyProject(),
+        ]
+        super().__init__(projects)
+
+
 def main():
     repos: List[Tests4PyBenchmarkRepository] = [
         # YoutubeDLBenchmarkRepository(),
         # CookieCutterBenchmarkRepository(),
         MiddleBenchmarkRepository(),
         # CalculatorBenchmarkRepository()
+    ]
+
+    repos: List[Tests4PyBenchmarkRepository] = [
+        Tests4PyBenchmarkRepository(
+            projects=[
+                CalculatorTests4PyProject(),
+                ExpressionTests4PyProject(),
+                Markup1Tests4PyProject(),
+                Markup2Tests4PyProject()
+            ]
+        )
     ]
 
     subjects = []

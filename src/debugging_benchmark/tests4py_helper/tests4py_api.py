@@ -59,7 +59,7 @@ def construct_oracle(
         )
         exception = (
             Tests4PySubjectException("An Exception was triggered.")
-            if report.feedback or report.test_result == TestResult.FAILING
+            if report.test_result == TestResult.FAILING
             else None
         )
         print("test_result:", report.test_result)
