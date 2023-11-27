@@ -44,6 +44,10 @@ def cookiecutter_harness_function(inp: Union[str, Input]) -> List[str]:
     return parts if parts else []
 
 
+def markup_harness_function(inp: Union[str, Input]) -> List[str]:
+    return [str(inp)]
+
+
 def tests_4py_api_harness_function(inp: Union[str, Input]) -> List[str]:
     parts = shlex.split(str(inp))
     if parts and parts[-1] == "":
@@ -247,6 +251,54 @@ class CalculatorTests4PyProject(Tests4PyProject):
         "sqrt(-100)",
     ]
     harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
+
+    def __post_init__(self):
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
+
+
+@dataclass
+class ExpressionTests4PyProject(Tests4PyProject):
+    project: Project = api.expression_1
+    grammar = project.grammar
+    initial_inputs = [
+        "(3 * 5) / 0",
+        "23 + 45",
+    ]
+    harness_function: HARNESS_FUNCTION = tests_4py_api_harness_function
+
+    def __post_init__(self):
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
+
+
+@dataclass
+class Markup1Tests4PyProject(Tests4PyProject):
+    project: Project = api.markup_1
+    grammar = project.grammar
+    initial_inputs = [
+        "<zmcytjrhdd>IbXMFocpXLguFvGtxEqZxmH</zmcytjrhdd>",
+        '\\"\\"cecpQLBVBzDVeycWLgrjTJhqa\\"\\"'
+    ]
+    harness_function: HARNESS_FUNCTION = markup_harness_function
+
+    def __post_init__(self):
+        super().__init__(
+            self.project, self.grammar, self.initial_inputs, self.harness_function
+        )
+
+
+@dataclass
+class Markup2Tests4PyProject(Tests4PyProject):
+    project: Project = api.markup_2
+    grammar = project.grammar
+    initial_inputs = [
+        "<pnufclccpw>kojZEXvCqkEZHkfRAZxS</pnufclccpw>",
+        '\\"\\"cecpQLBVBzDVeycWLgrjTJhqa\\"\\"',
+    ]
+    harness_function: HARNESS_FUNCTION = markup_harness_function
 
     def __post_init__(self):
         super().__init__(
