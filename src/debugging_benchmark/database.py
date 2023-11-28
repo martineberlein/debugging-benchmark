@@ -313,4 +313,4 @@ class DatabaseHelper:
                     cursor.execute("DELETE from failing_inputs WHERE program_id = ?", (program_id,))
 
         except sqlite3.Error as error:
-                print("Failed to delete program from db:", error)
+                print("Failed to delete program from db:", error) 
