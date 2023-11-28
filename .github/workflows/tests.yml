@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev", "actions" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev", "actions"]
 
 permissions:
   contents: read
