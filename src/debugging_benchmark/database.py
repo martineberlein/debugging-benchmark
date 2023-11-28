@@ -15,7 +15,7 @@ class DatabaseHelper:
                 db.get_passing_inputs_from_program()
                 db.get_inputs_from_program()
     '''
-    #TODO:  Everywhere program is accepted, accept prog_id aswell
+    #TODO:  Everywhere program is accepted, accept prog_id aswell -> test if prog_id is in db already
     #       delete specific inputs, reset db
     _instance = None
 
