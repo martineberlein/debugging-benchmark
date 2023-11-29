@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import List, Callable
-from abc import ABC, abstractmethod
 
 from fuzzingbook.Grammars import Grammar
 
@@ -18,6 +17,13 @@ from debugging_benchmark.tests4py_helper.tests4py_projects import (
     Middle1Tests4PyProject,
     Middle2Tests4PyProject,
     CalculatorTests4PyProject,
+    CookieCutter2Tests4PyProject,
+    CookieCutter3Tests4PyProject,
+    CookieCutter4Tests4PyProject,
+    FastAPI1Tests4PyProject,
+    ExpressionTests4PyProject,
+    Markup1Tests4PyProject,
+    Markup2Tests4PyProject,
 )
 
 
@@ -30,7 +36,7 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
         initial_inputs: List[str],
         oracle: Callable,
     ):
-        super().__init__(name, grammar, oracle,  initial_inputs)
+        super().__init__(name, grammar, oracle, initial_inputs)
         self.bug_id = bug_id
 
     def __repr__(self):
@@ -49,7 +55,10 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
         return self.oracle
 
 
-class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
+class Tests4PyBenchmarkRepository(BenchmarkRepository):
+    def __init__(self, projects: List[Tests4PyProject]):
+        self.projects = projects
+
     def get_implementation_function_name(self):
         pass
 
@@ -59,19 +68,16 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass
 
-    @abstractmethod
-    def get_grammar_for_project(self, project: Tests4PyProject):
-        raise NotImplementedError
-
-    @abstractmethod
     def get_t4p_project(self) -> List[Tests4PyProject]:
-        raise NotImplementedError()
+        return self.projects
 
     @staticmethod
     def _construct_benchmark_program(
         t4p_project: Tests4PyProject,
     ) -> Tests4PyBenchmarkProgram:
-        oracle = construct_oracle(t4p_project.project)
+        oracle = construct_oracle(
+            t4p_project.project, harness_function=t4p_project.harness_function
+        )
         return Tests4PyBenchmarkProgram(
             name=t4p_project.project.project_name,
             bug_id=t4p_project.project.bug_id,
@@ -94,66 +100,84 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self):
         self.name = "Tests4Py-Pysnooper"
-        self.projects: List[Tests4PyProject] = [
+        projects: List[Tests4PyProject] = [
             Pysnooper2Tests4PyProject(),
             Pysnooper3Tests4PyProject(),
         ]
+        super().__init__(projects)
 
-    def get_grammar_for_project(self, project: Tests4PyProject):
-        return project.grammar
 
-    def get_t4p_project(self) -> List[Tests4PyProject]:
-        return self.projects
+class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-CookieCutter"
+        projects: List[Tests4PyProject] = [
+            CookieCutter2Tests4PyProject(),
+            CookieCutter3Tests4PyProject(),
+            CookieCutter4Tests4PyProject(),
+        ]
+        super().__init__(projects)
+
+
+class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-FastAPI"
+        projects: List[Tests4PyProject] = [FastAPI1Tests4PyProject()]
+        super().__init__(projects)
 
 
 class YoutubeDLBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self):
         self.name = "Tests4Py-YoutubeDL"
-        self.projects: List[Tests4PyProject] = [
-            YoutubeDL1Tests4PyProject(),
-        ]
-
-    def get_grammar_for_project(self, project: Tests4PyProject):
-        return project.grammar
-
-    def get_t4p_project(self) -> List[Tests4PyProject]:
-        return self.projects
+        projects: List[Tests4PyProject] = [YoutubeDL1Tests4PyProject()]
+        super().__init__(projects)
 
 
 class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self):
         self.name = "Tests4Py-Middle"
-        self.projects: List[Tests4PyProject] = [
+        projects: List[Tests4PyProject] = [
             Middle1Tests4PyProject(),
             Middle2Tests4PyProject(),
         ]
-
-    def get_grammar_for_project(self, project: Tests4PyProject):
-        return project.grammar
-
-    def get_t4p_project(self) -> List[Tests4PyProject]:
-        return self.projects
+        super().__init__(projects)
 
 
 class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self):
         self.name = "Tests4Py-Calculator"
-        self.projects: List[Tests4PyProject] = [
-            CalculatorTests4PyProject()
+        projects: List[Tests4PyProject] = [CalculatorTests4PyProject()]
+        super().__init__(projects)
+
+
+class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-ToyExample"
+        projects: List[Tests4PyProject] = [
+            CalculatorTests4PyProject(),
+            ExpressionTests4PyProject(),
+            Markup1Tests4PyProject(),
+            Markup2Tests4PyProject(),
         ]
-
-    def get_grammar_for_project(self, project: Tests4PyProject):
-        return project.grammar
-
-    def get_t4p_project(self) -> List[Tests4PyProject]:
-        return self.projects
+        super().__init__(projects)
 
 
 def main():
     repos: List[Tests4PyBenchmarkRepository] = [
         # YoutubeDLBenchmarkRepository(),
+        # CookieCutterBenchmarkRepository(),
         MiddleBenchmarkRepository(),
-        CalculatorBenchmarkRepository()
+        # CalculatorBenchmarkRepository()
+    ]
+
+    repos: List[Tests4PyBenchmarkRepository] = [
+        Tests4PyBenchmarkRepository(
+            projects=[
+                CalculatorTests4PyProject(),
+                ExpressionTests4PyProject(),
+                Markup1Tests4PyProject(),
+                Markup2Tests4PyProject()
+            ]
+        )
     ]
 
     subjects = []
