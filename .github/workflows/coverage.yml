@@ -1,15 +1,10 @@
-#TODO: BRANCHES ANPASSEN
-
-#Coverage run erstellt .coverage file
-#coverage xml transformirt .converage in converage.xml (Cobertura XML)
-
 name: Coverage
 
 on:
   push:
-    branches: [ "main", "dev", "actions" ] 
+    branches: [ "main" ] 
   pull_request:
-    branches: [ "main", "dev", "actions"]
+    branches: [ "main" ]
 
 permissions:
   contents: read

@@ -1,12 +1,10 @@
-#TODO: BRANCHES ANPASSEN
-
 name: Test
 
 on:
   push:
-    branches: [ "main", "dev", "actions" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "dev", "actions"]
+    branches: [ "main" ]
 
 permissions:
   contents: read
