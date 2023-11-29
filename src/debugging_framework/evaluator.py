@@ -6,6 +6,7 @@ from pathlib import Path
 from debugging_framework.results import initialize_dataframe
 from debugging_framework.tools import Tool
 from debugging_framework.benchmark import BenchmarkProgram
+from debugging_framework.report import Report, MultipleFailureReport
 
 
 VLOGGER = logging.getLogger("evaluation")
@@ -46,6 +47,15 @@ class Evaluation:
         tool_names = [tool.name for tool in self.tools]
         return initialize_dataframe(subject_names, tool_names, self.repetitions)
 
+    @staticmethod
+    def run_tool(tool, param) -> Report:
+        try:
+            report = tool(**param).run()
+        except Exception as e:
+            VLOGGER.info(f"Tool {tool.name} did not finish: {e}")
+            report = MultipleFailureReport(name=tool.name)
+        return report
+
     def run(self) -> pd.DataFrame:
         df_results = self.initialize_result_dataframe()
 
@@ -55,7 +65,7 @@ class Evaluation:
 
             for tool in self.tools:
                 for i in range(1, self.repetitions + 1):
-                    report = tool(**param).run()
+                    report = self.run_tool(tool, param)
                     df_results.at[
                         (i, tool.name), (subject.name, subject.bug_id)
                     ] = report.to_dict()
