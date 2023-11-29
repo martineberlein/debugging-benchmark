@@ -31,13 +31,13 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     def get_name(self) -> str:
         return self.__repr__()
 
-    def get_grammar(self):
+    def get_grammar(self) -> Grammar:
         return self.grammar
 
-    def get_initial_inputs(self):
+    def get_initial_inputs(self) -> List[str]:
         return self.initial_inputs
 
-    def get_oracle(self):
+    def get_oracle(self) -> Callable:
         return self.oracle
 
 
@@ -53,7 +53,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         repo_dir = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(Path(repo_dir),Path("student_assignments"))
 
-    def get_ground_truth_location(self):
+    def get_ground_truth_location(self) -> Path:
         return os.path.join(self.get_dir(), Path("reference1.py"))
     
     def load_ground_truth(self):

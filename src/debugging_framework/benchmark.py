@@ -50,6 +50,10 @@ class BenchmarkRepository(ABC):
     @abstractmethod
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         raise NotImplementedError
+    
+    @abstractmethod
+    def get_implementation_function_name(self):
+        raise NotImplementedError
 
     @staticmethod
     def get_grammar() -> Grammar:
@@ -61,10 +65,6 @@ class BenchmarkRepository(ABC):
 
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_implementation_function_name(self):
         raise NotImplementedError
 
 
