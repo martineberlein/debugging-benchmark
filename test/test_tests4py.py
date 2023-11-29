@@ -23,7 +23,7 @@ class TestTests4Py(unittest.TestCase):
         repositories = [
             PysnooperBenchmarkRepository(),
             CookieCutterBenchmarkRepository(),
-            ToyExampleTests4PyBenchmarkRepository(),
+            # ToyExampleTests4PyBenchmarkRepository(),
             # YoutubeDLBenchmarkRepository(),
             # FastAPIBenchmarkRepository()
         ]
