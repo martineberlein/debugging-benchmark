@@ -15,7 +15,7 @@ class DatabaseHelper:
                 db.get_passing_inputs_from_program()
                 db.get_inputs_from_program()
     '''
-    #TODO:  Everywhere program is accepted, accept prog_id aswell
+    #TODO:  Everywhere program is accepted, accept prog_id aswell -> test if prog_id is in db already
     #       delete specific inputs, reset db
     _instance = None
 
@@ -313,4 +313,4 @@ class DatabaseHelper:
                     cursor.execute("DELETE from failing_inputs WHERE program_id = ?", (program_id,))
 
         except sqlite3.Error as error:
-                print("Failed to delete program from db:", error)
+                print("Failed to delete program from db:", error) 
