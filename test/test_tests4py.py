@@ -9,6 +9,9 @@ from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
     # YoutubeDLBenchmarkRepository,
+    CookieCutterBenchmarkRepository,
+    FastAPIBenchmarkRepository,
+    ToyExampleTests4PyBenchmarkRepository,
 )
 
 
@@ -19,7 +22,10 @@ class TestTests4Py(unittest.TestCase):
     def setUpClass(cls):
         repositories = [
             PysnooperBenchmarkRepository(),
-            # YoutubeDLBenchmarkRepository()
+            CookieCutterBenchmarkRepository(),
+            # ToyExampleTests4PyBenchmarkRepository(),
+            # YoutubeDLBenchmarkRepository(),
+            # FastAPIBenchmarkRepository()
         ]
         cls.subjects = []
         for repo in repositories:
@@ -41,6 +47,7 @@ class TestTests4Py(unittest.TestCase):
     def test_tests4py_input_generation(self):
         for subject in self.subjects:
             fuzzer = GrammarFuzzer(subject.grammar)
+            print(subject.name)
             for _ in range(10):
                 inp = fuzzer.fuzz()
                 oracle, exception = subject.oracle(inp)
