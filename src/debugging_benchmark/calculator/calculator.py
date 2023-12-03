@@ -54,7 +54,7 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
         self.bug_id = bug_id
 
     def __repr__(self):
-        return f"{self.name}_{self.bug_id}"
+        return f"BenchmarkProgram({self.name}_{self.bug_id})"
 
     def get_name(self) -> str:
         return self.__repr__()
@@ -84,10 +84,10 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
         self.name = "Calculator"
         self.bug_id = 1
 
-    def build(self) -> CalculatorBenchmarkProgram:
-        return CalculatorBenchmarkProgram(
+    def build(self) -> List[CalculatorBenchmarkProgram]:
+        return [CalculatorBenchmarkProgram(
             self.name,
             self.bug_id,
             grammar,
             initial_inputs,
-            oracle)
+            oracle)]

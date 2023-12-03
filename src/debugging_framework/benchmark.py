@@ -18,6 +18,9 @@ class BenchmarkProgram(ABC):
         self.oracle = oracle
         self.initial_inputs = initial_inputs
 
+    def __repr__(self):
+        return f"BenchmarkProgram({self.name})"
+
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError
@@ -43,6 +46,16 @@ class BenchmarkProgram(ABC):
 
 
 class BenchmarkRepository(ABC):
+
+    name: str
+
+    def __repr__(self):
+        return f"BenchmarkRepository({self.name})"
+
+    @abstractmethod
+    def build(self) -> List[BenchmarkProgram]:
+        raise NotImplementedError
+
     @abstractmethod
     def get_dir(self) -> Path:
         raise NotImplementedError
@@ -50,7 +63,7 @@ class BenchmarkRepository(ABC):
     @abstractmethod
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         raise NotImplementedError
-    
+
     @abstractmethod
     def get_implementation_function_name(self):
         raise NotImplementedError
