@@ -81,9 +81,9 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         program = self.load_implementation(bug_id)
         
         oracle = construct_oracle(
-            program,
-            ground_truth,
-            err_def,
+            program_under_test=program,
+            program_oracle=ground_truth,
+            error_definitions=err_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
             harness_function=self.harness_function

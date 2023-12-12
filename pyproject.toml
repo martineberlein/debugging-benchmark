@@ -1,3 +1,7 @@
+# https://stackoverflow.com/questions/74508024/is-requirements-txt-still-needed-when-using-pyproject-toml
+# muss doch nochmal überarbeitet werden
+# und eine requirements.txt wird doch noch benötigt
+
 # setuptools > 64.0.0 for local editable installs
 # wheel for pypi
 [build-system]
