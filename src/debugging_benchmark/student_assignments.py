@@ -42,12 +42,19 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
 
 
 class StudentAssignmentRepository(BenchmarkRepository, ABC):
-
+    @abstractmethod
+    def get_implementation_function_name(self):
+        raise NotImplementedError
+    
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A StudentAssignment-Benchmark-Repository needs to have a unique name."
         )
+    
+    @staticmethod
+    def harness_function(input_str: str) -> Sequence[Any]:
+        raise NotImplementedError
     
     def get_dir(self) -> Path:
         repo_dir = os.path.dirname(os.path.abspath(__file__))

@@ -2,11 +2,13 @@ import importlib.util
 import sys
 import ast
 
-from typing import Union, List, Callable, Tuple, Set, Sequence, Any
+from typing import Union, List, Callable, Tuple, Set, Dict
 from pathlib import Path
 from abc import ABC, abstractmethod
 from fuzzingbook.Grammars import Grammar
 from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
+
+from debugging_framework.oracle import OracleResult
 
 
 class BenchmarkProgram(ABC):
@@ -44,15 +46,19 @@ class BenchmarkProgram(ABC):
 
 class BenchmarkRepository(ABC):
     @abstractmethod
+    def build(
+            self,
+            err_def: Dict[Exception, OracleResult] = None,
+            default_oracle: OracleResult = None,
+    ) -> List[BenchmarkProgram]:
+        raise NotImplementedError
+
+    @abstractmethod
     def get_dir(self) -> Path:
         raise NotImplementedError
 
     @abstractmethod
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
-        raise NotImplementedError
-    
-    @abstractmethod
-    def get_implementation_function_name(self):
         raise NotImplementedError
 
     @staticmethod
@@ -63,10 +69,6 @@ class BenchmarkRepository(ABC):
     def get_initial_inputs() -> List[str]:
         raise NotImplementedError
 
-    @staticmethod
-    def harness_function(input_str: str) -> Sequence[Any]:
-        raise NotImplementedError
-
 
 def load_module_dynamically(path: Union[str, Path]):
     # Step 1: Convert file path to module name
@@ -74,7 +76,7 @@ def load_module_dynamically(path: Union[str, Path]):
     if isinstance(path, Path):
         file_path = str(path.absolute())
     elif isinstance(path, str):
-        file_path = str(path)
+        file_path = str(path)       
     else:
         raise TypeError("path should be from type Path or str")
 
