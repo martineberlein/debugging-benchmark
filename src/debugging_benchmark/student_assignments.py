@@ -31,29 +31,36 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     def get_name(self) -> str:
         return self.__repr__()
 
-    def get_grammar(self):
+    def get_grammar(self) -> Grammar:
         return self.grammar
 
-    def get_initial_inputs(self):
+    def get_initial_inputs(self) -> List[str]:
         return self.initial_inputs
 
-    def get_oracle(self):
+    def get_oracle(self) -> Callable:
         return self.oracle
 
 
 class StudentAssignmentRepository(BenchmarkRepository, ABC):
-
+    @abstractmethod
+    def get_implementation_function_name(self):
+        raise NotImplementedError
+    
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A StudentAssignment-Benchmark-Repository needs to have a unique name."
         )
     
+    @staticmethod
+    def harness_function(input_str: str) -> Sequence[Any]:
+        raise NotImplementedError
+    
     def get_dir(self) -> Path:
         repo_dir = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(Path(repo_dir),Path("student_assignments"))
 
-    def get_ground_truth_location(self):
+    def get_ground_truth_location(self) -> Path:
         return os.path.join(self.get_dir(), Path("reference1.py"))
     
     def load_ground_truth(self):
@@ -81,9 +88,9 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         program = self.load_implementation(bug_id)
         
         oracle = construct_oracle(
-            program,
-            ground_truth,
-            err_def,
+            program_under_test=program,
+            program_oracle=ground_truth,
+            error_definitions=err_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
             harness_function=self.harness_function
