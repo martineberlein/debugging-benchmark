@@ -29,9 +29,7 @@ requires-python = ">=3.10"
 dependencies = [
     "fuzzingbook==1.1",
     "jupyter",
-    "isla-solver",
-    # Funktioniert das so?
-    "tests4py @ git+https://github.com/smythi93/Tests4Py@de4c1798b65fb52bfd506e03d596ee75fdd5a9ee"
+    "isla-solver"
 ]
 
 
