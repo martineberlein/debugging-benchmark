@@ -50,8 +50,6 @@ jobs:
         - name: Publish distribution-package to pypi
           uses: pypa/gh-action-pypi-publish@release/v1
           with:
-            name:
-            password:
             repository-url: https://test.pypi.org/legacy/
 
 
