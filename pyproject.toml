@@ -36,8 +36,8 @@ dependencies = [
 # für cli
 [project.scripts]
 evaluation = "cli.evaluation:main"
-tools = "cli.tools:main"
-subjects = "cli.subjects:main"
+tool = "cli.tools:main"
+subject = "cli.subjects:main"
 
 [project.urls]
 "Homepage" = "https://github.com/martineberlein/debugging-benchmark"

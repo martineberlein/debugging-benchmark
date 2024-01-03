@@ -9,32 +9,27 @@ from debugging_framework.tools import (GrammarBasedEvaluationTool,
                                     Tool)
 
 def main() -> List[Tool]:
-	parser = argparse.ArgumentParser(prog = "tools",
-                                  	description= "Creates BenchmarkPrograms from a BenchmarkRepository"
-									             "and returns them in a List",
+    parser = argparse.ArgumentParser(prog = "tool",
+                                    description= "With this Command you can choose a tool for Evaluation",
                                     formatter_class=argparse.RawTextHelpFormatter)
 
-	parser.add_argument("-t", "--tool",
+    parser.add_argument("-t", "--tool",
                      	help= "choose a specific tool\n"
                               "default is all\n"
-                              "1 = GrammarBased\n"
-                              "2 = GrammarBasedFuzzer\n"
-                              "3 = InputsFromHellFuzzer\n"
-                              "4 = ISLAGrammarFuzzer",
+                              "1 = GrammarBasedFuzzer\n"
+                              "2 = InputsFromHellFuzzer\n"
+                              "3 = ISLAGrammarFuzzer",
                         default=0,
                         type=int)
 
-      
-	args = parser.parse_args()
-      
-	match args.tool:
+    args = parser.parse_args()
+
+    match args.tool:
           case 1:
-            return [GrammarBasedEvaluationTool]
-          case 2:
             return [GrammarBasedEvaluationFuzzer]
-          case 3:
+          case 2:
             return [InputsFromHellEvaluationFuzzer]
-          case 4:
+          case 3:
             return [ISLaGrammarEvaluationFuzzer]
           case 0:
             return [GrammarBasedEvaluationTool,
