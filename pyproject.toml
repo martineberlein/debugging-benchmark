@@ -35,8 +35,9 @@ dependencies = [
 # für coverage 
 [tool.coverage.run]
 omit = [
-    "/src/debugging-benchmark/refactory/*",
-    "/src/debugging-benchmark/student_assignments/*"
+    "src/debugging_benchmark/refactory/*",
+    "src/debugging_benchmark/student_assignments/*",
+    "/usr/lib/*"
 ]
 
 

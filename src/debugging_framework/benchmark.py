@@ -114,7 +114,7 @@ def get_class_name(path: Union[str, Path]) -> str:
     # returns only the first class
     return classes[0]
 
-
+#never used
 def population_coverage(
     population: List[Tuple[int, int]], function: Callable
 ) -> Tuple[Set[Location], List[int]]:
@@ -137,7 +137,7 @@ def population_coverage(
 
     return all_coverage, cumulative_coverage
 
-
+#never used
 def population_branch_coverage(
     population: List[Tuple[int, int]], function: Callable
 ) -> Tuple[Set[Location], List[int]]:
