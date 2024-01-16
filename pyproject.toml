@@ -29,7 +29,12 @@ requires-python = ">=3.10"
 dependencies = [
     "fuzzingbook==1.1",
     "jupyter",
-    "isla-solver"
+    "isla-solver",
+    "numpy~=1.26.1",
+    "pandas~=2.1.2",
+    "psutil~=5.9.6",
+    "shap>=0.41",
+    "lightgbm>=3.3.2"
 ]
 
 # für coverage 
@@ -39,8 +44,6 @@ omit = [
     "src/debugging_benchmark/student_assignments/*",
     "/usr/lib/*"
 ]
-
-
 
 # für cli
 [project.scripts]
