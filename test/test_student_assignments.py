@@ -49,8 +49,8 @@ class TestStudentAssignments(unittest.TestCase):
             self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
  
     def test_subject_valid_grammars(self):
-        for repos in self.repos:
-            self.assertTrue(is_valid_grammar(repos.get_grammar()))
+        for repo in self.repos:
+            self.assertTrue(is_valid_grammar(repo.get_grammar()))
 
     def test_subject_parsing_inputs(self):
                 
