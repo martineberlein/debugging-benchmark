@@ -2,7 +2,7 @@ import importlib.util
 import sys
 import ast
 
-from typing import Union, List, Callable, Tuple, Set, Dict
+from typing import Union, List, Callable, Tuple, Set, Dict, Sequence, Any
 from pathlib import Path
 from abc import ABC, abstractmethod
 from fuzzingbook.Grammars import Grammar
@@ -45,16 +45,18 @@ class BenchmarkProgram(ABC):
 
 
 class BenchmarkRepository(ABC):
+
+    name: str
+
+    def __repr__(self):
+        return f"BenchmarkRepository({self.name})"
+
     @abstractmethod
     def build(
             self,
             err_def: Dict[Exception, OracleResult] = None,
             default_oracle: OracleResult = None,
     ) -> List[BenchmarkProgram]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_dir(self) -> Path:
         raise NotImplementedError
 
     @abstractmethod
@@ -69,6 +71,10 @@ class BenchmarkRepository(ABC):
     def get_initial_inputs() -> List[str]:
         raise NotImplementedError
 
+    @staticmethod
+    def harness_function(input_str: str) -> Sequence[Any]:
+        raise NotImplementedError
+
 
 def load_module_dynamically(path: Union[str, Path]):
     # Step 1: Convert file path to module name
@@ -76,7 +82,7 @@ def load_module_dynamically(path: Union[str, Path]):
     if isinstance(path, Path):
         file_path = str(path.absolute())
     elif isinstance(path, str):
-        file_path = str(path)       
+        file_path = str(path)
     else:
         raise TypeError("path should be from type Path or str")
 
@@ -114,7 +120,7 @@ def get_class_name(path: Union[str, Path]) -> str:
     # returns only the first class
     return classes[0]
 
-
+#never used
 def population_coverage(
     population: List[Tuple[int, int]], function: Callable
 ) -> Tuple[Set[Location], List[int]]:
@@ -137,7 +143,7 @@ def population_coverage(
 
     return all_coverage, cumulative_coverage
 
-
+#never used
 def population_branch_coverage(
     population: List[Tuple[int, int]], function: Callable
 ) -> Tuple[Set[Location], List[int]]:

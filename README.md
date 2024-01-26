@@ -1,6 +1,5 @@
 [![Test](https://github.com/martineberlein/debugging-benchmark/actions/workflows/tests.yml/badge.svg)](https://github.com/martineberlein/debugging-benchmark/actions/workflows/tests.yml)
-[![Coverage](https://github.com/martineberlein/debugging-benchmark/actions/workflows/coverage.yml/badge.svg)](https://github.com/martineberlein/debugging-benchmark/actions/workflows/coverage.yml)
-[![Coverage Status](https://coveralls.io/repos/github/martineberlein/debugging-benchmark/badge.svg?branch=actions)](https://coveralls.io/github/martineberlein/debugging-benchmark?branch=actions)
+[![Coverage Status](https://coveralls.io/repos/github/martineberlein/debugging-benchmark/badge.svg?branch=main)](https://coveralls.io/github/martineberlein/debugging-benchmark?branch=main)
 
 # debugging-benchmark
 
@@ -13,10 +12,17 @@ from debugging_benchmark.calculator.calculator import CalculatorBenchmarkReposit
 from debugging_framework.tools import GrammarBasedEvaluationFuzzer
 
 calc = CalculatorBenchmarkRepository().build()
+
+#Param is a Dict with the keys grammar, oracle and initial_inputs
 param = calc.to_dict()
+
 fuzzer = GrammarBasedEvaluationFuzzer(**param)
 fuzzer.run()
 gen_inps = fuzzer.get_generated_inputs()
+#sin(18)
+#cos(-9.5)
+#sqrt(330)
+#sqrt(-12)
 ``` 
 
 Evaluation:
@@ -44,31 +50,23 @@ result = Evaluation(
 Check out the Class Diagram for a first overview. Further down in this section we take a look at some key functions of interest.
 
 #### Class Diagram
-![StudenAssignmentClassDiagram](https://github.com/martineberlein/debugging-benchmark/assets/82182021/2e5fb169-02b1-444d-9c2e-ba6793f97535)
-
-
-`BenchmarkRepository` and `BenchmarkProgram` can be found in `debugging_framework/benchmark.py`
-
-`StudentAssignmentBenchmarkProgram`,`StudentAssignmentRepository` and `GCDStudentAssignmentBenchmarkRepository` can be found in `debugging_benchmark/student_assignments.py`
-
-The faulty programs can be found at `debugging_benchmark/student_assignments/problem_1_GCD` and the correct implementation at `debugging_benchmark/student_assignments/reference1.py`
+![Repo+Program](https://github.com/martineberlein/debugging-benchmark/assets/82182021/e8fe1725-38c9-493b-8e72-c8cfe961c180)
 
 #### build()
 
 Returns a List of BenchmarkPrograms. Calls internally _construct_test_program(). This function is our interface.
 
-#### _construct_test_program()
-
-Returns a BenchmarkProgram. Calls internally construct_oracle() to construct a oracle for our program.
-
-#### construct_oracle()
-
-Where the magic happens.
-Returns a Functions which loads the faulty and correct implementation, executes both with the input and checks if they are the same or not. If they are the same return OracleResult.PASSING, if not return OracleResult.FAILING 
-
 #### to_dict()
 
-PLACEHOLDER
+Returns a dict with the keys grammar, oracle and initial_inputs. These Parameter can be used for fuzzing new inputs.
+
+## Example use of the abstract Classes
+
+![Example Class Diagram](https://github.com/martineberlein/debugging-benchmark/assets/82182021/2fe7f9aa-020c-44eb-b47a-bdbd2f920570)
+
+The implementation of these classes can be found in `debugging_benchmark/student_assignments.py`
+
+The faulty programs can be found at `debugging_benchmark/student_assignments/problem_1_GCD` and the correct implementation at `debugging_benchmark/student_assignments/reference1.py`
 
 ## Install, Development, Testing
 ### Install

@@ -168,7 +168,7 @@ class GCDStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
         param = list(map(int, str(input_str).strip().split()))
         return param
 
-class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
+class       SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def __init__(self):
         self.name: str = "Sieve-of-Eratosthenes"
         self._implementation_function_name: str = "sieveOfEratosthenes"

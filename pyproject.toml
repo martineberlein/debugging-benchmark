@@ -30,14 +30,24 @@ dependencies = [
     "fuzzingbook==1.1",
     "jupyter",
     "isla-solver",
-    # Funktioniert das so?
-    "tests4py @ git+https://github.com/smythi93/Tests4Py@de4c1798b65fb52bfd506e03d596ee75fdd5a9ee"
+    "tests4py",
+]
+
+# für coverage 
+[tool.coverage.run]
+omit = [
+    "src/debugging_benchmark/refactory/*",
+    "src/debugging_benchmark/student_assignments/*",
+    "/usr/lib/*"
 ]
 
 
-# für cli
-# [project.scripts]
 
+# für cli
+[project.scripts]
+evaluation = "cli.evaluation:main"
+tool = "cli.tools:main"
+subject = "cli.subjects:main"
 
 [project.urls]
 "Homepage" = "https://github.com/martineberlein/debugging-benchmark"

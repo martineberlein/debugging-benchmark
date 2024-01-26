@@ -84,10 +84,10 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
         self.name = "Calculator"
         self.bug_id = 1
 
-    def build(self) -> CalculatorBenchmarkProgram:
-        return CalculatorBenchmarkProgram(
+    def build(self) -> List[CalculatorBenchmarkProgram]:
+        return [CalculatorBenchmarkProgram(
             self.name,
             self.bug_id,
             grammar,
             initial_inputs,
-            oracle)
+            oracle)]
