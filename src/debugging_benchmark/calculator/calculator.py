@@ -54,7 +54,7 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
         self.bug_id = bug_id
 
     def __repr__(self):
-        return f"BenchmarkProgram({self.name}_{self.bug_id})"
+        return f"{self.name}_{self.bug_id}"
 
     def get_name(self) -> str:
         return self.__repr__()
