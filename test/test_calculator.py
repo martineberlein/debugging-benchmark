@@ -8,7 +8,7 @@ from debugging_benchmark.calculator.calculator import CalculatorBenchmarkReposit
 class TestCalculator(unittest.TestCase):
     def setUp(self):
         self.repo = CalculatorBenchmarkRepository()
-        self.program = self.repo.build()
+        self.program = self.repo.build().pop()
         
     def test_build(self):
         self.assertIsInstance(self.program, CalculatorBenchmarkProgram)

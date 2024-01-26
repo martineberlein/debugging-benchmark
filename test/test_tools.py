@@ -11,7 +11,7 @@ from debugging_framework.tools import (
 
 class TestTools(unittest.TestCase):
 	def setUp(self):
-		calc = CalculatorBenchmarkRepository().build()
+		calc = CalculatorBenchmarkRepository().build().pop()
 		self.param = calc.to_dict()
 
 	def test_grammar_based_evaluation_fuzzer(self):
