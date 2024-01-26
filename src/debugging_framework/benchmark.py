@@ -2,11 +2,13 @@ import importlib.util
 import sys
 import ast
 
-from typing import Union, List, Callable, Tuple, Set, Sequence, Any
+from typing import Union, List, Callable, Tuple, Set, Dict
 from pathlib import Path
 from abc import ABC, abstractmethod
 from fuzzingbook.Grammars import Grammar
 from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
+
+from debugging_framework.oracle import OracleResult
 
 
 class BenchmarkProgram(ABC):
@@ -17,9 +19,6 @@ class BenchmarkProgram(ABC):
         self.grammar = grammar
         self.oracle = oracle
         self.initial_inputs = initial_inputs
-
-    def __repr__(self):
-        return f"BenchmarkProgram({self.name})"
 
     @abstractmethod
     def get_name(self) -> str:
@@ -53,19 +52,15 @@ class BenchmarkRepository(ABC):
         return f"BenchmarkRepository({self.name})"
 
     @abstractmethod
-    def build(self) -> List[BenchmarkProgram]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_dir(self) -> Path:
+    def build(
+            self,
+            err_def: Dict[Exception, OracleResult] = None,
+            default_oracle: OracleResult = None,
+    ) -> List[BenchmarkProgram]:
         raise NotImplementedError
 
     @abstractmethod
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_implementation_function_name(self):
         raise NotImplementedError
 
     @staticmethod
@@ -125,7 +120,7 @@ def get_class_name(path: Union[str, Path]) -> str:
     # returns only the first class
     return classes[0]
 
-
+#never used
 def population_coverage(
     population: List[Tuple[int, int]], function: Callable
 ) -> Tuple[Set[Location], List[int]]:
@@ -148,7 +143,7 @@ def population_coverage(
 
     return all_coverage, cumulative_coverage
 
-
+#never used
 def population_branch_coverage(
     population: List[Tuple[int, int]], function: Callable
 ) -> Tuple[Set[Location], List[int]]:

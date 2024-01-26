@@ -42,12 +42,19 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
 
 
 class StudentAssignmentRepository(BenchmarkRepository, ABC):
-
+    @abstractmethod
+    def get_implementation_function_name(self):
+        raise NotImplementedError
+    
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A StudentAssignment-Benchmark-Repository needs to have a unique name."
         )
+    
+    @staticmethod
+    def harness_function(input_str: str) -> Sequence[Any]:
+        raise NotImplementedError
     
     def get_dir(self) -> Path:
         repo_dir = os.path.dirname(os.path.abspath(__file__))
@@ -81,9 +88,9 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         program = self.load_implementation(bug_id)
         
         oracle = construct_oracle(
-            program,
-            ground_truth,
-            err_def,
+            program_under_test=program,
+            program_oracle=ground_truth,
+            error_definitions=err_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
             harness_function=self.harness_function
@@ -161,7 +168,7 @@ class GCDStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
         param = list(map(int, str(input_str).strip().split()))
         return param
 
-class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
+class       SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def __init__(self):
         self.name: str = "Sieve-of-Eratosthenes"
         self._implementation_function_name: str = "sieveOfEratosthenes"

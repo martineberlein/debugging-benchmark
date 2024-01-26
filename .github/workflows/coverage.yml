@@ -2,16 +2,15 @@ name: Coverage
 
 on:
   push:
-    branches: [ "main" ] 
+    branches: [ "main", "dev" ] 
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
 permissions:
   contents: read
 
 jobs:
-  build:
-
+  determine-coverage:
     runs-on: ubuntu-latest
 
     steps:

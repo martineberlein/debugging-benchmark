@@ -12,21 +12,3 @@ def initialize_dataframe(
     )
     results_df = pd.DataFrame(index=index, columns=columns).fillna({})
     return results_df
-
-
-def main():
-    r = initialize_dataframe(
-        [("GCD", 1), ("GCD", 2), ("Middle", 1)], ["EvoGFuzz", "InputsFromHell"], 15
-    )
-    r.at[(1, "EvoGFuzz"), ("GCD", 1)] = {"Error": 1, "Error_2": 3}
-    r.at[(1, "InputsFromHell"), ("GCD", 1)] = {"Error": 2}
-    print(r)
-
-
-if __name__ == "__main__":
-    # from itertools import product
-    # subject_names = ["GCD", "Middle"]
-    # implementations = [i for i in range(1, 11)]
-    # subject_index =  list(product(subject_names, implementations))
-    # print(subject_index)
-    main()

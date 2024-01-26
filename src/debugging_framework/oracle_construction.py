@@ -32,18 +32,17 @@ def construct_oracle(
         raise ValueError(f"Invalid value for expected_error: {error_definitions}")
 
     # Choose oracle construction method based on presence of program_oracle
-    oracle_constructor = (
-        _construct_functional_oracle if program_oracle else _construct_failure_oracle
-    )
+    params = locals()
 
-    return oracle_constructor(
-        program_under_test,
-        program_oracle,
-        error_definitions,
-        timeout,
-        default_oracle_result,
-        harness_function,
-    )
+    if program_oracle:
+        oracle_constructor = _construct_functional_oracle
+    else:
+        oracle_constructor = _construct_failure_oracle
+        params.pop('program_oracle')
+    
+    return oracle_constructor(**params)
+
+
 
 
 def _construct_functional_oracle(

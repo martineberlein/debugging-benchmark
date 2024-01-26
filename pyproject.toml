@@ -1,0 +1,60 @@
+# https://stackoverflow.com/questions/74508024/is-requirements-txt-still-needed-when-using-pyproject-toml
+# muss doch nochmal überarbeitet werden
+# und eine requirements.txt wird doch noch benötigt
+
+# setuptools > 64.0.0 for local editable installs
+# wheel for pypi
+[build-system]
+requires = ["setuptools >= 68.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "debugging-benchmark"
+version = "0.0.1"
+authors = [
+    { name = "Martin Eberlein", email = "ebermart@informatik.hu-berlin.de" },
+    { name = "Kai Werk", email = "werkkai@hu-berlin.de" }
+]
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Testing"
+]
+keywords = [ "debugging", "benchmark" ]
+requires-python = ">=3.10"
+dependencies = [
+    "fuzzingbook==1.1",
+    "jupyter",
+    "isla-solver"
+]
+
+# für coverage 
+[tool.coverage.run]
+omit = [
+    "src/debugging_benchmark/refactory/*",
+    "src/debugging_benchmark/student_assignments/*",
+    "/usr/lib/*"
+]
+
+
+
+# für cli
+[project.scripts]
+evaluation = "cli.evaluation:main"
+tool = "cli.tools:main"
+subject = "cli.subjects:main"
+
+[project.urls]
+"Homepage" = "https://github.com/martineberlein/debugging-benchmark"
+"Bug Tracker" = "https://github.com/martineberlein/debugging-benchmark/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.2.0",
+    "twine",
+    "black"
+]

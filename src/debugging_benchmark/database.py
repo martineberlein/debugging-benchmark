@@ -230,8 +230,6 @@ class DatabaseHelper:
                     oracle_result = oracle(inp)
                 elif isinstance(oracle, OracleResult):
                     oracle_result = oracle
-                else:
-                    raise TypeError("hallo")
                 
                 match oracle_result:
                     case OracleResult.PASSING:
@@ -273,18 +271,21 @@ class DatabaseHelper:
             cursor.close()
             conn.close()
     
-    def insert_many_inputs(self, program_id: int, inputs: List[str], oracle: Union[Callable, OracleResult], max_pass:int = 5, max_fail:int = 5):
+    def insert_many_inputs(self, program_id: int, inputs: List[str], oracle: Union[Callable, List[OracleResult]], max_pass:int = 5, max_fail:int = 5):
         '''
         Preferred way of inserting many inputs into the db.
         Checks if the input is passing or failing and stops if max_pass and max_fail are reached.
         '''
-        for inp in inputs:
+        if not isinstance(oracle, Callable):
+            assert(len(inputs) == len(oracle))
+        
+        for index, inp in enumerate(inputs):
             counts = self.get_count_inputs(program_id)
             
             if isinstance(oracle, Callable):
                 oracle_result = oracle(inp)
-            elif isinstance(oracle, OracleResult):
-                oracle_result = oracle
+            elif isinstance(oracle[index], OracleResult):
+                oracle_result = oracle[index]
             
             if counts["pass"] < max_pass and oracle_result == OracleResult.PASSING:
                 self.insert_passing_input(program_id, inp)

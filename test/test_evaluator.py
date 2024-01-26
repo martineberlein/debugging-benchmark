@@ -8,15 +8,17 @@ from debugging_framework.tools import InputsFromHellEvaluationFuzzer
 
 
 class TestEvaluator(unittest.TestCase):
-    def test_setup(self):
-        tools = [
+    def setUp(self):
+        self.tools = [
             InputsFromHellEvaluationFuzzer,
         ]
 
-        subjects = SieveOfEratosthenesStudentAssignmentBenchmarkRepository().build()
+        self.subjects = SieveOfEratosthenesStudentAssignmentBenchmarkRepository().build()
 
+
+    def test_evaluation(self):
         result = Evaluation(
-            tools=tools, subjects=subjects[0:1], repetitions=1, timeout=3600
+            tools=self.tools, subjects=self.subjects[0:1], repetitions=1, timeout=3600
         ).run()
         self.assertTrue(isinstance(result, pd.DataFrame))
 

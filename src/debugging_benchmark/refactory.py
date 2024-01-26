@@ -177,19 +177,3 @@ class Question1RefactoryBenchmarkRepository(RefactoryBenchmarkRepository):
         arg2 = literal_eval(arg2_str)
 
         return arg1, arg2
-
-
-def main():
-    repo = Question1RefactoryBenchmarkRepository()
-    subjects: List[RefactoryBenchmarkProgram] = repo.build(solution_type="wrong")
-    for subject in subjects:
-        print(subject.name, subject.bug_id)
-        param = subject.to_dict()
-        oracle = param.get("oracle")
-        inputs = param.get("initial_inputs")
-        for inp in inputs:
-            print(oracle(inp))
-
-
-if __name__ == "__main__":
-    main()
