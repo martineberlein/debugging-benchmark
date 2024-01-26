@@ -2,7 +2,7 @@ import importlib.util
 import sys
 import ast
 
-from typing import Union, List, Callable, Tuple, Set, Dict
+from typing import Union, List, Callable, Tuple, Set, Dict, Sequence, Any
 from pathlib import Path
 from abc import ABC, abstractmethod
 from fuzzingbook.Grammars import Grammar
