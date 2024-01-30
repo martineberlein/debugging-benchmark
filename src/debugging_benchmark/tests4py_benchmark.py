@@ -180,7 +180,7 @@ def main():
         )
     ]
 
-    subjects = []
+    subjects: List[BenchmarkProgram] = []
     for repo in repos:
         _subjects = repo.build()
         subjects += _subjects

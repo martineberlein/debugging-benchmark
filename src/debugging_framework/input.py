@@ -1,9 +1,13 @@
-from typing import Generator, Optional, Dict
+from typing import Generator, Optional
+from typing import Final
+
 
 from isla.derivation_tree import DerivationTree
 from fuzzingbook.Parser import EarleyParser
 
 from debugging_framework.oracle import OracleResult
+
+# from avicenna.features import FeatureVector
 
 
 class Input:
@@ -11,12 +15,12 @@ class Input:
     Class describing a test input.
     """
 
+    __tree: Final[DerivationTree]
+
     def __init__(self, tree: DerivationTree, oracle: OracleResult = None):
         assert isinstance(tree, DerivationTree)
         self.__tree: DerivationTree = tree
         self.__oracle: Optional[OracleResult] = oracle
-        self.__features: Optional[Dict] = None
-        self.__fitness: float = float()
 
     @property
     def tree(self) -> DerivationTree:
@@ -26,25 +30,16 @@ class Input:
     def oracle(self) -> OracleResult:
         return self.__oracle
 
-    @property
-    def features(self) -> Dict:
-        return self.__features
-
-    @property
-    def fitness(self) -> float:
-        return self.__fitness
-
     @oracle.setter
     def oracle(self, oracle_: OracleResult):
         self.__oracle = oracle_
 
-    @features.setter
-    def features(self, features_: Dict):
-        self.__features = features_
+    def update_oracle(self, oracle_: OracleResult) -> "Input":
+        self.__oracle = oracle_
+        return self
 
-    @fitness.setter
-    def fitness(self, fitness_: float):
-        self.__fitness = fitness_
+    def __repr__(self):
+        return str(f"Input({str(self), self.__oracle})")
 
     def __str__(self) -> str:
         return str(self.__tree)
@@ -53,9 +48,9 @@ class Input:
         return self.__tree.structural_hash()
 
     def __eq__(self, other):
-        if not isinstance(other, Input):
-            return False
-        return self.__hash__() == other.__hash__()
+        if self.__hash__() == hash(other):
+            return True
+        return False
 
     def __iter__(self) -> Generator[DerivationTree | OracleResult | None, None, None]:
         """

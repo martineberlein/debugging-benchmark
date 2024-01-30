@@ -184,7 +184,7 @@ class TestConstructOracle(unittest.TestCase):
             harness_function=self.harness_function
         )
         oracle_result, _ = my_oracle(Input.from_str(grammar, "1 1"))
-        print(oracle_result)
+        self.assertTrue(isinstance(oracle_result, OracleResult))
 
     @unittest.skip
     def test_oracle_sigkill(self):
