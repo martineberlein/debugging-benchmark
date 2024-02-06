@@ -2,7 +2,7 @@
 # muss doch nochmal überarbeitet werden
 # und eine requirements.txt wird doch noch benötigt
 
-# setuptools > 64.0.0 for local editable installs
+# setuptools > 64.0.0 for local editable installations
 # wheel for pypi
 [build-system]
 requires = ["setuptools >= 68.0.0", "wheel"]
@@ -30,6 +30,11 @@ dependencies = [
     "fuzzingbook==1.1",
     "jupyter",
     "isla-solver",
+    "numpy~=1.26.1",
+    "pandas~=2.1.2",
+    "psutil~=5.9.6",
+    "shap>=0.41",
+    "lightgbm>=3.3.2",
     "tests4py",
 ]
 
@@ -40,8 +45,6 @@ omit = [
     "src/debugging_benchmark/student_assignments/*",
     "/usr/lib/*"
 ]
-
-
 
 # für cli
 [project.scripts]

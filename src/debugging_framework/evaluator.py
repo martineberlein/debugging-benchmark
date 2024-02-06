@@ -75,3 +75,10 @@ class Evaluation:
             df_results.to_pickle(self.out_file)
 
         return df_results
+
+    #könnten das df aus run() als membervar speichern
+    def export_to_latex(self, df: pd.DataFrame, out_file: Optional[Union[str, Path]] = None):
+        if out_file:
+            df.to_latex(out_file)
+        else:
+            return df.to_latex()
