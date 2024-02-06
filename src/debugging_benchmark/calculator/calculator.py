@@ -1,6 +1,6 @@
 import math
 from pathlib import Path
-from typing import Union, Callable, List
+from typing import Union, Callable, List, Dict
 import string
 
 from fuzzingbook.Grammars import Grammar
@@ -16,7 +16,7 @@ def arith_eval(inp: Union[Input, str]) -> float:
     )
 
 
-def oracle(inp: Union[Input, str]) -> OracleResult:
+def calculator_oracle(inp: Union[Input, str]) -> OracleResult:
     try:
         arith_eval(inp)
     except ValueError:
@@ -24,21 +24,21 @@ def oracle(inp: Union[Input, str]) -> OracleResult:
     return OracleResult.PASSING
 
 
-grammar: Grammar = {
-        "<start>": ["<arith_expr>"],
-        "<arith_expr>": ["<function>(<number>)"],
-        "<function>": ["sqrt", "sin", "cos", "tan"],
-        "<number>": ["<maybe_minus><one_nine><maybe_digits><maybe_frac>"],
-        "<maybe_minus>": ["", "-"],
-        "<maybe_frac>": ["", ".<digits>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+calculator_grammar: Grammar = {
+    "<start>": ["<arith_expr>"],
+    "<arith_expr>": ["<function>(<number>)"],
+    "<function>": ["sqrt", "sin", "cos", "tan"],
+    "<number>": ["<maybe_minus><one_nine><maybe_digits><maybe_frac>"],
+    "<maybe_minus>": ["", "-"],
+    "<maybe_frac>": ["", ".<digits>"],
+    "<one_nine>": [str(num) for num in range(1, 10)],
+    "<digit>": list(string.digits),
+    "<maybe_digits>": ["", "<digits>"],
+    "<digits>": ["<digit>", "<digit><digits>"],
+}
 
 
-initial_inputs = ["cos(12)", "sqrt(-900)"]
+calculator_initial_inputs = ["cos(12)", "sqrt(-900)"]
 
 
 class CalculatorBenchmarkProgram(BenchmarkProgram):
@@ -46,11 +46,11 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
         self,
         name: str,
         bug_id: int,
-        grammar_: Grammar,
-        initial_inputs_: List[str],
-        oracle_: Callable,
+        grammar: Grammar,
+        initial_inputs: List[str],
+        oracle: Callable,
     ):
-        super().__init__(name, grammar_, oracle_, initial_inputs_)
+        super().__init__(name, grammar, oracle, initial_inputs)
         self.bug_id = bug_id
 
     def __repr__(self):
@@ -70,6 +70,8 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
 
 
 class CalculatorBenchmarkRepository(BenchmarkRepository):
+    def __init__(self):
+        self.name = "Calculator"
 
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass
@@ -80,14 +82,17 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
     def get_dir(self) -> Path:
         pass
 
-    def __init__(self):
-        self.name = "Calculator"
-        self.bug_id = 1
-
-    def build(self) -> List[CalculatorBenchmarkProgram]:
-        return [CalculatorBenchmarkProgram(
-            self.name,
-            self.bug_id,
-            grammar,
-            initial_inputs,
-            oracle)]
+    def build(
+        self,
+        err_def: Dict[Exception, OracleResult] = None,
+        default_oracle: OracleResult = None,
+    ) -> List[BenchmarkProgram]:
+        return [
+            CalculatorBenchmarkProgram(
+                name=self.name,
+                bug_id=1,
+                grammar=calculator_grammar,
+                oracle=calculator_oracle,
+                initial_inputs=calculator_initial_inputs,
+            )
+        ]
