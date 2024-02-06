@@ -3,7 +3,6 @@ import logging
 
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
-    BenchmarkRepository,
 )
 
 from debugging_framework.tools import Tool
@@ -17,7 +16,6 @@ def main():
 
     tools: List[Type[Tool]] = [
         InputsFromHellEvaluationFuzzer,
-        # EvoGFuzzEvaluationTool
     ]
 
     subjects = PysnooperBenchmarkRepository().build()
