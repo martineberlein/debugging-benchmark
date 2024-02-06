@@ -3,7 +3,7 @@ import unittest
 from isla.derivation_tree import DerivationTree
 from fuzzingbook.Parser import EarleyParser, is_valid_grammar, Grammar
 
-from debugging_benchmark.calculator.calculator import grammar, oracle
+from debugging_benchmark.calculator.calculator import calculator_grammar as grammar, calculator_oracle as oracle
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
 
