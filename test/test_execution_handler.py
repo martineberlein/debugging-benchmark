@@ -12,7 +12,7 @@ from debugging_framework.input import Input
 from debugging_framework.oracle import OracleResult
 from debugging_framework.report import MultipleFailureReport
 
-from debugging_benchmark.calculator.calculator import grammar
+from debugging_benchmark.calculator.calculator import calculator_grammar as grammar
 
 
 def program(test_input: str):
