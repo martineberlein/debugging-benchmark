@@ -2,11 +2,10 @@ import importlib.util
 import sys
 import ast
 
-from typing import Union, List, Callable, Tuple, Set, Dict, Sequence, Any
+from typing import Union, List, Callable, Dict, Sequence, Any
 from pathlib import Path
 from abc import ABC, abstractmethod
 from fuzzingbook.Grammars import Grammar
-from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
 
 from debugging_framework.oracle import OracleResult
 
@@ -119,49 +118,3 @@ def get_class_name(path: Union[str, Path]) -> str:
 
     # returns only the first class
     return classes[0]
-
-#never used
-def population_coverage(
-    population: List[Tuple[int, int]], function: Callable
-) -> Tuple[Set[Location], List[int]]:
-    cumulative_coverage: List[int] = []
-    all_coverage: Set[Location] = set()
-
-    for s in population:
-        with Coverage() as cov:
-            try:
-                function(s)
-            except:
-                pass
-        filtered_set = {
-            (func, line)
-            for (func, line) in cov.coverage()
-            if "derivation_tree" not in func and "input" not in func
-        }
-        all_coverage |= filtered_set
-        cumulative_coverage.append(len(all_coverage))
-
-    return all_coverage, cumulative_coverage
-
-#never used
-def population_branch_coverage(
-    population: List[Tuple[int, int]], function: Callable
-) -> Tuple[Set[Location], List[int]]:
-    cumulative_coverage: List[int] = []
-    all_coverage: Set[Location] = set()
-
-    for s in population:
-        with BranchCoverage() as cov:
-            try:
-                function(s)
-            except:
-                pass
-        filtered_set = {
-            (x, y)
-            for (x, y) in cov.coverage()
-            if "derivation_tree" not in x[0] and y[0] and "input" not in x[0] and y[0]
-        }
-        all_coverage |= filtered_set
-        cumulative_coverage.append(len(all_coverage))
-
-    return all_coverage, cumulative_coverage
