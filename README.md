@@ -3,47 +3,48 @@
 
 # debugging-benchmark
 
+Welcome to the debugging benchmark toolkit!
+This guide will walk you through using our benchmarks to test and evaluate your research prototypes efficiently.
+
 ## Quickstart 
 
-Generating Passing and Failing Inputs:
+### Initializing the Calculator Benchmark
 
+Let's start by initializing the CalculatorBenchmarkRepository from our benchmark collection.
+This repository contains different subjects for the calculator benchmark, each designed to test various aspects of calculator implementations.
 ```python 
 from debugging_benchmark.calculator.calculator import CalculatorBenchmarkRepository
+
+calculator_repo = CalculatorBenchmarkRepository()
+calculator_subjects = calculator_repo.build()
+
+print(f"Initialized Calculator Benchmark with {len(calculator_subjects)} subjects.")
+``` 
+
+### Fuzzing the Calculator Benchmark
+
+Next, we'll fuzz each calculator subject to generate passing and failing inputs.
+The GrammarBasedEvaluationFuzzer is utilized here to create inputs based on the grammar and rules defined in the calculator benchmark.
+
+```python
 from debugging_framework.tools import GrammarBasedEvaluationFuzzer
 
-calc = CalculatorBenchmarkRepository().build()
+print(f"Fuzzing the calculator repository...")
 
-#Param is a Dict with the keys grammar, oracle and initial_inputs
-param = calc.to_dict()
+for calculator_subject in calculator_subjects:
+    print(f"Fuzzing the calculator subject ({calculator_subject})...")
+    param = calculator_subject.to_dict()
+    
+    fuzzer = GrammarBasedEvaluationFuzzer(**param)
+    failing_inputs = fuzzer.run().get_all_failing_inputs()
 
-fuzzer = GrammarBasedEvaluationFuzzer(**param)
-fuzzer.run()
-gen_inps = fuzzer.get_generated_inputs()
-#sin(18)
-#cos(-9.5)
-#sqrt(330)
-#sqrt(-12)
-``` 
-
-Evaluation:
-
-```python 
-from debugging_benchmark.calculator.calculator import CalculatorBenchmarkRepository
-from debugging_framework.evaluator import Evaluation
-from debugging_framework.tools import InputsFromHellEvaluationFuzzer
-
-tools = [InputsFromHellEvaluationFuzzer]
-
-subjects = SieveOfEratosthenesStudentAssignmentBenchmarkRepository().build()
-
-result = Evaluation(
-        tools=tools, 
-        subjects=subjects[0:1],
-        repetitions=1, 
-        timeout=3600
-        ).run()
-``` 
-
+    if failing_inputs:
+        print(f"Found the following failing inputs:")
+        for failing_input in failing_inputs:
+            print(failing_input)
+    else:
+        print("No failing inputs found.")
+```
 
 ## Deeper Look into the Class Structure
 
