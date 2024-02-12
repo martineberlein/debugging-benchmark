@@ -33,7 +33,7 @@ jobs:
     - name: Create Coverage Report
       run: |
         pip install coverage
-        coverage run -m unittest
+        coverage run -m pytest --ignore-glob="*coverage.py"
         coverage lcov
         coverage xml
     - name: Code Coverage Summary Report
