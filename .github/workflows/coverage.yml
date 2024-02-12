@@ -32,26 +32,14 @@ jobs:
         pip install .[dev]
     - name: Create Coverage Report
       run: |
-        pip install coverage
-        coverage run -m pytest --ignore-glob="*coverage.py"
-        coverage lcov
-        coverage xml
-    - name: Code Coverage Summary Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
+        python3 -m pytest --html=report.html --self-contained-html --cov-report xml:coverage.xml --cov-report term --cov-config=.coveragerc --cov=./src test/
+        python3 -m coverage lcov
+    - uses: actions/upload-artifact@v3
       with:
-        filename: coverage.xml        
-        badge: true
-        format: 'markdown'
-        output: 'both'
-    - name: Write to Job Summary
-      run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
-    - name: Coveralls Code Coverage Report
+        name: Test Report
+        path: report.html
+    - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: coverage.lcov
-    
-      
-    
-
-        
