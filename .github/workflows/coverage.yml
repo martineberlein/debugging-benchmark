@@ -29,10 +29,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[dev]
+        pip install -e .[test]
     - name: Create Coverage Report
       run: |
-        python3 -m pytest --html=report.html --self-contained-html --cov-report xml:coverage.xml --cov-report term --cov-config=.coveragerc --cov=./src test/
+        python3 -m pytest --html=report.html --self-contained-html --cov-report xml:coverage.xml --cov-report term --cov-config=.coveragerc --cov="debugging_framework" --cov="debugging_benchmark" test/
         python3 -m coverage lcov
     - uses: actions/upload-artifact@v3
       with:
