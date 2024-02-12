@@ -58,7 +58,6 @@ subject = "cli.subjects:main"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.2.0",
     "twine",
     "black",
     "pytest>=7.2.2",
