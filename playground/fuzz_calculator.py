@@ -1,19 +1,24 @@
 from debugging_benchmark.calculator.calculator import CalculatorBenchmarkRepository
-from debugging_benchmark.database import DatabaseHelper
 from debugging_framework.tools import GrammarBasedEvaluationFuzzer
 
-def main():
-    calc = CalculatorBenchmarkRepository().build()
-    param = calc.to_dict()
-    fuzzer = GrammarBasedEvaluationFuzzer(**param)
-    fuzzer.run()
-    gen_inps = fuzzer.get_generated_inputs()
-    oracle = calc.get_oracle()
-    db = DatabaseHelper.instance()
-    prog_id = db.insert_program(calc)
-    db.insert_many_inputs(prog_id, gen_inps,oracle)
-    
 
+def main():
+    calculator_repo = CalculatorBenchmarkRepository()
+    calculator_subjects = calculator_repo.build()
+
+    print(f"Fuzzing the calculator repository ({calculator_repo})...")
+
+    for calculator_subject in calculator_subjects:
+        print(f"Fuzzing the calculator subject ({calculator_subject})...")
+
+        param = calculator_subject.to_dict()
+
+        fuzzer = GrammarBasedEvaluationFuzzer(**param)
+        failing_inputs = fuzzer.run().get_all_failing_inputs()
+
+        print(f"Found the following failing inputs:")
+        for failing_input in failing_inputs:
+            print(failing_input)
 
 
 if __name__ == "__main__":
