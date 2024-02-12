@@ -4,7 +4,6 @@ from debugging_framework.coverage import population_coverage, population_branch_
 from .resources.program_simple_coverage import program_simple
 
 
-@unittest.skip
 class TestCoverage(unittest.TestCase):
     def test_coverage(self):
         all_coverage, cumulative = population_coverage(["sqrt(10)"], program_simple)

@@ -32,7 +32,7 @@ jobs:
         python3 -m pip install -e .[dev]
     - name: Create Coverage Report
       run: |
-        python3 -m pytest --html=report.html --self-contained-html --cov-report xml:coverage.xml --cov-report term --cov-config=.coveragerc --cov="debugging_framework" --cov="debugging_benchmark" test/
+        python3 -m pytest --html=report.html --self-contained-html --cov-report xml:coverage.xml --cov-report term --cov-config=.coveragerc --cov="debugging_framework" --cov="debugging_benchmark" --ignore-glob="*test_coverage.py" test/
         python3 -m coverage lcov
     - uses: actions/upload-artifact@v3
       with:
