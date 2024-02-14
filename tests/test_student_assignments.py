@@ -70,7 +70,7 @@ class TestStudentAssignments(unittest.TestCase):
             with self.subTest(program):
                 oracle = program.get_oracle()
                 for inp in program.get_initial_inputs():
-                    result, opt_excp = oracle(inp)
+                    result, _ = oracle(inp)
                     self.assertIsInstance(result, OracleResult)
 
 

@@ -36,6 +36,7 @@ dependencies = [
     "shap>=0.41",
     "lightgbm>=3.3.2",
     "tests4py",
+    "evogfuzz",
 ]
 
 # für coverage 

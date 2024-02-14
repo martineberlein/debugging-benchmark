@@ -9,9 +9,11 @@ from fuzzingbook.ProbabilisticGrammarFuzzer import (
 )
 from fuzzingbook.Parser import EarleyParser
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
+from evogfuzz.evogfuzz_class import EvoGFuzz
 
 from debugging_framework.execution_handler import SingleExecutionHandler
 from debugging_framework.report import MultipleFailureReport, Report
+
 
 
 class Tool(ABC):
@@ -90,6 +92,24 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
     def run(self) -> Report:
         fuzzer = ISLaGrammarFuzzer(
             self.grammar, max_nonterminals=self.max_non_terminals
+        )
+
+        test_inputs = set()
+        for _ in range(self.max_generated_inputs):
+            test_inputs.add(fuzzer.fuzz())
+
+        self.execution_handler.label_strings(test_inputs, self.report)
+        self.generated_inputs = test_inputs
+        return self.report
+
+class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
+    name = "EvoGFuzzBasedFuzzer"
+
+    def run(self) -> Report:
+        fuzzer = EvoGFuzz(
+            grammar=self.grammar,
+            oracle=self.oracle,
+            inputs=self.initial_inputs
         )
 
         test_inputs = set()

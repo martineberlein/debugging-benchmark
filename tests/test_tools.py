@@ -5,7 +5,8 @@ from debugging_benchmark.calculator.calculator import CalculatorBenchmarkReposit
 from debugging_framework.tools import (
 	GrammarBasedEvaluationFuzzer,
 	InputsFromHellEvaluationFuzzer,
-	ISLaGrammarEvaluationFuzzer
+	ISLaGrammarEvaluationFuzzer,
+	EvoGFuzzEvaluationFuzzer
 )
 
 
@@ -28,3 +29,11 @@ class TestTools(unittest.TestCase):
 		fuzzer = ISLaGrammarEvaluationFuzzer(**self.param)
 		report = fuzzer.run()
 		self.assertTrue(isinstance(report, Report))
+	
+	def test_evogfuzz_fuzzer(self):
+		fuzzer = EvoGFuzzEvaluationFuzzer(**self.param)
+		report = fuzzer.run()
+		self.assertTrue(isinstance(report, Report))
+
+if __name__ == "__main__":
+    unittest.main()
