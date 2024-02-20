@@ -1,24 +1,26 @@
 from debugging_benchmark.calculator.calculator import CalculatorBenchmarkRepository
 from debugging_framework.tools import GrammarBasedEvaluationFuzzer
 
+from debugging_framework.grammar import is_valid_grammar as own
+from isla.helpers import is_valid_grammar as isla
+from debugging_framework.types import Grammar
+
+grammar_alhazen: Grammar = {
+    "<start>": ["<arith_expr>"],
+    "<arith_expr>": ["<function>(<number>)"],
+    "<function>": ["sqrt", "sin", "cos", "tan"],
+    "<number>": ["<maybe_minus><onenine><maybe_digits><maybe_frac>"],
+    "<maybe_minus>": ["", "-"],
+    "<onenine>": [str(num) for num in range(1, 10)],
+    "<digit>": [str(num) for num in range(0, 10)],
+    "<maybe_digits>": ["", "<digits>"],
+    "<digits>": ["<digit>", "<digit><digits>"],
+    "<maybe_frac>": ["", ".<digits>"],
+}
 
 def main():
-    calculator_repo = CalculatorBenchmarkRepository()
-    calculator_subjects = calculator_repo.build()
-
-    print(f"Fuzzing the calculator repository ({calculator_repo})...")
-
-    for calculator_subject in calculator_subjects:
-        print(f"Fuzzing the calculator subject ({calculator_subject})...")
-
-        param = calculator_subject.to_dict()
-
-        fuzzer = GrammarBasedEvaluationFuzzer(**param)
-        failing_inputs = fuzzer.run().get_all_failing_inputs()
-
-        print(f"Found the following failing inputs:")
-        for failing_input in failing_inputs:
-            print(failing_input)
+    own(grammar_alhazen)
+    isla(grammar_alhazen)
 
 
 if __name__ == "__main__":

@@ -1,10 +1,15 @@
 import sys
-from typing import Set, Optional, Tuple, Dict, Any
+import re
+import copy
+from typing import (Set,Optional,Tuple,Dict,
+                    Any,cast,Union,List)
 
-from isla.derivation_tree import DerivationTree
-
-from debugging_framework.types import Grammar, Expansion, START_SYMBOL, RE_NONTERMINAL
-from debugging_framework.fuzzer import exp_probabilities
+from debugging_framework.types import (Grammar,
+                                       Expansion,
+                                       START_SYMBOL,
+                                       RE_NONTERMINAL,
+                                       Option,
+                                       DerivationTree)
 
 def is_valid_grammar(grammar: Grammar,
                      start_symbol: str = START_SYMBOL,
@@ -160,3 +165,137 @@ def all_terminals(tree: DerivationTree) -> str:
     # This is an expanded symbol:
     # Concatenate all terminal symbols from all children
     return ''.join([all_terminals(c) for c in children])
+
+def extend_grammar(grammar: Grammar, extension: Grammar = {}) -> Grammar:
+    new_grammar = copy.deepcopy(grammar)
+    new_grammar.update(extension)
+    return new_grammar
+
+def expansion_key(
+    symbol: str,
+    expansion: Union[Expansion, Tuple[str, Optional[List[Any]]], List[DerivationTree]],
+) -> str:
+    """Convert (symbol, `expansion`) into a key "SYMBOL -> EXPRESSION".
+    `expansion` can be an expansion string, a derivation tree,
+       or a list of derivation trees."""
+
+    if isinstance(expansion, tuple):
+        # Expansion or single derivation tree
+        expansion, _ = expansion
+
+    # Check for empty list expansion
+    if isinstance(expansion, list) and not expansion:
+        expansion = ""
+
+    if not isinstance(expansion, str):
+        # Derivation tree
+        children = expansion
+        expansion = all_terminals((symbol, children))
+
+    assert isinstance(expansion, str)
+
+    return symbol + " -> " + expansion
+
+
+def set_prob(grammar: Grammar, symbol: str, 
+             expansion: Expansion, prob: Optional[float]) -> None:
+    """Set the probability of the given expansion of grammar[symbol]"""
+    set_opts(grammar, symbol, expansion, opts(prob=prob))
+
+def set_opts(grammar: Grammar, symbol: str, expansion: Expansion,
+             opts: Option = {}) -> None:
+    """Set the options of the given expansion of grammar[symbol] to opts"""
+    expansions = grammar[symbol]
+    for i, exp in enumerate(expansions):
+        if exp_string(exp) != exp_string(expansion):
+            continue
+
+        new_opts = exp_opts(exp)
+        if opts == {} or new_opts == {}:
+            new_opts = opts
+        else:
+            for key in opts:
+                new_opts[key] = opts[key]
+
+        if new_opts == {}:
+            grammar[symbol][i] = exp_string(exp)
+        else:
+            grammar[symbol][i] = (exp_string(exp), new_opts)
+
+        return
+    
+def opts(**kwargs: Any) -> Dict[str, Any]:
+    return kwargs
+
+
+def exp_probabilities(expansions: List[Expansion],
+                      nonterminal: str ="<symbol>") \
+        -> Dict[Expansion, float]:
+    probabilities = [exp_prob(expansion) for expansion in expansions]
+    prob_dist = prob_distribution(probabilities, nonterminal)  # type: ignore
+
+    prob_mapping: Dict[Expansion, float] = {}
+    for i in range(len(expansions)):
+        expansion = exp_string(expansions[i])
+        prob_mapping[expansion] = prob_dist[i]
+
+    return prob_mapping
+
+def exp_prob(expansion: Expansion) -> float:
+    """Return the options of an expansion"""
+    return exp_opt(expansion, 'prob')
+
+def exp_opt(expansion: Expansion, attribute: str) -> Any:
+    """Return the given attribution of an expansion.
+    If attribute is not defined, return None"""
+    return exp_opts(expansion).get(attribute, None)
+
+def prob_distribution(probabilities: List[Optional[float]],
+                      nonterminal: str = "<symbol>"):
+    epsilon = 0.00001
+
+    number_of_unspecified_probabilities = probabilities.count(None)
+    if number_of_unspecified_probabilities == 0:
+        sum_probabilities = cast(float, sum(probabilities))
+        assert abs(sum_probabilities - 1.0) < epsilon, \
+            nonterminal + ": sum of probabilities must be 1.0"
+        return probabilities
+
+    sum_of_specified_probabilities = 0.0
+    for p in probabilities:
+        if p is not None:
+            sum_of_specified_probabilities += p
+    assert 0 <= sum_of_specified_probabilities <= 1.0, \
+        nonterminal + ": sum of specified probabilities must be between 0.0 and 1.0"
+
+    default_probability = ((1.0 - sum_of_specified_probabilities)
+                           / number_of_unspecified_probabilities)
+    all_probabilities = []
+    for p in probabilities:
+        if p is None:
+            p = default_probability
+        all_probabilities.append(p)
+
+    assert abs(sum(all_probabilities) - 1.0) < epsilon
+    return all_probabilities
+
+def exp_string(expansion: Expansion) -> str:
+    """Return the string to be expanded"""
+    if isinstance(expansion, str):
+        return expansion
+    return expansion[0]
+
+def expansion_to_children(expansion: Expansion) -> List[DerivationTree]:
+    # print("Converting " + repr(expansion))
+    # strings contains all substrings -- both terminals and nonterminals such
+    # that ''.join(strings) == expansion
+
+    expansion = exp_string(expansion)
+    assert isinstance(expansion, str)
+
+    if expansion == "":  # Special case: epsilon expansion
+        return [("", [])]
+
+    strings = re.split(RE_NONTERMINAL, expansion)
+    return [(s, None) if is_nonterminal(s) else (s, [])
+            for s in strings if len(s) > 0]

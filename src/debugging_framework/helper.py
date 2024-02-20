@@ -7,3 +7,4 @@ def tree_to_string(tree: DerivationTree) -> str:
         return ''.join(tree_to_string(c) for c in children)
     else:
         return '' if is_nonterminal(symbol) else symbol
+    
