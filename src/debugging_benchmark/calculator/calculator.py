@@ -31,7 +31,7 @@ calculator_grammar: Grammar = {
     "<maybe_minus>": ["", "-"],
     "<maybe_frac>": ["", ".<digits>"],
     "<one_nine>": [str(num) for num in range(1, 10)],
-    "<digit>": list(string.digits),
+    "<digit>": [digit for digit in string.digits],
     "<maybe_digits>": ["", "<digits>"],
     "<digits>": ["<digit>", "<digit><digits>"],
 }

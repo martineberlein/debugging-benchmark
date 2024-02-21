@@ -25,6 +25,7 @@ def is_valid_grammar(grammar: Grammar,
 
     # Do not complain about '<start>' being not used,
     # even if start_symbol is different
+    # TODO: eigentlich überflüssig, da das schon in def_used_nonterminals passiert
     if START_SYMBOL in grammar:
         used_nonterminals.add(START_SYMBOL)
 
@@ -62,8 +63,8 @@ def is_valid_grammar(grammar: Grammar,
 
     return used_nonterminals == defined_nonterminals and len(unreachable) == 0
 
-def def_used_nonterminals(grammar: Grammar, start_symbol: 
-                          str = START_SYMBOL) -> Tuple[Optional[Set[str]], 
+def def_used_nonterminals(grammar: Grammar, start_symbol:
+                          str = START_SYMBOL) -> Tuple[Optional[Set[str]],
                                                        Optional[Set[str]]]:
     """Return a pair (`defined_nonterminals`, `used_nonterminals`) in `grammar`.
     In case of error, return (`None`, `None`)."""
@@ -117,7 +118,7 @@ def unreachable_nonterminals(grammar: Grammar,
                              start_symbol=START_SYMBOL) -> Set[str]:
     return grammar.keys() - reachable_nonterminals(grammar, start_symbol)
 
-def nonterminals(expansion):
+def nonterminals(expansion: str):
     # In later chapters, we allow expansions to be tuples,
     # with the expansion being the first element
     if isinstance(expansion, tuple):
@@ -132,6 +133,8 @@ def opts_used(grammar: Grammar) -> Set[str]:
     used_opts = set()
     for symbol in grammar:
         for expansion in grammar[symbol]:
+            # |= in place or
+            # https://stackoverflow.com/questions/3929278/what-does-ior-do-in-python
             used_opts |= set(exp_opts(expansion).keys())
     return used_opts
 
@@ -151,6 +154,19 @@ def is_valid_probabilistic_grammar(grammar: Grammar,
         _ = exp_probabilities(expansions, nonterminal)
 
     return True
+
+def exp_probabilities(expansions: List[Expansion],
+                      nonterminal: str ="<symbol>") \
+        -> Dict[Expansion, float]:
+    probabilities = [exp_prob(expansion) for expansion in expansions]
+    prob_dist = prob_distribution(probabilities, nonterminal)  # type: ignore
+
+    prob_mapping: Dict[Expansion, float] = {}
+    for i in range(len(expansions)):
+        expansion = exp_string(expansions[i])
+        prob_mapping[expansion] = prob_dist[i]
+
+    return prob_mapping
 
 def all_terminals(tree: DerivationTree) -> str:
     (symbol, children) = tree
@@ -228,18 +244,6 @@ def opts(**kwargs: Any) -> Dict[str, Any]:
     return kwargs
 
 
-def exp_probabilities(expansions: List[Expansion],
-                      nonterminal: str ="<symbol>") \
-        -> Dict[Expansion, float]:
-    probabilities = [exp_prob(expansion) for expansion in expansions]
-    prob_dist = prob_distribution(probabilities, nonterminal)  # type: ignore
-
-    prob_mapping: Dict[Expansion, float] = {}
-    for i in range(len(expansions)):
-        expansion = exp_string(expansions[i])
-        prob_mapping[expansion] = prob_dist[i]
-
-    return prob_mapping
 
 def exp_prob(expansion: Expansion) -> float:
     """Return the options of an expansion"""

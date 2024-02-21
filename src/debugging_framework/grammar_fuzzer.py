@@ -23,11 +23,6 @@ class Fuzzer:
         """Return fuzz"""
         return self.fuzz()
 
-
-
-#def expand_node(self, node: DerivationTree) -> DerivationTree:
-#    return self.expand_node_randomly(node)
-# war 3 mal definiert mit unterschiedlichen strategys -> rausgelöscht sollte keine Probleme geben, wenn doch siehe das als reminder
 class GrammarFuzzer(Fuzzer):
     """Produce strings from grammars efficiently, using derivation trees."""
 
@@ -101,8 +96,6 @@ class GrammarFuzzer(Fuzzer):
 
         # Return with new children
         return (symbol, chosen_children)
-    
-
     
     def process_chosen_children(self,
                                 chosen_children: List[DerivationTree],
