@@ -4,12 +4,12 @@ import copy
 from typing import (Set,Optional,Tuple,Dict,
                     Any,cast,Union,List)
 
+from isla.derivation_tree import DerivationTree
 from debugging_framework.types import (Grammar,
                                        Expansion,
                                        START_SYMBOL,
                                        RE_NONTERMINAL,
-                                       Option,
-                                       DerivationTree)
+                                       Option)
 
 def is_valid_grammar(grammar: Grammar,
                      start_symbol: str = START_SYMBOL,

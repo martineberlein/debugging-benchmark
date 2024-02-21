@@ -1,7 +1,8 @@
 import random
 from typing import List
 
-from debugging_framework.types import DerivationTree
+from isla.derivation_tree import DerivationTree
+
 from debugging_framework.grammar import exp_probabilities, all_terminals
 from debugging_framework.grammar_fuzzer import GrammarFuzzer
 

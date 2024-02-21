@@ -7,7 +7,6 @@ HARNESS_FUNCTION = Type[Callable[[Union[str, Input]], Sequence[str]]]
 
 Option = Dict[str, Any]
 Expansion = Union[str, Tuple[str, Option]]
-DerivationTree = Tuple[str, Optional[List[Any]]]
 
 #Grammars
 Grammar = Dict[str, List[Expansion]]

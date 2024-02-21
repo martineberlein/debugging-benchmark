@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 from collections import defaultdict
 
-from isla.language import DerivationTree
+from isla.derivation_tree import DerivationTree
 
 from debugging_framework.types import Grammar
 from debugging_framework.grammar import reachable_nonterminals, is_nonterminal

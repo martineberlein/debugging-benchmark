@@ -1,7 +1,8 @@
 from typing import Optional, List, Callable, Set, Union
 import random
 
-from debugging_framework.types import Grammar, DerivationTree, Expansion, START_SYMBOL
+from isla.derivation_tree import DerivationTree
+from debugging_framework.types import Grammar, Expansion, START_SYMBOL
 
 from debugging_framework.grammar import (is_valid_grammar,
                                          expansion_to_children,
