@@ -1,15 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Callable, List
 
-from fuzzingbook.Grammars import Grammar
-from fuzzingbook.GrammarFuzzer import GrammarFuzzer
-from fuzzingbook.ProbabilisticGrammarFuzzer import (
-    ProbabilisticGrammarMiner,
-    ProbabilisticGrammarFuzzer,
-)
-from fuzzingbook.Parser import EarleyParser
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
+from isla.parser import EarleyParser
 
+from debugging_framework.types import Grammar
+from debugging_framework.probalistic_grammar_fuzzer import ProbabilisticGrammarFuzzer
+from debugging_framework.probalistic_grammar_miner import ProbabilisticGrammarMiner
+from debugging_framework.grammar_fuzzer import GrammarFuzzer
 from debugging_framework.execution_handler import SingleExecutionHandler
 from debugging_framework.report import MultipleFailureReport, Report
 

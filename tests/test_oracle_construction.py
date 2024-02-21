@@ -1,5 +1,4 @@
 import unittest
-from fuzzingbook.Grammars import Grammar
 import string
 
 from debugging_framework.oracle_construction import (
@@ -8,6 +7,7 @@ from debugging_framework.oracle_construction import (
 )
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
+from debugging_framework.types import Grammar
 from debugging_framework.timeout_manager import ManageTimeout
 
 

@@ -3,9 +3,10 @@ import re
 from abc import ABC, abstractmethod
 from collections import defaultdict
 
-from fuzzingbook.Grammars import is_nonterminal, Grammar, reachable_nonterminals
 from isla.language import DerivationTree
 
+from debugging_framework.types import Grammar
+from debugging_framework.grammar import reachable_nonterminals, is_nonterminal
 from debugging_framework.oracle import OracleResult
 
 

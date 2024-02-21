@@ -6,9 +6,6 @@ from debugging_framework.grammar import exp_probabilities, all_terminals
 from debugging_framework.grammar_fuzzer import GrammarFuzzer
 
 class ProbabilisticGrammarFuzzer(GrammarFuzzer):
-    def __init__(self, 	grammar):
-        #vorher checken ob valid grammar + valid probalistic grammar
-        super().__init__(grammar)
 
     def choose_node_expansion(self,
                               node: DerivationTree,

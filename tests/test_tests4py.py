@@ -1,19 +1,20 @@
 import unittest
 from typing import Union, List
 
-from fuzzingbook.GrammarFuzzer import GrammarFuzzer, is_valid_grammar
-from fuzzingbook.Parser import EarleyParser, tree_to_string
+from isla.parser import EarleyParser
 
+from debugging_framework.grammar import is_valid_grammar
+from debugging_framework.grammar_fuzzer import GrammarFuzzer
+from debugging_framework.helper import tree_to_string
 from debugging_framework.oracle import OracleResult
 from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
     # YoutubeDLBenchmarkRepository,
     CookieCutterBenchmarkRepository,
-    FastAPIBenchmarkRepository,
-    ToyExampleTests4PyBenchmarkRepository,
+    # FastAPIBenchmarkRepository,
+    # ToyExampleTests4PyBenchmarkRepository,
 )
-                                                            
 
 @unittest.skip
 class TestTests4Py(unittest.TestCase):

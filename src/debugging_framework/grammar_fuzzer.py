@@ -1,12 +1,10 @@
 from typing import Optional, List, Callable, Set, Union
 import random
 
-from debugging_framework.types import Grammar, DerivationTree, RE_NONTERMINAL, Expansion, START_SYMBOL
+from debugging_framework.types import Grammar, DerivationTree, Expansion, START_SYMBOL
 
 from debugging_framework.grammar import (is_valid_grammar,
                                          expansion_to_children,
-                                         exp_string,
-                                         is_nonterminal,
                                          nonterminals,
                                          all_terminals)
 

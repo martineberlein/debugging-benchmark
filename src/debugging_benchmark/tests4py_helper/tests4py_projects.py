@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from tests4py import api
 from tests4py.projects import Project
 
-from fuzzingbook.Grammars import Grammar
+from debugging_framework.types import Grammar
 
 from debugging_framework.input import Input
 from debugging_framework.types import HARNESS_FUNCTION

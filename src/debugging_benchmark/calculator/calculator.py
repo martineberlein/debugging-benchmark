@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Union, Callable, List, Dict
 import string
 
-from fuzzingbook.Grammars import Grammar
-
+from debugging_framework.types import Grammar
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
 from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository

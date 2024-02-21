@@ -1,11 +1,15 @@
 import unittest
 
 from isla.derivation_tree import DerivationTree
-from fuzzingbook.Parser import EarleyParser, is_valid_grammar, Grammar
+from isla.parser import EarleyParser
 
-from debugging_benchmark.calculator.calculator import calculator_grammar as grammar, calculator_oracle as oracle
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
+from debugging_framework.types import Grammar
+from debugging_framework.grammar import is_valid_grammar
+from debugging_benchmark.calculator.calculator import (calculator_grammar as grammar,
+													   calculator_oracle as oracle)
+
 
 
 class TestInputs(unittest.TestCase):

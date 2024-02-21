@@ -5,8 +5,8 @@ import ast
 from typing import Union, List, Callable, Dict, Sequence, Any
 from pathlib import Path
 from abc import ABC, abstractmethod
-from fuzzingbook.Grammars import Grammar
 
+from debugging_framework.types import Grammar
 from debugging_framework.oracle import OracleResult
 
 
