@@ -5,12 +5,10 @@ from pathlib import Path
 import string
 import os
 
-from fuzzingbook.Grammars import Grammar
-
+from debugging_framework.types import Grammar
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
 from debugging_framework.benchmark import load_object_dynamically
-
 from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository
 
 

@@ -2,7 +2,7 @@ import unittest
 from typing import Set, Tuple, Union
 
 from isla.derivation_tree import DerivationTree
-from fuzzingbook.Parser import EarleyParser
+from isla.parser import EarleyParser
 
 from debugging_framework.execution_handler import (
     SingleExecutionHandler,

@@ -3,9 +3,10 @@ import re
 from abc import ABC, abstractmethod
 from collections import defaultdict
 
-from fuzzingbook.Grammars import is_nonterminal, Grammar, reachable_nonterminals
-from isla.language import DerivationTree
+from isla.derivation_tree import DerivationTree
 
+from debugging_framework.types import Grammar
+from debugging_framework.grammar import reachable_nonterminals, is_nonterminal
 from debugging_framework.oracle import OracleResult
 
 
@@ -14,20 +15,20 @@ class Feature(ABC):
         self.non_terminal = non_terminal
 
     def __repr__(self) -> str:
-     return (
-         self._repr()
-         .replace('"', "&quot;")
-         .replace(",", "&comma;")
-         .replace("[", "&lsqb;")
-         .replace("]", "&rsqb;")
-         .replace("{", "&lcub;")
-         .replace("}", "&rcub;")
-         .replace(":", "&colon;")
-     )
+        return (
+            self._repr()
+            .replace('"', "&quot;")
+            .replace(",", "&comma;")
+            .replace("[", "&lsqb;")
+            .replace("]", "&rsqb;")
+            .replace("{", "&lcub;")
+            .replace("}", "&rcub;")
+            .replace(":", "&colon;")
+        )
 
     @abstractmethod
     def _repr(self) -> str:
-     raise NotImplementedError
+        raise NotImplementedError
 
     def __hash__(self):
         return hash(self.__repr__())

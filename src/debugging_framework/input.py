@@ -3,7 +3,7 @@ from typing import Final
 
 
 from isla.derivation_tree import DerivationTree
-from fuzzingbook.Parser import EarleyParser
+from isla.parser import EarleyParser
 
 from debugging_framework.oracle import OracleResult
 

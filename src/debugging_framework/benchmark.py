@@ -5,8 +5,8 @@ import ast
 from typing import Union, List, Callable, Dict, Sequence, Any
 from pathlib import Path
 from abc import ABC, abstractmethod
-from fuzzingbook.Grammars import Grammar
 
+from debugging_framework.types import Grammar
 from debugging_framework.oracle import OracleResult
 
 
@@ -44,7 +44,6 @@ class BenchmarkProgram(ABC):
 
 
 class BenchmarkRepository(ABC):
-
     name: str
 
     def __repr__(self):
@@ -52,9 +51,9 @@ class BenchmarkRepository(ABC):
 
     @abstractmethod
     def build(
-            self,
-            err_def: Dict[Exception, OracleResult] = None,
-            default_oracle: OracleResult = None,
+        self,
+        err_def: Dict[Exception, OracleResult] = None,
+        default_oracle: OracleResult = None,
     ) -> List[BenchmarkProgram]:
         raise NotImplementedError
 

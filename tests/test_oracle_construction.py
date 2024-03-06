@@ -1,5 +1,4 @@
 import unittest
-from fuzzingbook.Grammars import Grammar
 import string
 
 from debugging_framework.oracle_construction import (
@@ -8,6 +7,7 @@ from debugging_framework.oracle_construction import (
 )
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
+from debugging_framework.types import Grammar
 from debugging_framework.timeout_manager import ManageTimeout
 
 
@@ -173,15 +173,15 @@ class TestConstructOracle(unittest.TestCase):
 
         oracle_result, _ = my_oracle(Input.from_str(grammar, "1 1"))
         self.assertEqual(oracle_result, OracleResult.FAILING)
-    
+
     def test_failure_oracle(self):
         def under_test(x, y):
             return x + y
-        
+
         my_oracle = construct_oracle(
             program_under_test=under_test,
             program_oracle=None,
-            harness_function=self.harness_function
+            harness_function=self.harness_function,
         )
         oracle_result, _ = my_oracle(Input.from_str(grammar, "1 1"))
         self.assertTrue(isinstance(oracle_result, OracleResult))
@@ -194,10 +194,12 @@ class TestConstructOracle(unittest.TestCase):
         :return:
         """
         from debugging_benchmark.student_assignments import (
-            SieveOfEratosthenesStudentAssignmentBenchmarkRepository
+            SieveOfEratosthenesStudentAssignmentBenchmarkRepository,
         )
-        SieveOfEratosthenesStudentAssignmentBenchmarkRepository().load_ground_truth()(4713133176770)
 
+        SieveOfEratosthenesStudentAssignmentBenchmarkRepository().load_ground_truth()(
+            4713133176770
+        )
 
     @unittest.skip
     def test_timeout_manager(self):
