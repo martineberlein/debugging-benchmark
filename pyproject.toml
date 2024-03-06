@@ -27,7 +27,7 @@ classifiers = [
 keywords = [ "debugging", "benchmark" ]
 requires-python = ">=3.10"
 dependencies = [
-    "fuzzingbook==1.1",
+    # "fuzzingbook==1.1",
     "jupyter",
     "isla-solver",
     "numpy~=1.26.1",
