@@ -13,6 +13,7 @@ from debugging_framework.execution_handler import SingleExecutionHandler
 from debugging_framework.report import MultipleFailureReport, Report
 
 
+
 class Tool(ABC):
     name: str
 
@@ -38,7 +39,7 @@ class GrammarBasedEvaluationTool(Tool, ABC):
         initial_inputs,
         max_non_terminals: int = 5,
         max_generated_inputs: int = 10000,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(grammar, oracle, initial_inputs)
         self.report = MultipleFailureReport(name=type(self).__name__)
@@ -99,16 +100,38 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.generated_inputs = test_inputs
         return self.report
 
-class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
-    name = "EvoGFuzzBasedFuzzer"
+# class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
+#     name = "EvoGFuzzBasedFuzzer"
+#
+#     def run(self) -> Report:
+#         fuzzer = EvoGFuzz(
+#             grammar=self.grammar,
+#             oracle=self.oracle,
+#             inputs=self.initial_inputs
+#         )
+#
+#         test_inputs = set()
+#         for _ in range(self.max_generated_inputs):
+#             test_inputs.add(fuzzer.fuzz())
+#
+#         self.execution_handler.label_strings(test_inputs, self.report)
+#         self.generated_inputs = test_inputs
+#         return self.report
 
-    def run(self) -> Report:
-        fuzzer = EvoGFuzz(self.grammar, self.oracle, self.initial_inputs)
-
-        test_inputs = set()
-        for _ in range(self.max_generated_inputs):
-            test_inputs.add(fuzzer.fuzz())
-
-        self.execution_handler.label_strings(test_inputs, self.report)
-        self.generated_inputs = test_inputs
-        return self.report
+# class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
+#     name = "EvoGFuzzBasedFuzzer"
+#
+#     def run(self) -> Report:
+#         fuzzer = EvoGFuzz(
+#             grammar=self.grammar,
+#             oracle=self.oracle,
+#             inputs=self.initial_inputs
+#         )
+#
+#         test_inputs = set()
+#         for _ in range(self.max_generated_inputs):
+#             test_inputs.add(fuzzer.fuzz())
+#
+#         self.execution_handler.label_strings(test_inputs, self.report)
+#         self.generated_inputs = test_inputs
+#         return self.report

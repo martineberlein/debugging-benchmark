@@ -16,6 +16,7 @@ from debugging_benchmark.tests4py_benchmark import (
     # ToyExampleTests4PyBenchmarkRepository,
 )
 
+
 @unittest.skip
 class TestTests4Py(unittest.TestCase):
     subjects: List[BenchmarkProgram]

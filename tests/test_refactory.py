@@ -20,9 +20,9 @@ class TestRefactory(unittest.TestCase):
             Question2cRefactoryBenchmarkRepository(),
             Question3RefactoryBenchmarkRepository(),
             Question4RefactoryBenchmarkRepository(),
-            Question5RefactoryBenchmarkRepository()
+            Question5RefactoryBenchmarkRepository(),
         ]
-        #if .build() fails all testcases fail but saves computing
+        # if .build() fails all testcases fail but saves computing
         self.refactorys = []
         for repo in self.repos:
             refactorys = repo.build()
@@ -33,13 +33,12 @@ class TestRefactory(unittest.TestCase):
     def test_get_dir(self):
         for repo in self.repos:
             self.assertTrue(check_directory_exists(repo.get_dir()))
-    
+
     def test_valid_grammar(self):
         for repo in self.repos:
             self.assertTrue(is_valid_grammar(repo.get_grammar()))
-    
+
     def test_subject_parsing_inputs(self):
-                
         for refactory in self.refactorys:
             with self.subTest(refactory):
                 self.assertTrue(isinstance(refactory, RefactoryBenchmarkProgram))
