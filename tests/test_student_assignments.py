@@ -16,7 +16,7 @@ from debugging_benchmark.student_assignments import (
     PalindromeAssignmentBenchmarkRepository,
     RemoveVowelAssignmentBenchmarkRepository,
     MergeStringsAssignmentBenchmarkRepository,
-    StudentAssignmentBenchmarkProgram
+    StudentAssignmentBenchmarkProgram,
 )
 
 
@@ -32,9 +32,9 @@ class TestStudentAssignments(unittest.TestCase):
             BubbleSortAssignmentBenchmarkRepository(),
             PalindromeAssignmentBenchmarkRepository(),
             RemoveVowelAssignmentBenchmarkRepository(),
-            MergeStringsAssignmentBenchmarkRepository()
+            MergeStringsAssignmentBenchmarkRepository(),
         ]
-        #if .build() fails all testcases fail but saves computing
+        # if .build() fails all testcases fail but saves computing
         self.programs = []
         for repo in self.repos:
             programs = repo.build()
@@ -47,13 +47,12 @@ class TestStudentAssignments(unittest.TestCase):
         programs = repo.build()
         for program in programs:
             self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
- 
+
     def test_subject_valid_grammars(self):
         for repo in self.repos:
             self.assertTrue(is_valid_grammar(repo.get_grammar()))
 
     def test_subject_parsing_inputs(self):
-                
         for program in self.programs:
             with self.subTest(program):
                 self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))

@@ -5,15 +5,17 @@ from isla.parser import EarleyParser
 from debugging_framework.grammar import is_valid_grammar
 from debugging_framework.helper import tree_to_string
 from debugging_framework.oracle import OracleResult
-from debugging_benchmark.calculator.calculator import (CalculatorBenchmarkRepository,
-                                                       CalculatorBenchmarkProgram)
+from debugging_benchmark.calculator.calculator import (
+    CalculatorBenchmarkRepository,
+    CalculatorBenchmarkProgram,
+)
 
 
 class TestCalculator(unittest.TestCase):
     def setUp(self):
         self.repo = CalculatorBenchmarkRepository()
         self.program = self.repo.build().pop()
-        
+
     def test_build(self):
         self.assertIsInstance(self.program, CalculatorBenchmarkProgram)
 
