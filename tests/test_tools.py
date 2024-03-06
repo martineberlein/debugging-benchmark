@@ -7,11 +7,12 @@ from debugging_framework.tools import (
 	InputsFromHellEvaluationFuzzer,
 	ISLaGrammarEvaluationFuzzer
 )
+from debugging_benchmark.student_assignments import *
 
 
 class TestTools(unittest.TestCase):
 	def setUp(self):
-		calc = CalculatorBenchmarkRepository().build().pop()
+		calc = NPrStudentAssignmentBenchmarkRepository().build().pop()
 		self.param = calc.to_dict()
 
 	def test_grammar_based_evaluation_fuzzer(self):
@@ -28,3 +29,6 @@ class TestTools(unittest.TestCase):
 		fuzzer = ISLaGrammarEvaluationFuzzer(**self.param)
 		report = fuzzer.run()
 		self.assertTrue(isinstance(report, Report))
+
+if __name__ == "__main__":
+    unittest.main()

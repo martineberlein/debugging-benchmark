@@ -62,8 +62,11 @@ class Evaluation:
         for subject in self.subjects:
             VLOGGER.info(f"Evaluating Subject {subject.name}_{subject.bug_id}")
             param = {**subject.to_dict(), **self.tool_param}
+            #param = subject.to_dict()
 
             for tool in self.tools:
+                report = self.run_tool(tool, param)
+
                 for i in range(1, self.repetitions + 1):
                     report = self.run_tool(tool, param)
                     df_results.at[
