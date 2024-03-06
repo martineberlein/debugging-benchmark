@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "debugging-benchmark"
-version = "0.0.1"
+version = "0.2.0"
 authors = [
     { name = "Martin Eberlein", email = "ebermart@informatik.hu-berlin.de" },
     { name = "Kai Werk", email = "werkkai@hu-berlin.de" }
@@ -27,7 +27,7 @@ classifiers = [
 keywords = [ "debugging", "benchmark" ]
 requires-python = ">=3.10"
 dependencies = [
-    "fuzzingbook==1.1",
+    # "fuzzingbook==1.1",
     "jupyter",
     "isla-solver",
     "numpy~=1.26.1",
@@ -58,7 +58,6 @@ subject = "cli.subjects:main"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.2.0",
     "twine",
     "black",
     "pytest>=7.2.2",

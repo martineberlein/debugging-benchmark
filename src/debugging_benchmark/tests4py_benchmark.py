@@ -1,8 +1,7 @@
 from pathlib import Path
 from typing import List, Callable
 
-from fuzzingbook.Grammars import Grammar
-
+from debugging_framework.types import Grammar
 from debugging_framework.benchmark import BenchmarkProgram
 from debugging_benchmark.refactory import BenchmarkRepository
 from debugging_benchmark.tests4py_helper.tests4py_api import (
