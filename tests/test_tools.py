@@ -6,6 +6,7 @@ from debugging_framework.tools import (
     GrammarBasedEvaluationFuzzer,
     InputsFromHellEvaluationFuzzer,
     ISLaGrammarEvaluationFuzzer,
+  	EvoGFuzzEvaluationFuzzer,
 )
 
 
@@ -20,11 +21,20 @@ class TestTools(unittest.TestCase):
         self.assertTrue(isinstance(report, Report))
 
     def test_inputs_from_hell_fuzzer(self):
-        fuzzer = InputsFromHellEvaluationFuzzer(**self.param)
-        report = fuzzer.run()
-        self.assertTrue(isinstance(report, Report))
+      fuzzer = InputsFromHellEvaluationFuzzer(**self.param)
+      report = fuzzer.run()
+      self.assertTrue(isinstance(report, Report))
 
     def test_isla_grammar_fuzzer(self):
-        fuzzer = ISLaGrammarEvaluationFuzzer(**self.param)
-        report = fuzzer.run()
-        self.assertTrue(isinstance(report, Report))
+      fuzzer = ISLaGrammarEvaluationFuzzer(**self.param)
+      report = fuzzer.run()
+      self.assertTrue(isinstance(report, Report))
+
+    def test_evogfuzz_fuzzer(self):
+      fuzzer = EvoGFuzzEvaluationFuzzer(**self.param)
+      report = fuzzer.run()
+      self.assertTrue(isinstance(report, Report))
+
+      
+if __name__ == "__main__":
+    unittest.main()
