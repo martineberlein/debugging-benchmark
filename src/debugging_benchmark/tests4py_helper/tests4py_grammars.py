@@ -1,7 +1,7 @@
 import string
 import os
 
-from fuzzingbook.Grammars import srange, Grammar
+from debugging_framework.types import Grammar
 
 
 grammar_pysnooper: Grammar = {
@@ -23,8 +23,8 @@ grammar_pysnooper: Grammar = {
     "<variable>": ["<name>", "<variable>.<name>"],
     "<name>": ["<letter><chars>"],
     "<chars>": ["", "<chars><char>"],
-    "<letter>": srange(string.ascii_letters),
-    "<digit>": srange(string.digits),
+    "<letter>": [letter for letter in string.ascii_letters],
+    "<digit>": [digit for digit in string.digits],
     "<char>": ["<letter>", "<digit>", "_"],
     "<int>": ["<nonzero><digits>", "0"],
     "<digits>": ["", "<digits><digit>"],

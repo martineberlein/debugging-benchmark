@@ -1,17 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import Callable, List
 
-from fuzzingbook.Grammars import Grammar
-from fuzzingbook.GrammarFuzzer import GrammarFuzzer
-from fuzzingbook.ProbabilisticGrammarFuzzer import (
-    ProbabilisticGrammarMiner,
-    ProbabilisticGrammarFuzzer,
-)
-from fuzzingbook.Parser import EarleyParser
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
+from isla.parser import EarleyParser
 
+from debugging_framework.types import Grammar
+from debugging_framework.probalistic_grammar_fuzzer import ProbabilisticGrammarFuzzer
+from debugging_framework.probalistic_grammar_miner import ProbabilisticGrammarMiner
+from debugging_framework.grammar_fuzzer import GrammarFuzzer
 from debugging_framework.execution_handler import SingleExecutionHandler
 from debugging_framework.report import MultipleFailureReport, Report
+
 
 
 class Tool(ABC):
@@ -39,7 +38,7 @@ class GrammarBasedEvaluationTool(Tool, ABC):
         initial_inputs,
         max_non_terminals: int = 5,
         max_generated_inputs: int = 10000,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(grammar, oracle, initial_inputs)
         self.report = MultipleFailureReport(name=type(self).__name__)
@@ -99,3 +98,21 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.execution_handler.label_strings(test_inputs, self.report)
         self.generated_inputs = test_inputs
         return self.report
+
+# class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
+#     name = "EvoGFuzzBasedFuzzer"
+#
+#     def run(self) -> Report:
+#         fuzzer = EvoGFuzz(
+#             grammar=self.grammar,
+#             oracle=self.oracle,
+#             inputs=self.initial_inputs
+#         )
+#
+#         test_inputs = set()
+#         for _ in range(self.max_generated_inputs):
+#             test_inputs.add(fuzzer.fuzz())
+#
+#         self.execution_handler.label_strings(test_inputs, self.report)
+#         self.generated_inputs = test_inputs
+#         return self.report

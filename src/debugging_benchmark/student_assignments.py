@@ -4,8 +4,7 @@ from abc import ABC, abstractmethod
 import os
 import string
 
-from fuzzingbook.Grammars import Grammar
-
+from debugging_framework.types import Grammar
 from debugging_framework.oracle import OracleResult
 from debugging_framework.oracle_construction import construct_oracle
 from debugging_framework.benchmark import load_function_from_class

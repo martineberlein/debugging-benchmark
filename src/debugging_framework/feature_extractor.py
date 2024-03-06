@@ -7,15 +7,20 @@ import numpy as np
 from pandas import DataFrame
 from grammar_graph.gg import GrammarGraph
 import shap
-from fuzzingbook.Grammars import Grammar
+
 from lightgbm import LGBMClassifier
 from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-from debugging_framework.feature_collector import Feature, FeatureFactory, DEFAULT_FEATURE_TYPES
+from debugging_framework.feature_collector import (
+    Feature,
+    FeatureFactory,
+    DEFAULT_FEATURE_TYPES,
+)
 from debugging_framework.input import Input
 from debugging_framework.oracle import OracleResult
+from debugging_framework.types import Grammar
 
 # Suppress the specific SHAP warning
 warnings.filterwarnings(
@@ -121,9 +126,9 @@ class RelevantFeatureLearner(ABC):
                 for feature in self.features
             }
             for inp in test_inputs
-            if inp.oracle != OracleResult.UNDEFINED#
-		]
-        
+            if inp.oracle != OracleResult.UNDEFINED  #
+        ]
+
         df = DataFrame.from_records(records).replace(-np.inf, -(2**32))
         labels = [
             self.map_result(inp.oracle)

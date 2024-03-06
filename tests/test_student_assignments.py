@@ -1,9 +1,9 @@
 import unittest
 
-from fuzzingbook.Grammars import is_valid_grammar
-from fuzzingbook.Parser import EarleyParser
-from fuzzingbook.GrammarFuzzer import tree_to_string
+from isla.parser import EarleyParser
 
+from debugging_framework.grammar import is_valid_grammar
+from debugging_framework.helper import tree_to_string
 from debugging_framework.oracle import OracleResult
 from debugging_benchmark.student_assignments import (
     NPrStudentAssignmentBenchmarkRepository,
@@ -16,7 +16,7 @@ from debugging_benchmark.student_assignments import (
     PalindromeAssignmentBenchmarkRepository,
     RemoveVowelAssignmentBenchmarkRepository,
     MergeStringsAssignmentBenchmarkRepository,
-    StudentAssignmentBenchmarkProgram
+    StudentAssignmentBenchmarkProgram,
 )
 
 
@@ -32,9 +32,9 @@ class TestStudentAssignments(unittest.TestCase):
             BubbleSortAssignmentBenchmarkRepository(),
             PalindromeAssignmentBenchmarkRepository(),
             RemoveVowelAssignmentBenchmarkRepository(),
-            MergeStringsAssignmentBenchmarkRepository()
+            MergeStringsAssignmentBenchmarkRepository(),
         ]
-        #if .build() fails all testcases fail but saves computing
+        # if .build() fails all testcases fail but saves computing
         self.programs = []
         for repo in self.repos:
             programs = repo.build()
@@ -47,13 +47,12 @@ class TestStudentAssignments(unittest.TestCase):
         programs = repo.build()
         for program in programs:
             self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
- 
+
     def test_subject_valid_grammars(self):
         for repo in self.repos:
             self.assertTrue(is_valid_grammar(repo.get_grammar()))
 
     def test_subject_parsing_inputs(self):
-                
         for program in self.programs:
             with self.subTest(program):
                 self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
@@ -70,7 +69,7 @@ class TestStudentAssignments(unittest.TestCase):
             with self.subTest(program):
                 oracle = program.get_oracle()
                 for inp in program.get_initial_inputs():
-                    result, opt_excp = oracle(inp)
+                    result, _ = oracle(inp)
                     self.assertIsInstance(result, OracleResult)
 
 

@@ -8,7 +8,7 @@ from debugging_benchmark.refactory import (
     Question5RefactoryBenchmarkRepository,
 )
 
-from fuzzingbook.GrammarFuzzer import GrammarFuzzer
+from debugging_framework.grammar_fuzzer import GrammarFuzzer
 
 
 def main():
