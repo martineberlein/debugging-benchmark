@@ -3,7 +3,6 @@ from typing import Callable, List
 
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
 from isla.parser import EarleyParser
-from evogfuzz.evogfuzz_class import EvoGFuzz
 
 from debugging_framework.types import Grammar
 from debugging_framework.probalistic_grammar_fuzzer import ProbabilisticGrammarFuzzer
@@ -100,20 +99,20 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.generated_inputs = test_inputs
         return self.report
 
-class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
-    name = "EvoGFuzzBasedFuzzer"
-
-    def run(self) -> Report:
-        fuzzer = EvoGFuzz(
-            grammar=self.grammar,
-            oracle=self.oracle,
-            inputs=self.initial_inputs
-        )
-
-        test_inputs = set()
-        for _ in range(self.max_generated_inputs):
-            test_inputs.add(fuzzer.fuzz())
-
-        self.execution_handler.label_strings(test_inputs, self.report)
-        self.generated_inputs = test_inputs
-        return self.report
+# class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
+#     name = "EvoGFuzzBasedFuzzer"
+#
+#     def run(self) -> Report:
+#         fuzzer = EvoGFuzz(
+#             grammar=self.grammar,
+#             oracle=self.oracle,
+#             inputs=self.initial_inputs
+#         )
+#
+#         test_inputs = set()
+#         for _ in range(self.max_generated_inputs):
+#             test_inputs.add(fuzzer.fuzz())
+#
+#         self.execution_handler.label_strings(test_inputs, self.report)
+#         self.generated_inputs = test_inputs
+#         return self.report
