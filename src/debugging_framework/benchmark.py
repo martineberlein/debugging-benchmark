@@ -44,7 +44,6 @@ class BenchmarkProgram(ABC):
 
 
 class BenchmarkRepository(ABC):
-
     name: str
 
     def __repr__(self):
@@ -52,9 +51,9 @@ class BenchmarkRepository(ABC):
 
     @abstractmethod
     def build(
-            self,
-            err_def: Dict[Exception, OracleResult] = None,
-            default_oracle: OracleResult = None,
+        self,
+        err_def: Dict[Exception, OracleResult] = None,
+        default_oracle: OracleResult = None,
     ) -> List[BenchmarkProgram]:
         raise NotImplementedError
 

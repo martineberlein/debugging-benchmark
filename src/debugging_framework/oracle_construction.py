@@ -30,19 +30,17 @@ def construct_oracle(
 
     if not isinstance(error_definitions, dict):
         raise ValueError(f"Invalid value for expected_error: {error_definitions}")
-  
+
     params = locals()
-    
+
     # Choose oracle construction method based on presence of program_oracle
     if program_oracle:
         oracle_constructor = _construct_functional_oracle
     else:
         oracle_constructor = _construct_failure_oracle
-        params.pop('program_oracle')
-    
+        params.pop("program_oracle")
+
     return oracle_constructor(**params)
-
-
 
 
 def _construct_functional_oracle(

@@ -4,10 +4,12 @@ from isla.parser import Parser
 from isla.derivation_tree import DerivationTree
 
 from debugging_framework.types import Grammar
-from debugging_framework.grammar import (is_nonterminal,
-                                         extend_grammar,
-                                         expansion_key,
-                                         set_prob)
+from debugging_framework.grammar import (
+    is_nonterminal,
+    extend_grammar,
+    expansion_key,
+    set_prob,
+)
 
 
 class ExpansionCountMiner:
@@ -38,8 +40,9 @@ class ExpansionCountMiner:
         assert children is not None
 
         direct_children: List[DerivationTree] = [
-            (symbol, None) if is_nonterminal(symbol) 
-            else (symbol, []) for symbol, c in children]
+            (symbol, None) if is_nonterminal(symbol) else (symbol, [])
+            for symbol, c in children
+        ]
         self.add_coverage(symbol, direct_children)
 
         for c in children:
@@ -52,7 +55,8 @@ class ExpansionCountMiner:
 
     def counts(self) -> Dict[str, int]:
         return self.expansion_counts
-    
+
+
 class ProbabilisticGrammarMiner(ExpansionCountMiner):
     def __init__(self, parser: Parser, log: bool = False) -> None:
         super().__init__(parser, log)
@@ -68,18 +72,15 @@ class ProbabilisticGrammarMiner(ExpansionCountMiner):
             return
 
         expansion_counts = [
-            counts.get(
-                expansion_key(
-                    symbol,
-                    expansion),
-                0) for expansion in expansions]
+            counts.get(expansion_key(symbol, expansion), 0) for expansion in expansions
+        ]
         total = sum(expansion_counts)
         for i, expansion in enumerate(expansions):
             p = expansion_counts[i] / total if total > 0 else None
             # if self.log:
             #     print("Setting", expansion_key(symbol, expansion), p)
             set_prob(self.grammar, symbol, expansion, p)
-            
+
     def mine_probabilistic_grammar(self, inputs: List[str]) -> Grammar:
         self.count_expansions(inputs)
         self.set_probabilities(self.counts())

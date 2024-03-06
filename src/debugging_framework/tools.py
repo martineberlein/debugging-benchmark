@@ -37,7 +37,7 @@ class GrammarBasedEvaluationTool(Tool, ABC):
         initial_inputs,
         max_non_terminals: int = 5,
         max_generated_inputs: int = 10000,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(grammar, oracle, initial_inputs)
         self.report = MultipleFailureReport(name=type(self).__name__)
