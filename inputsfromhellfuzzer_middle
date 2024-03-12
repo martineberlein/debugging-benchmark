@@ -1,0 +1,29 @@
+\begin{tabular}{llll}
+\toprule
+ &  &  & Result \\
+Run & Approach & Subject ID &  \\
+\midrule
+\multirow[t]{10}{*}{1} & \multirow[t]{10}{*}{InputsFromHellFuzzer} & 1 & {UnexpectedResultError: Results do not match: 1113} \\
+ &  & 2 & {UnexpectedResultError: Results do not match: 2011} \\
+ &  & 3 & {UnexpectedResultError: Results do not match: 1811} \\
+ &  & 4 & {UnexpectedResultError: Results do not match: 1839} \\
+ &  & 5 & {UnexpectedResultError: Results do not match: 1275} \\
+ &  & 6 & {UnexpectedResultError: Results do not match: 2466} \\
+ &  & 7 & {UnexpectedResultError: Results do not match: 1452} \\
+ &  & 8 & {UnexpectedResultError: Results do not match: 3777} \\
+ &  & 9 & {UnexpectedResultError: Results do not match: 2169} \\
+ &  & 10 & {UnexpectedResultError: Results do not match: 914} \\
+\cline{1-4} \cline{2-4}
+\multirow[t]{10}{*}{2} & \multirow[t]{10}{*}{InputsFromHellFuzzer} & 1 & {UnexpectedResultError: Results do not match: 1108} \\
+ &  & 2 & {UnexpectedResultError: Results do not match: 2010} \\
+ &  & 3 & {UnexpectedResultError: Results do not match: 1845} \\
+ &  & 4 & {UnexpectedResultError: Results do not match: 1775} \\
+ &  & 5 & {UnexpectedResultError: Results do not match: 1282} \\
+ &  & 6 & {UnexpectedResultError: Results do not match: 2612} \\
+ &  & 7 & {UnexpectedResultError: Results do not match: 1479} \\
+ &  & 8 & {UnexpectedResultError: Results do not match: 3751} \\
+ &  & 9 & {UnexpectedResultError: Results do not match: 2186} \\
+ &  & 10 & {UnexpectedResultError: Results do not match: 908} \\
+\cline{1-4} \cline{2-4}
+\bottomrule
+\end{tabular}

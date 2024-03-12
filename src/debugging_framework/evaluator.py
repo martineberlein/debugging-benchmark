@@ -21,17 +21,17 @@ OUT_FILE = "results.pkl"
 class Evaluation:
     def __init__(
         self,
-        tools,
+        tool,
         subjects,
         repetitions,
-        timeout,
+        #timeout,
         out_file: Optional[Union[str, Path]] = None,
         tool_param=None,
     ):
-        self.tools: List[Type[Tool]] = tools
+        self.tool: Tool = tool
         self.subjects: List[BenchmarkProgram] = subjects
         self.repetitions: int = repetitions
-        self.timeout: int = timeout
+        #self.timeout: int = timeout
         self.out_file = self.resolve_path(out_file) if out_file else out_file
         self.tool_param = tool_param if tool_param else {}
 
@@ -44,8 +44,8 @@ class Evaluation:
 
     def initialize_result_dataframe(self) -> pd.DataFrame:
         subject_names = [(sub.name, sub.bug_id) for sub in self.subjects]
-        tool_names = [tool.name for tool in self.tools]
-        return initialize_dataframe(subject_names, tool_names, self.repetitions)
+        tool_name = self.tool.name
+        return initialize_dataframe(subject_names, [tool_name], self.repetitions)
 
     @staticmethod
     def run_tool(tool, param) -> Report:
@@ -62,16 +62,16 @@ class Evaluation:
         for subject in self.subjects:
             VLOGGER.info(f"Evaluating Subject {subject.name}_{subject.bug_id}")
             param = {**subject.to_dict(), **self.tool_param}
-            #param = subject.to_dict()
 
-            for tool in self.tools:
-                report = self.run_tool(tool, param)
+            
+            report = self.run_tool(self.tool, param)
 
-                for i in range(1, self.repetitions + 1):
-                    report = self.run_tool(tool, param)
-                    df_results.at[
-                        (i, tool.name), (subject.name, subject.bug_id)
-                    ] = report.to_dict()
+            #repetition = run later in tabular
+            for i in range(1, self.repetitions + 1):
+                report = self.run_tool(self.tool, param)
+                df_results.at[
+                    (i, self.tool.name, subject.bug_id), ("Result")
+                ] = report.to_dict()
 
         if self.out_file:
             VLOGGER.info(f"Saving results to {self.out_file}")
@@ -87,3 +87,13 @@ class Evaluation:
             df.to_latex(out_file)
         else:
             return df.to_latex()
+
+    def export_to_latex_custom(
+            self, df: pd.DataFrame, out_file: Union[str, Path] 
+        ):
+
+        with open(out_file, "a") as f:
+            f.write("\\begin{tabular}{llllllllllll}\n")
+            f.write("\\toprule\n")
+            f.write()
+

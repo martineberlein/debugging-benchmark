@@ -100,38 +100,18 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.generated_inputs = test_inputs
         return self.report
 
-# class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
-#     name = "EvoGFuzzBasedFuzzer"
-#
-#     def run(self) -> Report:
-#         fuzzer = EvoGFuzz(
-#             grammar=self.grammar,
-#             oracle=self.oracle,
-#             inputs=self.initial_inputs
-#         )
-#
-#         test_inputs = set()
-#         for _ in range(self.max_generated_inputs):
-#             test_inputs.add(fuzzer.fuzz())
-#
-#         self.execution_handler.label_strings(test_inputs, self.report)
-#         self.generated_inputs = test_inputs
-#         return self.report
+class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
+    name = "EvoGFuzzBasedFuzzer"
 
-# class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
-#     name = "EvoGFuzzBasedFuzzer"
-#
-#     def run(self) -> Report:
-#         fuzzer = EvoGFuzz(
-#             grammar=self.grammar,
-#             oracle=self.oracle,
-#             inputs=self.initial_inputs
-#         )
-#
-#         test_inputs = set()
-#         for _ in range(self.max_generated_inputs):
-#             test_inputs.add(fuzzer.fuzz())
-#
-#         self.execution_handler.label_strings(test_inputs, self.report)
-#         self.generated_inputs = test_inputs
-#         return self.report
+    def run(self) -> Report:
+        fuzzer = EvoGFuzz(
+            grammar=self.grammar,
+            oracle=self.oracle,
+            inputs=self.initial_inputs
+        )
+
+        test_inputs = fuzzer.fuzz()
+
+        self.execution_handler.label_strings(test_inputs, self.report)
+        self.generated_inputs = test_inputs
+        return self.report
