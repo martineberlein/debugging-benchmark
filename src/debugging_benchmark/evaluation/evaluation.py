@@ -5,6 +5,13 @@ from debugging_framework.tools import *
 from debugging_framework.evaluator import Evaluation
 from debugging_framework.oracle import OracleResult
 
+tools = [
+    EvoGFuzzEvaluationFuzzer,
+    InputsFromHellEvaluationFuzzer,
+    GrammarBasedEvaluationFuzzer, #random
+    EvoGGenEvaluationFuzzer
+]
+
 student_repos = [
         NPrStudentAssignmentBenchmarkRepository,
         SquareRootAssignmentBenchmarkRepository,
@@ -28,6 +35,8 @@ refactory_repos = [
         Question5RefactoryBenchmarkRepository
     ]
 
+repos = student_repos + refactory_repos
+
 def eval_repo_evogfuzz_kai(repo: BenchmarkRepository):
     subjects = repo().build()
     repo_name = repo.name
@@ -48,22 +57,45 @@ def eval_repo_evogfuzz_kai(repo: BenchmarkRepository):
                 f.write("All Inputs: " + str(len(gen_inputs)) + "\n")
                 f.write("Failing Inputs: " + str(len(failing_inputs)) + "\n\n")
 
-def eval_repo_evogfuzz_with_evaluator(repo: BenchmarkRepository):
-    subjects = repo().build()
-    eval = Evaluation(InputsFromHellEvaluationFuzzer, subjects, 1)
-    eval.export_to_latex(eval.run(), "evogfuzz_" + repo.name.lower())
-
-def eval_repo_tool_with_evaluator(repo: BenchmarkRepository, tool: Tool, reps: int):
+def eval_latex(repo: BenchmarkRepository, tool: Tool, reps: int):
     subjects = repo().build()
     eval = Evaluation(tool, subjects, reps)
     df = eval.run()
+    #TODO: Path anpassen
     eval.export_to_latex(df, tool.name.lower() + "_" +  repo.name.lower())
 
+def eval_pickle(repo: BenchmarkRepository, tool: Tool, reps: int):
+    subjects = repo().build()
+    eval = Evaluation(tool, subjects, reps)
+    df = eval.run()
+
+    if tool == EvoGFuzzEvaluationFuzzer:
+        tool_folder = "evogfuzz"
+    elif tool == InputsFromHellEvaluationFuzzer:
+        tool_folder = "inputsfromhell"
+    elif tool == GrammarBasedEvaluationFuzzer:
+        tool_folder = "random"
+    elif tool == EvoGGenEvaluationFuzzer:
+        tool_folder = "evoggen"
+    else:
+        raise ValueError("Tool not supported")
+    
+    file_path = "src/debugging_benchmark/evaluation/" + tool_folder + "/" + tool.name.lower() + "_" + repo().name.lower() + ".pkl"
+    df.to_pickle(file_path)
+
+def run_evals():
+    for tool in tools:
+        for repo in repos:
+            reps = 1 if tool == EvoGFuzzEvaluationFuzzer else 10
+            eval_pickle(repo, tool, reps)
+
+#def pickle_to_eval(path):
+
 def main():
-    #eval_repo_evogfuzz_with_evaluator(MiddleAssignmentBenchmarkRepository)
-    eval_repo_tool_with_evaluator(MiddleAssignmentBenchmarkRepository, InputsFromHellEvaluationFuzzer, 2)
-
-
-
+    #run_evals()
+    #eval_latex(MiddleAssignmentBenchmarkRepository, EvoGFuzzEvaluationFuzzer, 1)
+    #eval_pickle(MiddleAssignmentBenchmarkRepository, EvoGGenEvaluationFuzzer, 1)
+    
 if __name__ == "__main__":
     main()
+

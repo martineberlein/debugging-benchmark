@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable, List
 
-from evogfuzz.evogfuzz_class import EvoGFuzz
+from evogfuzz.evogfuzz_class import EvoGFuzz, EvoGGen
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
 from isla.parser import EarleyParser
 
@@ -115,3 +115,20 @@ class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.execution_handler.label_strings(test_inputs, self.report)
         self.generated_inputs = test_inputs
         return self.report
+    
+class EvoGGenEvaluationFuzzer(GrammarBasedEvaluationTool):
+    name = "EvoGGenBasedFuzzer"
+
+    def run(self) -> Report:
+        fuzzer = EvoGGen(
+            grammar=self.grammar,
+            oracle=self.oracle,
+            inputs=self.initial_inputs
+        )
+
+        _, test_inputs = fuzzer.optimize()
+
+        self.execution_handler.label_strings(test_inputs, self.report)
+        self.generated_inputs = test_inputs
+        return self.report
+

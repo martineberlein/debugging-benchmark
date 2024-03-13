@@ -348,6 +348,7 @@ class BubbleSortAssignmentBenchmarkRepository(StudentAssignmentRepository):
         return (arr, n)
     
 class MiddleAssignmentBenchmarkRepository(StudentAssignmentRepository):
+    
     def __init__(self):
         self.name: str = "Middle"
         self._implementation_function_name: str = "middle"
