@@ -120,6 +120,10 @@ class EvoGGenEvaluationFuzzer(GrammarBasedEvaluationTool):
     name = "EvoGGenBasedFuzzer"
 
     def run(self) -> Report:
+        print(self.initial_inputs)
+        for inp in self.initial_inputs:
+            print(inp, self.oracle(inp))
+            
         fuzzer = EvoGGen(
             grammar=self.grammar,
             oracle=self.oracle,
