@@ -94,9 +94,6 @@ class Evaluation:
             VLOGGER.info(f"Evaluating Subject {subject.name}_{subject.bug_id}")
             param = {**subject.to_dict(), **self.tool_param}
 
-            
-            report = self.run_tool(self.tool, param)
-
             #repetition = run later in tabular
             for i in range(1, self.repetitions + 1):
                 report = self.run_tool(self.tool, param)
