@@ -32,7 +32,7 @@ class ExecutionHandler(ABC):
         report.add_failure(test_input, exception)
 
     @abstractmethod
-    def label(self, **kwargs):
+    def label(self, test_inputs: Set[Input], report: Report):
         raise NotImplementedError
 
 
@@ -40,7 +40,7 @@ class SingleExecutionHandler(ExecutionHandler):
     def _get_label(self, test_input: Union[Input, str]) -> TResultMonad:
         return TResultMonad(self.oracle(test_input))
 
-    def label(self, test_inputs: Set[Input], report: Report, **kwargs):
+    def label(self, test_inputs: Set[Input], report: Report):
         for inp in test_inputs:
             label, exception = self._get_label(inp).value()
             inp.oracle = label
@@ -62,7 +62,7 @@ class BatchExecutionHandler(ExecutionHandler):
             (inp, TResultMonad(result)) for inp, result in zip(test_inputs, results)
         ]
 
-    def label(self, test_inputs: Set[Input], report: Report, **kwargs):
+    def label(self, test_inputs: Set[Input], report: Report):
         test_results = self._get_label(test_inputs)
 
         for inp, test_result in test_results:

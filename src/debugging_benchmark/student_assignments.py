@@ -1470,8 +1470,8 @@ class palindrome_1 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["hq"]
-    passing_input = ["abba", "abc"]
+    failing_input = ["hq", "abba", "abc"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1510,7 +1510,7 @@ class palindrome_4 (StudentAssignmentBenchmarkProgram):
     initial_inputs: List[str]
     oracle: Callable
     failing_input = ["h"]
-    passing_input = ["abba", "abc"]
+    passing_input = ["abc", "abba"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1522,8 +1522,8 @@ class palindrome_5 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["qmoeeomq"]
-    passing_input = ["abba", "abc"]
+    failing_input = ["qmoeeomq", "abba"]
+    passing_input = ["abc"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1535,8 +1535,8 @@ class palindrome_6 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["hq"]
-    passing_input = ["abba", "abc"]
+    failing_input = ["hq", "abba", "abc"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1574,8 +1574,8 @@ class palindrome_9 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["lezaq"]
-    passing_input = ["abba", "abc"]
+    failing_input = ["lezaq", "abc"]
+    passing_input = ["abba"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1637,7 +1637,7 @@ class RemoveVowelAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
-        return input_str
+        return str(input_str)
 
 @dataclass(repr=False)
 class vowel_1 (StudentAssignmentBenchmarkProgram):
@@ -1646,8 +1646,8 @@ class vowel_1 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1659,8 +1659,8 @@ class vowel_2 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1672,8 +1672,8 @@ class vowel_3 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1685,8 +1685,8 @@ class vowel_4 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1698,8 +1698,8 @@ class vowel_5 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1737,8 +1737,8 @@ class vowel_8 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1750,8 +1750,8 @@ class vowel_9 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["eicm"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["eicm", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1763,8 +1763,8 @@ class vowel_10 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["&%^oq^"]
-    passing_input = ["welcome to avicenna", "hello my name is martin"]
+    failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -2026,8 +2026,8 @@ class merge_3 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["Qh eyNFX"]
-    passing_input = ["abc def", "hello bye"]
+    failing_input = ["Qh eyNFX", "abc def", "hello bye"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -2078,8 +2078,8 @@ class merge_7 (StudentAssignmentBenchmarkProgram):
     grammar: Grammar
     initial_inputs: List[str]
     oracle: Callable
-    failing_input = ["rvcGbk QUWNOV"]
-    passing_input = ["abc def", "hello bye"]
+    failing_input = ["rvcGbk QUWNOV", "abc def"]
+    passing_input = ["hello bye"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input

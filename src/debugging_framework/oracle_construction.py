@@ -12,7 +12,10 @@ def execute_program(program, param, timeout) -> Any:
     with ManageTimeout(timeout):
         # silencing the stdout for PuT
         with contextlib.redirect_stdout(None):
-            return program(*param)
+            if isinstance(param, str):
+                return program(param)
+            else:
+                return program(*param)
 
 
 def construct_oracle(

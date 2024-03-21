@@ -1,13 +1,9 @@
-# from fuzzingbook.Coverage import Coverage, Location, BranchCoverage
-
-from debugging_framework.input import Input
-
-
 from typing import Any, Optional, Callable, List, Type, Set, Tuple
 from types import FrameType, TracebackType
 import inspect
 import sys
 
+from debugging_framework.input import Input
 
 Location = Tuple[str, int]
 
