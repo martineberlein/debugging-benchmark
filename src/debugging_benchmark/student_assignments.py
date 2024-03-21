@@ -1116,14 +1116,10 @@ class BubbleSortAssignmentBenchmarkRepository(StudentAssignmentRepository):
         }
 
     @staticmethod
-    def get_initial_inputs() -> List[str]:
-        return ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
-
-    @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
         n = int(input_str.splitlines()[0])
         arr = list(map(int, str(input_str.splitlines()[1]).strip().split()))
-        return (arr, n)
+        return arr, n
 
 
 @dataclass(repr=False)
@@ -1806,7 +1802,7 @@ class vowel_6(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["<$uo?.*>"]
+    failing_input = [" <$uo?.*>"]
     passing_input = ["welcome to avicenna", "hello my name is martin"]
 
     def get_initial_inputs(self) -> List[str]:
