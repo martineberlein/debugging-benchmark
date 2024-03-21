@@ -9,7 +9,7 @@ class Solution:
             for j in range(1, i + 1):
                 if arr[j - 1] > arr[j]:
                     arr[j - 1], arr[j] = arr[j], arr[j - 1]
-
+        return arr
 
 # {
 # Driver Code Starts

@@ -8,8 +8,7 @@ class Solution:
             for j in range(n - 1 - i):
                 if arr[i] > arr[i + 1]:
                     arr[i], arr[i + 1] = arr[i + 1], arr[i]
-
-
+        return arr
 # {
 # Driver Code Starts
 # Initial Template for Python 3

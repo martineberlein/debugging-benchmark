@@ -12,6 +12,7 @@ class Solution:
             if not is_swapped:
                 break
         # code here
+        return arr
 
 
 # {

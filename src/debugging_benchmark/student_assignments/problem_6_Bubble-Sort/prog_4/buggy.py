@@ -13,6 +13,7 @@ class Solution:
                     is_swap = True
             if not is_swap:
                 return
+        return arr
 
 
 # {
