@@ -120,18 +120,16 @@ class EvoGGenEvaluationFuzzer(GrammarBasedEvaluationTool):
     name = "EvoGGenBasedFuzzer"
 
     def run(self) -> Report:
-        print(self.initial_inputs)
-        for inp in self.initial_inputs:
-            print(inp, self.oracle(inp))
-            
         fuzzer = EvoGGen(
             grammar=self.grammar,
             oracle=self.oracle,
             inputs=self.initial_inputs
         )
 
-        _, test_inputs = fuzzer.optimize()
-
+        #TODO: mit martin schimpfen -> optimze returnt gar nichts
+        fuzzer.optimize()
+        test_inputs = fuzzer.failure_inducing_inputs
+        
         self.execution_handler.label_strings(test_inputs, self.report)
         self.generated_inputs = test_inputs
         return self.report

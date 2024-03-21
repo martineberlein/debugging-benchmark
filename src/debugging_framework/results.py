@@ -4,8 +4,11 @@ import pandas as pd
 
 def initialize_dataframe_alt(
     subject_names: List[Tuple[str, int]], tool_names: List[str], number_of_runs
-):
-    # Initialize the DataFrame
+) -> pd.DataFrame:
+    """
+    initializes empty DataFrame
+    """
+    
     columns = pd.MultiIndex.from_tuples(subject_names, names=["Subject", "ID"])
     index = pd.MultiIndex.from_product(
         [range(1, number_of_runs + 1), tool_names], names=["Run", "Approach"]
@@ -15,8 +18,19 @@ def initialize_dataframe_alt(
 
 def initialize_dataframe(
     subject_names: List[Tuple[str, int]], tool_names: List[str], number_of_runs
-):
-    # Initialize the DataFrame
+) -> pd.DataFrame:
+    """
+    initializes empty DataFrame
+
+                                            Result
+        Run | Approach | Subject ID
+         1      Fuzzer      1           UnexpectedResult
+                            2           UnexpecredResult
+        
+         2      Fuzzer      1           TimeoutResult
+                            2           UnexpectedResult
+    """
+
     subject_ids = [id for (_, id) in subject_names]
     #columns = pd.MultiIndex.from_tuples(subject_names, names=["Subject", "ID"])
     columns = pd.Index(["Result"], dtype = "str")

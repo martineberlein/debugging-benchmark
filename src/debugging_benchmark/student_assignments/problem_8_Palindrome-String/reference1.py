@@ -1,6 +1,6 @@
 # User function Template for python3
 class Solution:
-    def isPalindrome(self, S):
+    def isPalindrome(self, S:str):
         # code here
         for i in range(len(S) // 2):
             if S[i] != S[len(S) - i - 1]:
