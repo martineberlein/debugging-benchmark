@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Type, Optional, Tuple, Any
+from typing import Callable, Dict, Type, Optional, Tuple, Any, Sequence
 
 from debugging_framework.oracle import OracleResult
 from debugging_framework.input import Input
@@ -8,14 +8,11 @@ from debugging_framework.expceptions import UnexpectedResultError
 import contextlib
 
 
-def execute_program(program, param, timeout) -> Any:
+def execute_program(program, param: Sequence, timeout) -> Any:
     with ManageTimeout(timeout):
         # silencing the stdout for PuT
         with contextlib.redirect_stdout(None):
-            if isinstance(param, str):
-                return program(param)
-            else:
-                return program(*param)
+            return program(*param)
 
 
 def construct_oracle(

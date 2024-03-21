@@ -1,4 +1,4 @@
-from typing import  List, Dict, Sequence, Any, Callable
+from typing import List, Dict, Sequence, Any, Callable, Type
 from pathlib import Path
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -24,6 +24,8 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     ):
         super().__init__(name, grammar, oracle, initial_inputs)
         self.bug_id = bug_id
+        self.passing_input = []
+        self.failing_input = []
 
     def __repr__(self):
         return f"{self.name}_{self.bug_id}"
@@ -35,111 +37,115 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
         return self.grammar
 
     def get_initial_inputs(self) -> List[str]:
-        return self.initial_inputs
+        return self.passing_input + self.failing_input
+
+    def get_passing_inputs(self) -> List[str]:
+        return self.passing_input
+
+    def get_failing_input(self) -> List[str]:
+        return self.failing_input
 
     def get_oracle(self) -> Callable:
         return self.oracle
 
 
 class StudentAssignmentRepository(BenchmarkRepository, ABC):
-    programs = []
+    programs: List[Type[StudentAssignmentBenchmarkProgram]]
 
     @abstractmethod
     def get_implementation_function_name(self):
         raise NotImplementedError
-    
+
     @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError(
             "A StudentAssignment-Benchmark-Repository needs to have a unique name."
         )
-    
+
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
         raise NotImplementedError
-    
+
     def get_dir(self) -> Path:
         repo_dir = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(Path(repo_dir),Path("student_assignments"))
+        return os.path.join(Path(repo_dir), Path("student_assignments"))
 
     def get_ground_truth_location(self) -> Path:
         return os.path.join(self.get_dir(), Path("reference1.py"))
-    
+
     def load_ground_truth(self):
         path_to_ground_truth = self.get_ground_truth_location()
         return load_function_from_class(
-            path_to_ground_truth,
-            self.get_implementation_function_name()
+            path_to_ground_truth, self.get_implementation_function_name()
         )
-    
+
     def load_implementation(self, bug_id) -> Callable:
-        path_to_implementation = os.path.join(self.get_dir(),Path(f"prog_{bug_id}/buggy.py"))
+        path_to_implementation = os.path.join(
+            self.get_dir(), Path(f"prog_{bug_id}/buggy.py")
+        )
 
         return load_function_from_class(
-            path_to_implementation,
-            self.get_implementation_function_name()
+            path_to_implementation, self.get_implementation_function_name()
         )
-    
+
     def _construct_test_program(
         self,
         bug_id: int,
-        benchmark_program: StudentAssignmentBenchmarkProgram,
+        benchmark_program: Type[StudentAssignmentBenchmarkProgram],
         err_def: Dict[Exception, OracleResult] = None,
-        default_oracle: OracleResult = None
+        default_oracle: OracleResult = None,
     ) -> StudentAssignmentBenchmarkProgram:
         ground_truth = self.load_ground_truth()
         program = self.load_implementation(bug_id)
-        
+
         oracle = construct_oracle(
             program_under_test=program,
             program_oracle=ground_truth,
             error_definitions=err_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
-            harness_function=self.harness_function
+            harness_function=self.harness_function,
         )
 
         return benchmark_program(
             name=self.get_name(),
             bug_id=bug_id,
             grammar=self.get_grammar(),
-            initial_inputs=self.get_initial_inputs(),
+            # initial_inputs=self.get_initial_inputs(),
             oracle=oracle,
         )
-    
+
     def build(
-            self,
-            err_def: Dict[Exception, OracleResult] = None,
-            default_oracle: OracleResult = None,
+        self,
+        err_def: Dict[Exception, OracleResult] = None,
+        default_oracle: OracleResult = None,
     ) -> List[StudentAssignmentBenchmarkProgram]:
-        
         constructed_test_programs: List[StudentAssignmentBenchmarkProgram] = []
-        
-        for bug_id in range(1,11):
+        for bug_id, program in enumerate(self.programs):
             try:
                 subject = self._construct_test_program(
-                    bug_id=bug_id,
-                    benchmark_program=self.programs[bug_id-1],
+                    bug_id=bug_id + 1,
+                    benchmark_program=program,
                     err_def=err_def,
-                    default_oracle=default_oracle
+                    default_oracle=default_oracle,
                 )
-                
                 constructed_test_programs.append(subject)
+
             except Exception as e:
-                    print(f"Subject {bug_id} could not be built.")
-                    print(e)
-                
+                print(f"Subject {bug_id} could not be built.")
+                print(e)
+
         return constructed_test_programs
-    
+
     def get_all_test_programs(self) -> List[BenchmarkProgram]:
         pass
-    
+
 
 class GCDStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def __init__(self):
         self.name: str = "GCD"
         self._implementation_function_name: str = "gcd"
-        self.programs = [
+        self.programs: List[Type[StudentAssignmentBenchmarkProgram]] = [
             GCD_1,
             GCD_2,
             GCD_3,
@@ -149,7 +155,7 @@ class GCDStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
             GCD_7,
             GCD_8,
             GCD_9,
-            GCD_10
+            GCD_10,
         ]
 
     def get_implementation_function_name(self):
@@ -157,65 +163,55 @@ class GCDStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_1_GCD"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<first> <second>"],
-        "<first>": ["<integer>"],
-        "<second>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
-
-    @staticmethod
-    def get_initial_inputs() -> List[str]:
-        return ["10 2", "4 4"]
+            "<start>": ["<input>"],
+            "<input>": ["<first> <second>"],
+            "<first>": ["<integer>"],
+            "<second>": ["<integer>"],
+            "<integer>": ["<one_nine><maybe_digits>"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
         param = list(map(int, str(input_str).strip().split()))
         return param
 
+
 @dataclass(repr=False)
-class GCD_1 (StudentAssignmentBenchmarkProgram):
+class GCD_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
     oracle: Callable
     failing_input = ["43 38", "10 2", "4 4"]
     passing_input = []
 
-    def get_initial_inputs(self) -> List[str]:
-        return self.failing_input + self.passing_input
 
 @dataclass(repr=False)
-class GCD_2 (StudentAssignmentBenchmarkProgram):
+class GCD_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
     oracle: Callable
     failing_input = ["43 38"]
     passing_input = ["10 2", "4 4"]
 
-    def get_initial_inputs(self) -> List[str]:
-        return self.failing_input + self.passing_input
 
 @dataclass(repr=False)
-class GCD_3 (StudentAssignmentBenchmarkProgram):
+class GCD_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
     oracle: Callable
     failing_input = ["21 21", "4 4"]
     passing_input = ["10 2"]
@@ -223,12 +219,13 @@ class GCD_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_4 (StudentAssignmentBenchmarkProgram):
+class GCD_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["21 38"]
     passing_input = ["10 2", "4 4"]
@@ -236,12 +233,13 @@ class GCD_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_5 (StudentAssignmentBenchmarkProgram):
+class GCD_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["43 38"]
     passing_input = ["10 2", "4 4"]
@@ -249,25 +247,27 @@ class GCD_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_6 (StudentAssignmentBenchmarkProgram):
+class GCD_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["21 21", "4 4"]
     passing_input = ["10 2"]
-    
+
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_7 (StudentAssignmentBenchmarkProgram):
+class GCD_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["43 38", "10 2"]
     passing_input = ["4 4"]
@@ -275,12 +275,13 @@ class GCD_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_8 (StudentAssignmentBenchmarkProgram):
+class GCD_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["194067000 194067"]
     passing_input = ["10 2", "4 4"]
@@ -288,12 +289,13 @@ class GCD_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_9 (StudentAssignmentBenchmarkProgram):
+class GCD_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8 80", "4 4"]
     passing_input = ["10 2"]
@@ -301,20 +303,25 @@ class GCD_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class GCD_10 (StudentAssignmentBenchmarkProgram):
+class GCD_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
 
     failing_input = ["8 80", "10 2"]
     passing_input = ["4 4"]
+
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
-class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
+
+class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(
+    StudentAssignmentRepository
+):
     def __init__(self):
         self.name: str = "Sieve-of-Eratosthenes"
         self._implementation_function_name: str = "sieveOfEratosthenes"
@@ -328,7 +335,7 @@ class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentR
             sieve_7,
             sieve_8,
             sieve_9,
-            sieve_10
+            sieve_10,
         ]
 
     def get_implementation_function_name(self):
@@ -336,21 +343,21 @@ class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentR
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_2_Sieve-of-Eratosthenes"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>", "0"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<integer>"],
+            "<integer>": ["<one_nine><maybe_digits>", "0"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -361,12 +368,13 @@ class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(StudentAssignmentR
         param = list(map(int, str(input_str).strip().split()))
         return param
 
+
 @dataclass(repr=False)
-class sieve_1 (StudentAssignmentBenchmarkProgram):
+class sieve_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["10000"]
     passing_input = ["10"]
@@ -374,12 +382,13 @@ class sieve_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_2 (StudentAssignmentBenchmarkProgram):
+class sieve_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7507"]
     passing_input = ["10"]
@@ -387,12 +396,13 @@ class sieve_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_3 (StudentAssignmentBenchmarkProgram):
+class sieve_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["4272", "10"]
     passing_input = []
@@ -400,12 +410,13 @@ class sieve_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_4 (StudentAssignmentBenchmarkProgram):
+class sieve_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["4272", "10"]
     passing_input = []
@@ -413,12 +424,13 @@ class sieve_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_5 (StudentAssignmentBenchmarkProgram):
+class sieve_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["4272", "10"]
     passing_input = []
@@ -426,25 +438,27 @@ class sieve_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_6 (StudentAssignmentBenchmarkProgram):
+class sieve_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7507"]
     passing_input = ["10"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class sieve_7 (StudentAssignmentBenchmarkProgram):
+class sieve_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7", "10"]
     passing_input = []
@@ -452,12 +466,13 @@ class sieve_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_8 (StudentAssignmentBenchmarkProgram):
+class sieve_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7"]
     passing_input = ["10"]
@@ -465,12 +480,13 @@ class sieve_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_9 (StudentAssignmentBenchmarkProgram):
+class sieve_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7"]
     passing_input = ["10"]
@@ -478,12 +494,13 @@ class sieve_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sieve_10 (StudentAssignmentBenchmarkProgram):
+class sieve_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7"]
     passing_input = ["10"]
@@ -493,7 +510,6 @@ class sieve_10 (StudentAssignmentBenchmarkProgram):
 
 
 class NPrStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
-
     def __init__(self):
         self.name: str = "nPr"
         self._implementation_function_name: str = "nPr"
@@ -515,24 +531,24 @@ class NPrStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_3_nPr"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<first> <second>"],
-        "<first>": ["<integer>"],
-        "<second>": ["<one_to_twenty>"],
-        "<one_to_twenty>": ["<one_nine>", "1<one_nine>", "20"],
-        "<integer>": ["<one_nine><maybe_digits>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<first> <second>"],
+            "<first>": ["<integer>"],
+            "<second>": ["<one_to_twenty>"],
+            "<one_to_twenty>": ["<one_nine>", "1<one_nine>", "20"],
+            "<integer>": ["<one_nine><maybe_digits>"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -542,26 +558,28 @@ class NPrStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def harness_function(input_str: str) -> Sequence[Any]:
         param = list(map(int, str(input_str).strip().split()))
         return param
-    
+
+
 @dataclass(repr=False)
-class nPr_1 (StudentAssignmentBenchmarkProgram):
+class nPr_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8 8", "3 3"]
     passing_input = ["2 1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class nPr_2 (StudentAssignmentBenchmarkProgram):
+class nPr_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4"]
     passing_input = ["2 1", "3 3"]
@@ -569,12 +587,13 @@ class nPr_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class nPr_3 (StudentAssignmentBenchmarkProgram):
+class nPr_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4", "3 3"]
     passing_input = ["2 1"]
@@ -582,12 +601,13 @@ class nPr_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class nPr_4 (StudentAssignmentBenchmarkProgram):
+class nPr_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7 6"]
     passing_input = ["2 1", "3 3"]
@@ -595,12 +615,13 @@ class nPr_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class nPr_5 (StudentAssignmentBenchmarkProgram):
+class nPr_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4"]
     passing_input = ["2 1", "3 3"]
@@ -608,12 +629,13 @@ class nPr_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class nPr_6 (StudentAssignmentBenchmarkProgram):
+class nPr_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4"]
     passing_input = ["2 1", "3 3"]
@@ -621,38 +643,41 @@ class nPr_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class nPr_7 (StudentAssignmentBenchmarkProgram):
+class nPr_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4"]
     passing_input = ["2 1", "3 3"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class nPr_8 (StudentAssignmentBenchmarkProgram):
+class nPr_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4"]
     passing_input = ["2 1", "3 3"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class nPr_9 (StudentAssignmentBenchmarkProgram):
+class nPr_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8 8", "3 3"]
     passing_input = ["2 1"]
@@ -660,18 +685,20 @@ class nPr_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class nPr_10 (StudentAssignmentBenchmarkProgram):
+class nPr_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["11 4", "3 3"]
     passing_input = ["2 1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
+
 
 class FibonacciStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def __init__(self):
@@ -695,21 +722,21 @@ class FibonacciStudentAssignmentBenchmarkRepository(StudentAssignmentRepository)
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_4_Fibonacci_to_N"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<integer>"],
+            "<integer>": ["<one_nine><maybe_digits>"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -719,137 +746,148 @@ class FibonacciStudentAssignmentBenchmarkRepository(StudentAssignmentRepository)
     def harness_function(input_str: str) -> Sequence[Any]:
         param = list(map(int, str(input_str).strip().split()))
         return param
-    
+
+
 @dataclass(repr=False)
-class fib_1 (StudentAssignmentBenchmarkProgram):
+class fib_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["5"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_2 (StudentAssignmentBenchmarkProgram):
+class fib_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1000000000"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_3 (StudentAssignmentBenchmarkProgram):
+class fib_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1"]
     passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_4 (StudentAssignmentBenchmarkProgram):
+class fib_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1"]
     passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_5 (StudentAssignmentBenchmarkProgram):
+class fib_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["5"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_6 (StudentAssignmentBenchmarkProgram):
+class fib_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1"]
     passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_7 (StudentAssignmentBenchmarkProgram):
+class fib_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["4"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_8 (StudentAssignmentBenchmarkProgram):
+class fib_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["5"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_9 (StudentAssignmentBenchmarkProgram):
+class fib_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["5"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 @dataclass(repr=False)
-class fib_10 (StudentAssignmentBenchmarkProgram):
+class fib_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["2"]
     passing_input = ["1"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
-    
+
+
 class NumberOfDivisorsAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def __init__(self):
         self.name: str = "Number-of-Divisors"
@@ -872,21 +910,21 @@ class NumberOfDivisorsAssignmentBenchmarkRepository(StudentAssignmentRepository)
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_5_Number-of-divisors"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<integer>"],
+            "<integer>": ["<one_nine><maybe_digits>"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -896,13 +934,14 @@ class NumberOfDivisorsAssignmentBenchmarkRepository(StudentAssignmentRepository)
     def harness_function(input_str: str) -> Sequence[Any]:
         param = list(map(int, str(input_str).strip().split()))
         return param
-    
+
+
 @dataclass(repr=False)
-class div_1 (StudentAssignmentBenchmarkProgram):
+class div_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1", "6", "10"]
     passing_input = []
@@ -910,12 +949,13 @@ class div_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_2 (StudentAssignmentBenchmarkProgram):
+class div_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["100000"]
     passing_input = ["6", "10"]
@@ -923,12 +963,13 @@ class div_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_3 (StudentAssignmentBenchmarkProgram):
+class div_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7"]
     passing_input = ["6", "10"]
@@ -936,12 +977,13 @@ class div_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_4 (StudentAssignmentBenchmarkProgram):
+class div_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["30"]
     passing_input = ["6", "10"]
@@ -949,12 +991,13 @@ class div_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_5 (StudentAssignmentBenchmarkProgram):
+class div_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["18"]
     passing_input = ["6", "10"]
@@ -962,12 +1005,13 @@ class div_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_6 (StudentAssignmentBenchmarkProgram):
+class div_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["6"]
     passing_input = ["10"]
@@ -975,12 +1019,13 @@ class div_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_7 (StudentAssignmentBenchmarkProgram):
+class div_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["18"]
     passing_input = ["6", "10"]
@@ -988,12 +1033,13 @@ class div_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_8 (StudentAssignmentBenchmarkProgram):
+class div_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["7"]
     passing_input = ["6", "10"]
@@ -1001,12 +1047,13 @@ class div_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_9 (StudentAssignmentBenchmarkProgram):
+class div_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1", "10"]
     passing_input = ["6"]
@@ -1014,12 +1061,13 @@ class div_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class div_10 (StudentAssignmentBenchmarkProgram):
+class div_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1", "10"]
     passing_input = ["6"]
@@ -1043,7 +1091,6 @@ class BubbleSortAssignmentBenchmarkRepository(StudentAssignmentRepository):
             bubble_8,
             bubble_9,
             bubble_10,
-
         ]
 
     def get_implementation_function_name(self):
@@ -1051,22 +1098,22 @@ class BubbleSortAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_6_Bubble-Sort"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<integer>\n<integer><maybe_integer>"],
-        "<integer>": ["<one_nine><maybe_digits>", "0"],
-        "<maybe_integer>": ["", " <integer><maybe_integer>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<integer>\n<integer><maybe_integer>"],
+            "<integer>": ["<one_nine><maybe_digits>", "0"],
+            "<maybe_integer>": ["", " <integer><maybe_integer>"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -1078,25 +1125,31 @@ class BubbleSortAssignmentBenchmarkRepository(StudentAssignmentRepository):
         arr = list(map(int, str(input_str.splitlines()[1]).strip().split()))
         return (arr, n)
 
+
 @dataclass(repr=False)
-class bubble_1 (StudentAssignmentBenchmarkProgram):
+class bubble_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54", "5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = [
+        "8\n24 18 38 43 14 40 1 54",
+        "5\n4 1 3 9 7",
+        "10\n10 9 8 7 6 5 4 3 2 1",
+    ]
     passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_2 (StudentAssignmentBenchmarkProgram):
+class bubble_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1104,12 +1157,13 @@ class bubble_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_3 (StudentAssignmentBenchmarkProgram):
+class bubble_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1117,12 +1171,13 @@ class bubble_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_4 (StudentAssignmentBenchmarkProgram):
+class bubble_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1130,12 +1185,13 @@ class bubble_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_5 (StudentAssignmentBenchmarkProgram):
+class bubble_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["5\n91 23 32 74 6"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1143,12 +1199,13 @@ class bubble_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_6 (StudentAssignmentBenchmarkProgram):
+class bubble_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1156,12 +1213,13 @@ class bubble_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_7 (StudentAssignmentBenchmarkProgram):
+class bubble_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1169,12 +1227,13 @@ class bubble_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_8 (StudentAssignmentBenchmarkProgram):
+class bubble_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1182,12 +1241,13 @@ class bubble_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_9 (StudentAssignmentBenchmarkProgram):
+class bubble_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["8\n24 18 38 43 14 40 1 54"]
     passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
@@ -1195,21 +1255,26 @@ class bubble_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class bubble_10 (StudentAssignmentBenchmarkProgram):
+class bubble_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54", "5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = [
+        "8\n24 18 38 43 14 40 1 54",
+        "5\n4 1 3 9 7",
+        "10\n10 9 8 7 6 5 4 3 2 1",
+    ]
     passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 class MiddleAssignmentBenchmarkRepository(StudentAssignmentRepository):
-    
     def __init__(self):
         self.name: str = "Middle"
         self._implementation_function_name: str = "middle"
@@ -1231,24 +1296,24 @@ class MiddleAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_7_Middle-of-Three"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<first> <second> <third>"],
-        "<first>": ["<integer>"],
-        "<second>": ["<integer>"],
-        "<third>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<first> <second> <third>"],
+            "<first>": ["<integer>"],
+            "<second>": ["<integer>"],
+            "<third>": ["<integer>"],
+            "<integer>": ["<one_nine><maybe_digits>"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -1259,12 +1324,13 @@ class MiddleAssignmentBenchmarkRepository(StudentAssignmentRepository):
         param = list(map(int, str(input_str).strip().split()))
         return param
 
+
 @dataclass(repr=False)
-class middle_1 (StudentAssignmentBenchmarkProgram):
+class middle_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["124 153 97", "162 934 200"]
     passing_input = ["978 518 300"]
@@ -1272,12 +1338,13 @@ class middle_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_2 (StudentAssignmentBenchmarkProgram):
+class middle_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["124 153 97", "978 518 300"]
     passing_input = ["162 934 200"]
@@ -1285,12 +1352,13 @@ class middle_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_3 (StudentAssignmentBenchmarkProgram):
+class middle_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["312 62 478", "162 934 200"]
     passing_input = ["978 518 300"]
@@ -1298,12 +1366,13 @@ class middle_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_4 (StudentAssignmentBenchmarkProgram):
+class middle_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["124 153 97", "162 934 200"]
     passing_input = ["978 518 300"]
@@ -1311,12 +1380,13 @@ class middle_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_5 (StudentAssignmentBenchmarkProgram):
+class middle_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["13 39 485", "162 934 200"]
     passing_input = ["978 518 300"]
@@ -1324,12 +1394,13 @@ class middle_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_6 (StudentAssignmentBenchmarkProgram):
+class middle_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["124 153 97", "162 934 200"]
     passing_input = ["978 518 300"]
@@ -1337,12 +1408,13 @@ class middle_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_7 (StudentAssignmentBenchmarkProgram):
+class middle_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["13 39 485"]
     passing_input = ["978 518 300", "162 934 200"]
@@ -1350,12 +1422,13 @@ class middle_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_8 (StudentAssignmentBenchmarkProgram):
+class middle_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["124 153 97", "978 518 300", "162 934 200"]
     passing_input = []
@@ -1363,12 +1436,13 @@ class middle_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_9 (StudentAssignmentBenchmarkProgram):
+class middle_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["312 62 478", "162 934 200"]
     passing_input = ["978 518 300"]
@@ -1376,12 +1450,13 @@ class middle_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class middle_10 (StudentAssignmentBenchmarkProgram):
+class middle_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["459 8 20"]
     passing_input = ["978 518 300", "162 934 200"]
@@ -1412,48 +1487,50 @@ class PalindromeAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_8_Palindrome-String"))
 
-    #TODO: restliche Regeln implementiern, gibts eine smartere Lsg?
+    # TODO: restliche Regeln implementiern, gibts eine smartere Lsg?
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<valid>", "<invalid>"],
-        "<valid>": ["a<valid>a", 
-                    "b<valid>b", 
-                    "c<valid>c", 
-                    "d<valid>d",
-                    "e<valid>e",
-                    "f<valid>f",
-                    "g<valid>g",
-                    "h<valid>h",
-                    "i<valid>i",
-                    "j<valid>j",
-                    "k<valid>k",
-                    "l<valid>l",
-                    "m<valid>m",
-                    "n<valid>n",
-                    "o<valid>o",
-                    "p<valid>p",
-                    "q<valid>q",
-                    "r<valid>r",
-                    "s<valid>s",
-                    "t<valid>t",
-                    "u<valid>u",
-                    "v<valid>v",
-                    "w<valid>w",
-                    "x<valid>x",
-                    "y<valid>y",
-                    "z<valid>z",
-                    "<character>", 
-                    ""],
-        "<character>": list(string.ascii_lowercase),
-        "<invalid>": ["<character><maybe_character>"],
-        "<maybe_character>": ["<character><maybe_character>", ""]
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<valid>", "<invalid>"],
+            "<valid>": [
+                "a<valid>a",
+                "b<valid>b",
+                "c<valid>c",
+                "d<valid>d",
+                "e<valid>e",
+                "f<valid>f",
+                "g<valid>g",
+                "h<valid>h",
+                "i<valid>i",
+                "j<valid>j",
+                "k<valid>k",
+                "l<valid>l",
+                "m<valid>m",
+                "n<valid>n",
+                "o<valid>o",
+                "p<valid>p",
+                "q<valid>q",
+                "r<valid>r",
+                "s<valid>s",
+                "t<valid>t",
+                "u<valid>u",
+                "v<valid>v",
+                "w<valid>w",
+                "x<valid>x",
+                "y<valid>y",
+                "z<valid>z",
+                "<character>",
+                "",
+            ],
+            "<character>": list(string.ascii_lowercase),
+            "<invalid>": ["<character><maybe_character>"],
+            "<maybe_character>": ["<character><maybe_character>", ""],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -1461,14 +1538,15 @@ class PalindromeAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
-        return str(input_str)
+        return [str(input_str)]
+
 
 @dataclass(repr=False)
-class palindrome_1 (StudentAssignmentBenchmarkProgram):
+class palindrome_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["hq", "abba", "abc"]
     passing_input = []
@@ -1476,12 +1554,13 @@ class palindrome_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_2 (StudentAssignmentBenchmarkProgram):
+class palindrome_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["pjxcxjp"]
     passing_input = ["abba", "abc"]
@@ -1489,12 +1568,13 @@ class palindrome_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_3 (StudentAssignmentBenchmarkProgram):
+class palindrome_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["h"]
     passing_input = ["abba", "abc"]
@@ -1502,12 +1582,13 @@ class palindrome_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_4 (StudentAssignmentBenchmarkProgram):
+class palindrome_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["h"]
     passing_input = ["abc", "abba"]
@@ -1515,12 +1596,13 @@ class palindrome_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_5 (StudentAssignmentBenchmarkProgram):
+class palindrome_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["qmoeeomq", "abba"]
     passing_input = ["abc"]
@@ -1528,12 +1610,13 @@ class palindrome_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_6 (StudentAssignmentBenchmarkProgram):
+class palindrome_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["hq", "abba", "abc"]
     passing_input = []
@@ -1541,12 +1624,13 @@ class palindrome_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_7 (StudentAssignmentBenchmarkProgram):
+class palindrome_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["hq"]
     passing_input = ["abba", "abc"]
@@ -1554,12 +1638,13 @@ class palindrome_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_8 (StudentAssignmentBenchmarkProgram):
+class palindrome_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["h"]
     passing_input = ["abba", "abc"]
@@ -1567,12 +1652,13 @@ class palindrome_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_9 (StudentAssignmentBenchmarkProgram):
+class palindrome_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["lezaq", "abc"]
     passing_input = ["abba"]
@@ -1580,12 +1666,13 @@ class palindrome_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class palindrome_10 (StudentAssignmentBenchmarkProgram):
+class palindrome_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["h"]
     passing_input = ["abba", "abc"]
@@ -1616,20 +1703,22 @@ class RemoveVowelAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
-        return os.path.join(super().get_dir(), Path("problem_9_Remove-vowels-from-string"))
+        return os.path.join(
+            super().get_dir(), Path("problem_9_Remove-vowels-from-string")
+        )
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<word><maybe_word>"],
-        "<maybe_word>": [" <word><maybe_word>", ""],
-        "<word>": ["<char><maybe_char>"],        
-        "<char>": list(string.ascii_lowercase),
-        "<maybe_char>": ["<char><maybe_char>", ""]     
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<word><maybe_word>"],
+            "<maybe_word>": [" <word><maybe_word>", ""],
+            "<word>": ["<char><maybe_char>"],
+            "<char>": list(string.ascii_lowercase),
+            "<maybe_char>": ["<char><maybe_char>", ""],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -1637,14 +1726,15 @@ class RemoveVowelAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
-        return str(input_str)
+        return [str(input_str)]
+
 
 @dataclass(repr=False)
-class vowel_1 (StudentAssignmentBenchmarkProgram):
+class vowel_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1652,12 +1742,13 @@ class vowel_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_2 (StudentAssignmentBenchmarkProgram):
+class vowel_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1665,12 +1756,13 @@ class vowel_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_3 (StudentAssignmentBenchmarkProgram):
+class vowel_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1678,12 +1770,13 @@ class vowel_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_4 (StudentAssignmentBenchmarkProgram):
+class vowel_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1691,12 +1784,13 @@ class vowel_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_5 (StudentAssignmentBenchmarkProgram):
+class vowel_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1704,12 +1798,13 @@ class vowel_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_6 (StudentAssignmentBenchmarkProgram):
+class vowel_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["<$uo?.*>"]
     passing_input = ["welcome to avicenna", "hello my name is martin"]
@@ -1717,12 +1812,13 @@ class vowel_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_7 (StudentAssignmentBenchmarkProgram):
+class vowel_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["<a long string>"]
     passing_input = ["welcome to avicenna", "hello my name is martin"]
@@ -1730,12 +1826,13 @@ class vowel_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_8 (StudentAssignmentBenchmarkProgram):
+class vowel_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1743,12 +1840,13 @@ class vowel_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_9 (StudentAssignmentBenchmarkProgram):
+class vowel_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["eicm", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1756,12 +1854,13 @@ class vowel_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class vowel_10 (StudentAssignmentBenchmarkProgram):
+class vowel_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["&%^oq^", "welcome to avicenna", "hello my name is martin"]
     passing_input = []
@@ -1792,21 +1891,21 @@ class SquareRootAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_10_Square-root"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<integer>"],
-        "<integer>": ["<one_nine><maybe_digits>", "0"],
-        "<one_nine>": [str(num) for num in range(1, 10)],
-        "<digit>": list(string.digits),
-        "<maybe_digits>": ["", "<digits>"],
-        "<digits>": ["<digit>", "<digit><digits>"],
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<integer>"],
+            "<integer>": ["<one_nine><maybe_digits>", "0"],
+            "<one_nine>": [str(num) for num in range(1, 10)],
+            "<digit>": list(string.digits),
+            "<maybe_digits>": ["", "<digits>"],
+            "<digits>": ["<digit>", "<digit><digits>"],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -1817,12 +1916,13 @@ class SquareRootAssignmentBenchmarkRepository(StudentAssignmentRepository):
         param = list(map(int, str(input_str).strip().split()))
         return param
 
+
 @dataclass(repr=False)
-class sqrt_1 (StudentAssignmentBenchmarkProgram):
+class sqrt_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["2"]
     passing_input = ["4", "5"]
@@ -1830,12 +1930,13 @@ class sqrt_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_2 (StudentAssignmentBenchmarkProgram):
+class sqrt_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["6"]
     passing_input = ["4", "5"]
@@ -1843,12 +1944,13 @@ class sqrt_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_3 (StudentAssignmentBenchmarkProgram):
+class sqrt_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1"]
     passing_input = ["4", "5"]
@@ -1856,12 +1958,13 @@ class sqrt_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_4 (StudentAssignmentBenchmarkProgram):
+class sqrt_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["4"]
     passing_input = ["5"]
@@ -1869,12 +1972,13 @@ class sqrt_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_5 (StudentAssignmentBenchmarkProgram):
+class sqrt_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["6"]
     passing_input = ["4", "5"]
@@ -1882,12 +1986,13 @@ class sqrt_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_6 (StudentAssignmentBenchmarkProgram):
+class sqrt_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["6179767"]
     passing_input = ["4", "5"]
@@ -1895,12 +2000,13 @@ class sqrt_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_7 (StudentAssignmentBenchmarkProgram):
+class sqrt_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["3", "5"]
     passing_input = ["4"]
@@ -1908,12 +2014,13 @@ class sqrt_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_8 (StudentAssignmentBenchmarkProgram):
+class sqrt_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["4"]
     passing_input = ["5"]
@@ -1921,12 +2028,13 @@ class sqrt_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_9 (StudentAssignmentBenchmarkProgram):
+class sqrt_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1"]
     passing_input = ["4", "5"]
@@ -1934,12 +2042,13 @@ class sqrt_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class sqrt_10 (StudentAssignmentBenchmarkProgram):
+class sqrt_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["1"]
     passing_input = ["4", "5"]
@@ -1970,19 +2079,19 @@ class MergeStringsAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     def get_name(self) -> str:
         return self.name
-        
+
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_11_Merge-two-strings"))
 
     @staticmethod
     def get_grammar() -> Grammar:
         return {
-        "<start>": ["<input>"],
-        "<input>": ["<word> <word>"],
-        "<word>": ["<character><maybe_character>"],        
-        "<character>": list(string.ascii_lowercase),
-        "<maybe_character>": ["<character><maybe_character>", ""],        
-    }
+            "<start>": ["<input>"],
+            "<input>": ["<word> <word>"],
+            "<word>": ["<character><maybe_character>"],
+            "<character>": list(string.ascii_lowercase),
+            "<maybe_character>": ["<character><maybe_character>", ""],
+        }
 
     @staticmethod
     def get_initial_inputs() -> List[str]:
@@ -1990,15 +2099,16 @@ class MergeStringsAssignmentBenchmarkRepository(StudentAssignmentRepository):
 
     @staticmethod
     def harness_function(input_str: str) -> Sequence[Any]:
-        S1, S2 = map(str, str(input_str).strip().split())
-        return (S1, S2)
+        s1, s2 = map(str, str(input_str).strip().split())
+        return s1, s2
+
 
 @dataclass(repr=False)
-class merge_1 (StudentAssignmentBenchmarkProgram):
+class merge_1(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Bye Hello"]
     passing_input = ["abc def", "hello bye"]
@@ -2006,12 +2116,13 @@ class merge_1 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_2 (StudentAssignmentBenchmarkProgram):
+class merge_2(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX"]
     passing_input = ["abc def", "hello bye"]
@@ -2019,12 +2130,13 @@ class merge_2 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_3 (StudentAssignmentBenchmarkProgram):
+class merge_3(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX", "abc def", "hello bye"]
     passing_input = []
@@ -2032,12 +2144,13 @@ class merge_3 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_4 (StudentAssignmentBenchmarkProgram):
+class merge_4(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["TjR GxPRYtwyy"]
     passing_input = ["abc def", "hello bye"]
@@ -2045,12 +2158,13 @@ class merge_4 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_5 (StudentAssignmentBenchmarkProgram):
+class merge_5(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX"]
     passing_input = ["abc def", "hello bye"]
@@ -2058,12 +2172,13 @@ class merge_5 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_6 (StudentAssignmentBenchmarkProgram):
+class merge_6(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX"]
     passing_input = ["abc def", "hello bye"]
@@ -2071,12 +2186,13 @@ class merge_6 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_7 (StudentAssignmentBenchmarkProgram):
+class merge_7(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["rvcGbk QUWNOV", "abc def"]
     passing_input = ["hello bye"]
@@ -2084,12 +2200,13 @@ class merge_7 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_8 (StudentAssignmentBenchmarkProgram):
+class merge_8(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX"]
     passing_input = ["abc def", "hello bye"]
@@ -2097,12 +2214,13 @@ class merge_8 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_9 (StudentAssignmentBenchmarkProgram):
+class merge_9(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX"]
     passing_input = ["abc def", "hello bye"]
@@ -2110,12 +2228,13 @@ class merge_9 (StudentAssignmentBenchmarkProgram):
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
 
+
 @dataclass(repr=False)
-class merge_10 (StudentAssignmentBenchmarkProgram):
+class merge_10(StudentAssignmentBenchmarkProgram):
     name: str
     bug_id: int
     grammar: Grammar
-    initial_inputs: List[str]
+
     oracle: Callable
     failing_input = ["Qh eyNFX"]
     passing_input = ["abc def", "hello bye"]
