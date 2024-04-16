@@ -21,7 +21,7 @@ class TestEvaluator(unittest.TestCase):
 
     def test_evaluation(self):
         result = Evaluation(
-            tools=self.tools, subjects=self.subjects[0:1], repetitions=1, timeout=3600
+            tool=self.tools[0], subjects=self.subjects[0:1], repetitions=1
         ).run()
         self.assertTrue(isinstance(result, pd.DataFrame))
 

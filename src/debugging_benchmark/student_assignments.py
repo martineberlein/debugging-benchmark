@@ -1131,10 +1131,9 @@ class bubble_1(StudentAssignmentBenchmarkProgram):
     oracle: Callable
     failing_input = [
         "8\n24 18 38 43 14 40 1 54",
-        "5\n4 1 3 9 7",
-        "10\n10 9 8 7 6 5 4 3 2 1",
+        "10\n10 9 8 7 6 5 4 3 2 1"
     ]
-    passing_input = []
+    passing_input = ["5\n4 1 3 9 7",]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1161,8 +1160,8 @@ class bubble_3(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["8\n24 18 38 43 14 40 1 54", "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = ["5\n4 1 3 9 7"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1175,8 +1174,8 @@ class bubble_4(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["8\n24 18 38 43 14 40 1 54", "5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1189,8 +1188,8 @@ class bubble_5(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["5\n91 23 32 74 6"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["5\n91 23 32 74 6", "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = ["5\n4 1 3 9 7"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1203,8 +1202,8 @@ class bubble_6(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["8\n24 18 38 43 14 40 1 54", "5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1217,8 +1216,8 @@ class bubble_7(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["8\n24 18 38 43 14 40 1 54", "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = ["5\n4 1 3 9 7"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1231,8 +1230,8 @@ class bubble_8(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["8\n24 18 38 43 14 40 1 54", "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = ["5\n4 1 3 9 7"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1245,8 +1244,8 @@ class bubble_9(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["8\n24 18 38 43 14 40 1 54"]
-    passing_input = ["5\n4 1 3 9 7", "10\n10 9 8 7 6 5 4 3 2 1"]
+    failing_input = ["8\n24 18 38 43 14 40 1 54",  "10\n10 9 8 7 6 5 4 3 2 1"]
+    passing_input = ["5\n4 1 3 9 7"]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1261,10 +1260,11 @@ class bubble_10(StudentAssignmentBenchmarkProgram):
     oracle: Callable
     failing_input = [
         "8\n24 18 38 43 14 40 1 54",
-        "5\n4 1 3 9 7",
-        "10\n10 9 8 7 6 5 4 3 2 1",
+        "10\n10 9 8 7 6 5 4 3 2 1"
     ]
-    passing_input = []
+    passing_input = [
+        "5\n4 1 3 9 7"
+    ]
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1284,7 +1284,7 @@ class MiddleAssignmentBenchmarkRepository(StudentAssignmentRepository):
             middle_7,
             middle_8,
             middle_9,
-            middle_10,
+            middle_10
         ]
 
     def get_implementation_function_name(self):
@@ -1487,7 +1487,6 @@ class PalindromeAssignmentBenchmarkRepository(StudentAssignmentRepository):
     def get_dir(self) -> Path:
         return os.path.join(super().get_dir(), Path("problem_8_Palindrome-String"))
 
-    # TODO: restliche Regeln implementiern, gibts eine smartere Lsg?
     @staticmethod
     def get_grammar() -> Grammar:
         return {
@@ -1521,7 +1520,7 @@ class PalindromeAssignmentBenchmarkRepository(StudentAssignmentRepository):
                 "y<valid>y",
                 "z<valid>z",
                 "<character>",
-                "",
+                ""
             ],
             "<character>": list(string.ascii_lowercase),
             "<invalid>": ["<character><maybe_character>"],
@@ -1628,8 +1627,8 @@ class palindrome_7(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["hq"]
-    passing_input = ["abba", "abc"]
+    failing_input = ["hq", "abba", "abc"]
+    passing_input = []
 
     def get_initial_inputs(self) -> List[str]:
         return self.failing_input + self.passing_input
@@ -1712,7 +1711,7 @@ class RemoveVowelAssignmentBenchmarkRepository(StudentAssignmentRepository):
             "<input>": ["<word><maybe_word>"],
             "<maybe_word>": [" <word><maybe_word>", ""],
             "<word>": ["<char><maybe_char>"],
-            "<char>": list(string.ascii_lowercase),
+            "<char>": list(string.printable),
             "<maybe_char>": ["<char><maybe_char>", ""],
         }
 
@@ -2085,7 +2084,7 @@ class MergeStringsAssignmentBenchmarkRepository(StudentAssignmentRepository):
             "<start>": ["<input>"],
             "<input>": ["<word> <word>"],
             "<word>": ["<character><maybe_character>"],
-            "<character>": list(string.ascii_lowercase),
+            "<character>": list(string.printable),
             "<maybe_character>": ["<character><maybe_character>", ""],
         }
 

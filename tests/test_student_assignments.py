@@ -17,6 +17,7 @@ from debugging_benchmark.student_assignments import (
     RemoveVowelAssignmentBenchmarkRepository,
     MergeStringsAssignmentBenchmarkRepository,
     StudentAssignmentBenchmarkProgram,
+    StudentAssignmentRepository
 )
 
 
@@ -38,7 +39,7 @@ class TestStudentAssignments(unittest.TestCase):
         self.programs = []
         for repo in self.repos:
             programs = repo.build()
-            for program in programs:
+            for program in programs:    
                 self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
                 self.programs.append(program)
 
@@ -50,19 +51,37 @@ class TestStudentAssignments(unittest.TestCase):
 
     def test_subject_valid_grammars(self):
         for repo in self.repos:
+            repo : StudentAssignmentRepository
             self.assertTrue(is_valid_grammar(repo.get_grammar()))
 
     def test_subject_parsing_inputs(self):
         for program in self.programs:
-            with self.subTest(program):
-                self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
-                grammar = program.get_grammar()
-                parser = EarleyParser(grammar)
-
+            program : StudentAssignmentBenchmarkProgram
+            self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
+            parser = EarleyParser(program.get_grammar())
+            with self.subTest("Problem at " + program.get_name()):
                 for inp in program.get_initial_inputs():
                     self.assertIsNotNone(parser.parse(inp))
                     for tree in parser.parse(inp):
                         self.assertEqual(inp, tree_to_string(tree))
+
+    def  test_failing_input(self):
+        for program in self.programs:
+            program : StudentAssignmentBenchmarkProgram
+            oracle = program.get_oracle()
+            for inp in program.get_failing_input():
+                with self.subTest("Problem at " + program.get_name() + " and input " + inp):
+                    result, _ = oracle(inp)
+                    self.assertIs(result, OracleResult.FAILING)
+
+    def  test_passing_input(self):
+        for program in self.programs:
+            program : StudentAssignmentBenchmarkProgram
+            oracle = program.get_oracle()
+            for inp in program.get_passing_inputs():
+                with self.subTest("Problem at " + program.get_name() + " and input " + inp):
+                    result, _ = oracle(inp)
+                    self.assertIs(result, OracleResult.PASSING)
 
     def test_subject_build(self):
         for program in self.programs:
