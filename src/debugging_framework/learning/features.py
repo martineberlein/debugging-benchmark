@@ -6,8 +6,8 @@ from collections import defaultdict
 from isla.derivation_tree import DerivationTree
 
 from debugging_framework.types import Grammar
-from debugging_framework.grammar import reachable_nonterminals, is_nonterminal
-from debugging_framework.oracle import OracleResult
+from debugging_framework.fuzzingbook.grammar import reachable_nonterminals, is_nonterminal
+from debugging_framework.input.oracle import OracleResult
 
 
 class Feature(ABC):

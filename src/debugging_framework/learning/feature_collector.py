@@ -6,9 +6,9 @@ from abc import ABC, abstractmethod
 from isla.derivation_tree import DerivationTree
 
 from debugging_framework.types import Grammar
-from debugging_framework.grammar import is_nonterminal
-from debugging_framework.input import Input
-from debugging_framework.features import (
+from debugging_framework.fuzzingbook.grammar import is_nonterminal
+from debugging_framework.input.input import Input
+from debugging_framework.learning.features import (
     ExistenceFeature,
     DerivationFeature,
     NumericFeature,
