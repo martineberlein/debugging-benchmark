@@ -4,7 +4,7 @@ import random
 from isla.derivation_tree import DerivationTree
 from debugging_framework.types import Grammar, Expansion, START_SYMBOL
 
-from debugging_framework.grammar import (
+from debugging_framework.fuzzingbook.grammar import (
     is_valid_grammar,
     expansion_to_children,
     nonterminals,

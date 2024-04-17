@@ -3,7 +3,7 @@ from types import FrameType, TracebackType
 import inspect
 import sys
 
-from debugging_framework.input import Input
+from debugging_framework.input.input import Input
 
 Location = Tuple[str, int]
 

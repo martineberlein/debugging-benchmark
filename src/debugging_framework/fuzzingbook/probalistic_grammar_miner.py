@@ -4,7 +4,7 @@ from isla.parser import Parser
 from isla.derivation_tree import DerivationTree
 
 from debugging_framework.types import Grammar
-from debugging_framework.grammar import (
+from debugging_framework.fuzzingbook.grammar import (
     is_nonterminal,
     extend_grammar,
     expansion_key,

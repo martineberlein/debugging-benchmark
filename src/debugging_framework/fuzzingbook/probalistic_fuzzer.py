@@ -3,8 +3,8 @@ from typing import List
 
 from isla.derivation_tree import DerivationTree
 
-from debugging_framework.grammar import exp_probabilities, all_terminals
-from debugging_framework.grammar_fuzzer import GrammarFuzzer
+from debugging_framework.fuzzingbook.grammar import exp_probabilities, all_terminals
+from debugging_framework.fuzzingbook.fuzzer import GrammarFuzzer
 
 
 class ProbabilisticGrammarFuzzer(GrammarFuzzer):

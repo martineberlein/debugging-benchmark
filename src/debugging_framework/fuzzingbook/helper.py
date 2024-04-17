@@ -1,5 +1,5 @@
 from isla.derivation_tree import DerivationTree
-from debugging_framework.grammar import is_nonterminal
+from debugging_framework.fuzzingbook.grammar import is_nonterminal
 
 
 def tree_to_string(tree: DerivationTree) -> str:

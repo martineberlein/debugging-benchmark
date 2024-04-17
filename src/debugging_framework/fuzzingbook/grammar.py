@@ -28,7 +28,6 @@ def is_valid_grammar(
 
     # Do not complain about '<start>' being not used,
     # even if start_symbol is different
-    # TODO: eigentlich überflüssig, da das schon in def_used_nonterminals passiert
     if START_SYMBOL in grammar:
         used_nonterminals.add(START_SYMBOL)
 
