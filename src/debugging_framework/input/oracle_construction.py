@@ -2,11 +2,10 @@ from typing import Callable, Dict, Type, Optional, Tuple, Any, Sequence
 
 from copy import deepcopy
 
-from debugging_framework.oracle import OracleResult
-from debugging_framework.input import Input
-from debugging_framework.timeout_manager import ManageTimeout
-from debugging_framework.expceptions import UnexpectedResultError
-from debugging_framework.memory_manager import ManageMemory
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.input.input import Input
+from debugging_framework.execution.timeout_manager import ManageTimeout
+from debugging_framework.execution.expceptions import UnexpectedResultError
 
 import contextlib
 
