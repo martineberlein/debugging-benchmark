@@ -1,17 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Callable, List
 
-from evogfuzz.evogfuzz_class import EvoGFuzz, EvoGGen
 from isla.fuzzer import GrammarFuzzer as ISLaGrammarFuzzer
 from isla.parser import EarleyParser
 
 from debugging_framework.types import Grammar
-from debugging_framework.probalistic_grammar_fuzzer import ProbabilisticGrammarFuzzer
-from debugging_framework.probalistic_grammar_miner import ProbabilisticGrammarMiner
-from debugging_framework.grammar_fuzzer import GrammarFuzzer
-from debugging_framework.execution_handler import SingleExecutionHandler
-from debugging_framework.report import MultipleFailureReport, Report
-
+from debugging_framework.fuzzingbook.probalistic_fuzzer import ProbabilisticGrammarFuzzer
+from debugging_framework.fuzzingbook.probalistic_grammar_miner import ProbabilisticGrammarMiner
+from debugging_framework.fuzzingbook.fuzzer import GrammarFuzzer
+from debugging_framework.execution.execution_handler import SingleExecutionHandler
+from debugging_framework.execution.report import MultipleFailureReport, Report
 
 
 class Tool(ABC):
@@ -99,38 +97,3 @@ class ISLaGrammarEvaluationFuzzer(GrammarBasedEvaluationTool):
         self.execution_handler.label_strings(test_inputs, self.report)
         self.generated_inputs = test_inputs
         return self.report
-
-class EvoGFuzzEvaluationFuzzer(GrammarBasedEvaluationTool):
-    name = "EvoGFuzzBasedFuzzer"
-
-    def run(self) -> Report:
-        fuzzer = EvoGFuzz(
-            grammar=self.grammar,
-            oracle=self.oracle,
-            inputs=self.initial_inputs
-        )
-
-        test_inputs = fuzzer.fuzz()
-
-        self.execution_handler.label_strings(test_inputs, self.report)
-        self.generated_inputs = test_inputs
-        return self.report
-    
-class EvoGGenEvaluationFuzzer(GrammarBasedEvaluationTool):
-    name = "EvoGGenBasedFuzzer"
-
-    def run(self) -> Report:
-        fuzzer = EvoGGen(
-            grammar=self.grammar,
-            oracle=self.oracle,
-            inputs=self.initial_inputs
-        )
-
-        #TODO: mit martin schimpfen -> optimze returnt gar nichts
-        fuzzer.optimize()
-        test_inputs = fuzzer.failure_inducing_inputs
-        
-        self.execution_handler.label_strings(test_inputs, self.report)
-        self.generated_inputs = test_inputs
-        return self.report
-

@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from debugging_framework.results import initialize_dataframe
-from debugging_framework.tools import Tool
-from debugging_framework.benchmark import BenchmarkProgram
-from debugging_framework.report import Report, MultipleFailureReport
+from debugging_framework.evaluation.results import initialize_dataframe
+from debugging_framework.evaluation.tools import Tool
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_framework.execution.report import Report, MultipleFailureReport
 
 
 VLOGGER = logging.getLogger("evaluation")
