@@ -5,31 +5,14 @@ from dataclasses import dataclass
 from tests4py import api
 from tests4py.projects import Project
 
-from debugging_framework.types import Grammar
-
 from debugging_framework.input.input import Input
 from debugging_framework.types import HARNESS_FUNCTION
-from debugging_benchmark.tests4py_helper.tests4py_grammars import (
+
+from debugging_benchmark.tests4py.project import Tests4PyProject
+from debugging_benchmark.tests4py.tests4py_grammars import (
     grammar_pysnooper,
     grammar_youtube_dl_1,
 )
-
-
-class Tests4PyProject:
-    def __init__(
-        self,
-        project: Project,
-        grammar: Grammar,
-        failing_inputs: List[str],
-        passing_inputs: List[str],
-        harness_function: HARNESS_FUNCTION,
-    ):
-        self.project = project
-        self.grammar = grammar
-        self.failing_inputs = failing_inputs
-        self.passing_inputs = passing_inputs
-        self.initial_inputs = failing_inputs + passing_inputs
-        self.harness_function: HARNESS_FUNCTION = harness_function
 
 
 def pysnooper_harness_function(inp: Union[str, Input]) -> List[str]:
@@ -65,14 +48,16 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
         "-d=7 -p='test' -w='e.nest2' -c=bool=str,int=str -O ",
         "-o -d=7 -p='1' -w='e.nest2' -c=bool=str,int=str -T ",
     ]
-    passing_inputs = [
-        "-o='test7.log' -d=1 -p='test' "
-    ]
+    passing_inputs = ["-o='test7.log' -d=1 -p='test' "]
     harness_function: Callable = pysnooper_harness_function
 
     def __post_init__(self):
         super().__init__(
-            self.project, self.grammar, self.failing_inputs, self.passing_inputs, self.harness_function
+            self.project,
+            self.grammar,
+            self.failing_inputs,
+            self.passing_inputs,
+            self.harness_function,
         )
 
 
@@ -83,14 +68,16 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
     failing_inputs = [
         "-o='test7.log' -d=1 -p='test' ",
     ]
-    passing_inputs = [
-        "-d=7 -p='1'"
-    ]
+    passing_inputs = ["-d=7 -p='1'"]
     harness_function: Callable = pysnooper_harness_function
 
     def __post_init__(self):
         super().__init__(
-            self.project, self.grammar, self.failing_inputs, self.passing_inputs, self.harness_function
+            self.project,
+            self.grammar,
+            self.failing_inputs,
+            self.passing_inputs,
+            self.harness_function,
         )
 
 
@@ -287,7 +274,7 @@ class Markup1Tests4PyProject(Tests4PyProject):
     grammar = project.grammar
     initial_inputs = [
         "<zmcytjrhdd>IbXMFocpXLguFvGtxEqZxmH</zmcytjrhdd>",
-        '\\"\\"cecpQLBVBzDVeycWLgrjTJhqa\\"\\"'
+        '\\"\\"cecpQLBVBzDVeycWLgrjTJhqa\\"\\"',
     ]
     harness_function: HARNESS_FUNCTION = markup_harness_function
 

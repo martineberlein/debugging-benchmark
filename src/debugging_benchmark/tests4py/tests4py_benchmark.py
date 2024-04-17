@@ -4,11 +4,11 @@ from typing import List, Callable
 from debugging_framework.types import Grammar
 from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_framework.benchmark.repository import BenchmarkRepository
-from debugging_benchmark.tests4py_helper.tests4py_api import (
+from debugging_benchmark.tests4py.tests4py_api import (
     build_project,
     construct_oracle,
 )
-from debugging_benchmark.tests4py_helper.tests4py_projects import (
+from debugging_benchmark.tests4py.tests4py_projects import (
     Tests4PyProject,
     Pysnooper2Tests4PyProject,
     Pysnooper3Tests4PyProject,
@@ -162,7 +162,7 @@ def main():
                 CalculatorTests4PyProject(),
                 ExpressionTests4PyProject(),
                 Markup1Tests4PyProject(),
-                Markup2Tests4PyProject()
+                Markup2Tests4PyProject(),
             ]
         )
     ]
