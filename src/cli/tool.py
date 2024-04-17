@@ -2,11 +2,11 @@ import argparse
 from typing import List
 
 
-from debugging_framework.tools import (GrammarBasedEvaluationTool,
-                                    GrammarBasedEvaluationFuzzer,
-                                    InputsFromHellEvaluationFuzzer,
-                                    ISLaGrammarEvaluationFuzzer,
-                                    Tool)
+from debugging_framework.evaluation.tools import (GrammarBasedEvaluationTool,
+                                                  GrammarBasedEvaluationFuzzer,
+                                                  InputsFromHellEvaluationFuzzer,
+                                                  ISLaGrammarEvaluationFuzzer,
+                                                  Tool)
 
 def main() -> List[Tool]:
     parser = argparse.ArgumentParser(prog = "tool",
