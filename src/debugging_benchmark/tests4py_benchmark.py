@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import List, Callable
 
 from debugging_framework.types import Grammar
-from debugging_framework.benchmark import BenchmarkProgram
-from debugging_benchmark.refactory import BenchmarkRepository
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_framework.benchmark.repository import BenchmarkRepository
 from debugging_benchmark.tests4py_helper.tests4py_api import (
     build_project,
     construct_oracle,
@@ -39,19 +39,7 @@ class Tests4PyBenchmarkProgram(BenchmarkProgram):
         self.bug_id = bug_id
 
     def __repr__(self):
-        return f"Program({self.name}_{self.bug_id})"
-
-    def get_name(self) -> str:
-        return self.__repr__()
-
-    def get_grammar(self):
-        return self.grammar
-
-    def get_initial_inputs(self):
-        return self.initial_inputs
-
-    def get_oracle(self):
-        return self.oracle
+        return f"Tests4PyBenchmarkProgram({self.name}_{self.bug_id})"
 
 
 class Tests4PyBenchmarkRepository(BenchmarkRepository):

@@ -6,10 +6,11 @@ import string
 import os
 
 from debugging_framework.types import Grammar
-from debugging_framework.oracle import OracleResult
-from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.benchmark import load_object_dynamically
-from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.input.oracle_construction import construct_oracle
+from debugging_framework.benchmark.loader import load_object_dynamically
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_framework.benchmark.repository import BenchmarkRepository
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):
@@ -27,19 +28,7 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         self.implementation_function_name = implementation_function_name
 
     def __repr__(self):
-        return f"{self.name}_{self.bug_id}"
-
-    def get_name(self) -> str:
-        return f"{self.name}_{self.bug_id}"
-
-    def get_grammar(self):
-        return self.grammar
-
-    def get_initial_inputs(self):
-        return self.initial_inputs
-
-    def get_oracle(self):
-        return self.oracle
+        return f"RefactoryBenchmarkProgram{self.name}_{self.bug_id}"
 
 
 class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):

@@ -6,11 +6,11 @@ import os
 import string
 
 from debugging_framework.types import Grammar
-from debugging_framework.oracle import OracleResult
-from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.benchmark import load_function_from_class
-
-from debugging_framework.benchmark import BenchmarkRepository, BenchmarkProgram
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.input.oracle_construction import construct_oracle
+from debugging_framework.benchmark.loader import load_function_from_class
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_framework.benchmark.repository import BenchmarkRepository
 
 
 class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
@@ -28,7 +28,7 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
         self.failing_input = []
 
     def __repr__(self):
-        return f"{self.name}_{self.bug_id}"
+        return f"StudentAssignmentBenchmarkProgram({self.name}_{self.bug_id})"
 
     def get_name(self) -> str:
         return self.__repr__()
@@ -42,7 +42,7 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     def get_passing_inputs(self) -> List[str]:
         return self.passing_input
 
-    def get_failing_input(self) -> List[str]:
+    def get_failing_inputs(self) -> List[str]:
         return self.failing_input
 
     def get_oracle(self) -> Callable:
@@ -1815,7 +1815,8 @@ class vowel_7(StudentAssignmentBenchmarkProgram):
     grammar: Grammar
 
     oracle: Callable
-    failing_input = ["<a long string>"]
+    # failing_input = ["<a long string>"] # TODO fix this
+    failing_input = []
     passing_input = ["welcome to avicenna", "hello my name is martin"]
 
     def get_initial_inputs(self) -> List[str]:

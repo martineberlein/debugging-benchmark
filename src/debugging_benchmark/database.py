@@ -1,9 +1,9 @@
 from typing import List, Union, Callable
-from debugging_framework.oracle import OracleResult
+from debugging_framework.input.oracle import OracleResult
 
 import sqlite3
 
-from debugging_framework.benchmark import BenchmarkProgram
+from debugging_framework.benchmark.program import BenchmarkProgram
 
 #Singleton
 class DatabaseHelper:

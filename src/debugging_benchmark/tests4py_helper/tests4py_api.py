@@ -6,9 +6,9 @@ from tests4py.projects import Project
 from tests4py.api.test import RunReport
 from tests4py.api.report import TestResult
 
-from debugging_framework.input import Input
-from debugging_framework.oracle import OracleResult
-from debugging_framework.expceptions import Tests4PySubjectException
+from debugging_framework.input.input import Input
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.execution.expceptions import Tests4PySubjectException
 from debugging_framework.types import HARNESS_FUNCTION
 
 
@@ -21,9 +21,9 @@ def build_project(
 ) -> None:
     """Build the given project."""
     project.buggy = buggy
-    checkout_report = api.checkout_project(project, work_dir)
+    checkout_report = api.checkout(project, work_dir)
     assert checkout_report.successful
-    compile_report = api.compile_project(work_dir / project.get_identifier())
+    compile_report = api.build(work_dir / project.get_identifier())
     assert compile_report.successful
 
 
@@ -41,7 +41,7 @@ def run_project_from_dir(
 ) -> RunReport:
     """Run the project from the given directory with the provided input."""
     args = harness_function(inp)
-    return api.run_project(project_dir, args, invoke_oracle=True)
+    return api.run(project_dir, args, invoke_oracle=True)
 
 
 def construct_oracle(
@@ -61,10 +61,10 @@ def construct_oracle(
             if report.test_result == TestResult.FAILING
             else None
         )
-        print("test_result:", report.test_result)
-        print("feedback:", report.feedback)
-        print("successful:", report.successful)
-        print("raised:", report.raised)
+        # print("test_result:", report.test_result)
+        # print("feedback:", report.feedback)
+        # print("successful:", report.successful)
+        # print("raised:", report.raised)
         result = (
             map_result(report.test_result)
             if report.successful
