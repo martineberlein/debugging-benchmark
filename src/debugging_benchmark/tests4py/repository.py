@@ -4,9 +4,9 @@ import logging
 
 from debugging_framework.benchmark.repository import BenchmarkRepository
 from debugging_framework.input.oracle import OracleResult
-from debugging_benchmark.tests4py.project import Tests4PyProject
+from debugging_benchmark.tests4py.project import *
 from debugging_benchmark.tests4py.program import Tests4PyBenchmarkProgram
-from debugging_benchmark.tests4py.tests4py_api import (
+from debugging_benchmark.tests4py.api import (
     build_project,
     construct_oracle,
 )
@@ -72,3 +72,67 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
             except Exception as e:
                 logging.error(f"Failed to build project {project.__name__}: {str(e)}")
         return constructed_programs
+
+
+class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-Pysnooper"
+        projects: List[Tests4PyProject] = [
+            Pysnooper2Tests4PyProject(),
+            Pysnooper3Tests4PyProject(),
+        ]
+        super().__init__(projects)
+
+
+class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-CookieCutter"
+        projects: List[Tests4PyProject] = [
+            CookieCutter2Tests4PyProject(),
+            CookieCutter3Tests4PyProject(),
+            CookieCutter4Tests4PyProject(),
+        ]
+        super().__init__(projects)
+
+
+class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-FastAPI"
+        projects: List[Tests4PyProject] = [FastAPI1Tests4PyProject()]
+        super().__init__(projects)
+
+
+class YoutubeDLBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-YoutubeDL"
+        projects: List[Tests4PyProject] = [YoutubeDL1Tests4PyProject()]
+        super().__init__(projects)
+
+
+class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-Middle"
+        projects: List[Tests4PyProject] = [
+            Middle1Tests4PyProject(),
+            Middle2Tests4PyProject(),
+        ]
+        super().__init__(projects)
+
+
+class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-Calculator"
+        projects: List[Tests4PyProject] = [CalculatorTests4PyProject()]
+        super().__init__(projects)
+
+
+class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self):
+        self.name = "Tests4Py-ToyExample"
+        projects: List[Tests4PyProject] = [
+            CalculatorTests4PyProject(),
+            ExpressionTests4PyProject(),
+            Markup1Tests4PyProject(),
+            Markup2Tests4PyProject(),
+        ]
+        super().__init__(projects)

@@ -8,7 +8,7 @@ from debugging_framework.fuzzingbook.fuzzer import GrammarFuzzer
 from debugging_framework.fuzzingbook.helper import tree_to_string
 from debugging_framework.input.oracle import OracleResult
 from debugging_framework.benchmark.program import BenchmarkProgram
-from debugging_benchmark.tests4py_benchmark import (
+from debugging_benchmark.tests4py.repository import (
     PysnooperBenchmarkRepository,
     # CookieCutterBenchmarkRepository,
 )

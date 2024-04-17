@@ -9,7 +9,7 @@ from tests4py.api.report import TestResult
 from debugging_framework.input.input import Input
 from debugging_framework.input.oracle import OracleResult
 from debugging_framework.execution.expceptions import Tests4PySubjectException
-from debugging_framework.types import HARNESS_FUNCTION
+from debugging_framework.types import HarnessFunctionType
 
 
 # Set default working directory
@@ -37,7 +37,7 @@ def map_result(result: TestResult) -> OracleResult:
 
 
 def run_project_from_dir(
-    project_dir: Path, inp: Union[str, Input], harness_function: HARNESS_FUNCTION
+    project_dir: Path, inp: Union[str, Input], harness_function: HarnessFunctionType
 ) -> RunReport:
     """Run the project from the given directory with the provided input."""
     args = harness_function(inp)
@@ -46,7 +46,7 @@ def run_project_from_dir(
 
 def construct_oracle(
     project: Project,
-    harness_function: HARNESS_FUNCTION,
+    harness_function: HarnessFunctionType,
     work_dir: Path = DEFAULT_WORK_DIR,
 ) -> Callable[[Union[str, Input]], Tuple[OracleResult, Optional[Exception]]]:
     """Construct an oracle for the given project."""
