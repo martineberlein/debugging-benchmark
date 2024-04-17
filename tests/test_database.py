@@ -1,6 +1,6 @@
 import unittest
 from debugging_benchmark.database import DatabaseHelper
-from debugging_benchmark.student_assignments import (
+from debugging_benchmark.student_assignments.student_assignments import (
     GCDStudentAssignmentBenchmarkRepository,
 )
 

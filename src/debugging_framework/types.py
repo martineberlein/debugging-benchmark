@@ -4,7 +4,7 @@ import re
 from debugging_framework.input.oracle import OracleResult
 
 # Harness Function for BenchmarkRepositorys
-HARNESS_FUNCTION = Type[Callable[[Union[str, Input]], Sequence[str]]]
+HarnessFunctionType = Type[Callable[[Union[str, Input]], Sequence[str]]]
 
 Option = Dict[str, Any]
 Expansion = Union[str, Tuple[str, Option]]
