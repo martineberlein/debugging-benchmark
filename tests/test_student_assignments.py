@@ -1,11 +1,12 @@
 import unittest
+from typing import List
 
 from isla.parser import EarleyParser
 
 from debugging_framework.fuzzingbook.grammar import is_valid_grammar
 from debugging_framework.fuzzingbook.helper import tree_to_string
 from debugging_framework.input.oracle import OracleResult
-from debugging_benchmark.student_assignments import (
+from debugging_benchmark.student_assignments.student_assignments import (
     NPrStudentAssignmentBenchmarkRepository,
     SquareRootAssignmentBenchmarkRepository,
     GCDStudentAssignmentBenchmarkRepository,
@@ -22,8 +23,12 @@ from debugging_benchmark.student_assignments import (
 
 
 class TestStudentAssignments(unittest.TestCase):
-    def setUp(self):
-        self.repos = [
+    repos: List[StudentAssignmentRepository]
+    programs: List[StudentAssignmentBenchmarkProgram]
+
+    @classmethod
+    def setUpClass(cls):
+        cls.repos = [
             NPrStudentAssignmentBenchmarkRepository(),
             SquareRootAssignmentBenchmarkRepository(),
             GCDStudentAssignmentBenchmarkRepository(),
@@ -36,12 +41,16 @@ class TestStudentAssignments(unittest.TestCase):
             MergeStringsAssignmentBenchmarkRepository(),
         ]
         # if .build() fails all testcases fail but saves computing
-        self.programs = []
-        for repo in self.repos:
+        cls.programs = []
+        for repo in cls.repos:
             programs = repo.build()
             for program in programs:
-                self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
-                self.programs.append(program)
+                cls.programs.append(program)
+
+    def test_build(self):
+        for program in self.programs:
+            self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
+        self.assertNotEqual(len(self.programs), 0)
 
     def test_build_NPr(self):
         repo = NPrStudentAssignmentBenchmarkRepository()
