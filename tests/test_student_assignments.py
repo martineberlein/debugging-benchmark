@@ -2,9 +2,9 @@ import unittest
 
 from isla.parser import EarleyParser
 
-from debugging_framework.grammar import is_valid_grammar
-from debugging_framework.helper import tree_to_string
-from debugging_framework.oracle import OracleResult
+from debugging_framework.fuzzingbook.grammar import is_valid_grammar
+from debugging_framework.fuzzingbook.helper import tree_to_string
+from debugging_framework.input.oracle import OracleResult
 from debugging_benchmark.student_assignments import (
     NPrStudentAssignmentBenchmarkRepository,
     SquareRootAssignmentBenchmarkRepository,
@@ -17,7 +17,7 @@ from debugging_benchmark.student_assignments import (
     RemoveVowelAssignmentBenchmarkRepository,
     MergeStringsAssignmentBenchmarkRepository,
     StudentAssignmentBenchmarkProgram,
-    StudentAssignmentRepository
+    StudentAssignmentRepository,
 )
 
 
@@ -39,7 +39,7 @@ class TestStudentAssignments(unittest.TestCase):
         self.programs = []
         for repo in self.repos:
             programs = repo.build()
-            for program in programs:    
+            for program in programs:
                 self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
                 self.programs.append(program)
 
@@ -51,12 +51,12 @@ class TestStudentAssignments(unittest.TestCase):
 
     def test_subject_valid_grammars(self):
         for repo in self.repos:
-            repo : StudentAssignmentRepository
+            repo: StudentAssignmentRepository
             self.assertTrue(is_valid_grammar(repo.get_grammar()))
 
     def test_subject_parsing_inputs(self):
         for program in self.programs:
-            program : StudentAssignmentBenchmarkProgram
+            program: StudentAssignmentBenchmarkProgram
             self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
             parser = EarleyParser(program.get_grammar())
             with self.subTest("Problem at " + program.get_name()):
@@ -65,21 +65,26 @@ class TestStudentAssignments(unittest.TestCase):
                     for tree in parser.parse(inp):
                         self.assertEqual(inp, tree_to_string(tree))
 
-    def  test_failing_input(self):
+    def test_failing_input(self):
         for program in self.programs:
-            program : StudentAssignmentBenchmarkProgram
+            program: StudentAssignmentBenchmarkProgram
             oracle = program.get_oracle()
-            for inp in program.get_failing_input():
-                with self.subTest("Problem at " + program.get_name() + " and input " + inp):
+            print(program)
+            for inp in program.get_failing_inputs():
+                with self.subTest(
+                    "Problem at " + program.get_name() + " and input " + inp
+                ):
                     result, _ = oracle(inp)
                     self.assertIs(result, OracleResult.FAILING)
 
-    def  test_passing_input(self):
+    def test_passing_input(self):
         for program in self.programs:
-            program : StudentAssignmentBenchmarkProgram
+            program: StudentAssignmentBenchmarkProgram
             oracle = program.get_oracle()
             for inp in program.get_passing_inputs():
-                with self.subTest("Problem at " + program.get_name() + " and input " + inp):
+                with self.subTest(
+                    "Problem at " + program.get_name() + " and input " + inp
+                ):
                     result, _ = oracle(inp)
                     self.assertIs(result, OracleResult.PASSING)
 

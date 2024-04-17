@@ -4,7 +4,7 @@ from debugging_benchmark.student_assignments import (
     GCDStudentAssignmentBenchmarkRepository,
 )
 
-from debugging_framework.oracle import OracleResult
+from debugging_framework.input.oracle import OracleResult
 
 
 class TestStudentAssignments(unittest.TestCase):

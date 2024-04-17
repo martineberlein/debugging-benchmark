@@ -3,10 +3,10 @@ import unittest
 from isla.derivation_tree import DerivationTree
 from isla.parser import EarleyParser
 
-from debugging_framework.oracle import OracleResult
-from debugging_framework.input import Input
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.input.input import Input
 from debugging_framework.types import Grammar
-from debugging_framework.grammar import is_valid_grammar
+from debugging_framework.fuzzingbook.grammar import is_valid_grammar
 from debugging_benchmark.calculator.calculator import (
     calculator_grammar as grammar,
     calculator_oracle as oracle,

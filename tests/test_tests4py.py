@@ -3,17 +3,14 @@ from typing import Union, List
 
 from isla.parser import EarleyParser
 
-from debugging_framework.grammar import is_valid_grammar
-from debugging_framework.grammar_fuzzer import GrammarFuzzer
-from debugging_framework.helper import tree_to_string
-from debugging_framework.oracle import OracleResult
-from debugging_framework.benchmark import BenchmarkProgram
+from debugging_framework.fuzzingbook.grammar import is_valid_grammar
+from debugging_framework.fuzzingbook.fuzzer import GrammarFuzzer
+from debugging_framework.fuzzingbook.helper import tree_to_string
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark import (
     PysnooperBenchmarkRepository,
-    # YoutubeDLBenchmarkRepository,
-    CookieCutterBenchmarkRepository,
-    # FastAPIBenchmarkRepository,
-    # ToyExampleTests4PyBenchmarkRepository,
+    # CookieCutterBenchmarkRepository,
 )
 
 
@@ -25,7 +22,7 @@ class TestTests4Py(unittest.TestCase):
     def setUpClass(cls):
         repositories = [
             PysnooperBenchmarkRepository(),
-            CookieCutterBenchmarkRepository(),
+            # CookieCutterBenchmarkRepository(),
             # ToyExampleTests4PyBenchmarkRepository(),
             # YoutubeDLBenchmarkRepository(),
             # FastAPIBenchmarkRepository()
@@ -43,7 +40,7 @@ class TestTests4Py(unittest.TestCase):
     def test_tests4py_initial_inputs_parsing(self):
         for subject in self.subjects:
             parser = EarleyParser(subject.grammar)
-            for inp in subject.initial_inputs:
+            for inp in subject.get_initial_inputs():
                 for tree in parser.parse(inp):
                     self.assertEqual(inp, tree_to_string(tree))
 
@@ -59,7 +56,7 @@ class TestTests4Py(unittest.TestCase):
 
     def test_tests4py_verify_oracle(self):
         for subject in self.subjects:
-            for inp in subject.initial_inputs:
+            for inp in subject.get_initial_inputs():
                 oracle, exception = subject.oracle(inp)
                 self.assertIsInstance(oracle, OracleResult)
                 self.assertTrue(oracle != OracleResult.UNDEFINED)

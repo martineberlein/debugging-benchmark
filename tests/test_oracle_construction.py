@@ -1,14 +1,14 @@
 import unittest
 import string
 
-from debugging_framework.oracle_construction import (
+from debugging_framework.input.oracle_construction import (
     construct_oracle,
     UnexpectedResultError,
 )
-from debugging_framework.oracle import OracleResult
-from debugging_framework.input import Input
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.input.input import Input
 from debugging_framework.types import Grammar
-from debugging_framework.timeout_manager import ManageTimeout
+from debugging_framework.execution.timeout_manager import ManageTimeout
 
 
 grammar: Grammar = {

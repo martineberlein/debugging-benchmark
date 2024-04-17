@@ -1,16 +1,17 @@
 import unittest
-from typing import Set, Tuple, Union
+from typing import Set, Tuple, Union, List
 
 from isla.derivation_tree import DerivationTree
 from isla.parser import EarleyParser
 
-from debugging_framework.execution_handler import (
+from debugging_framework.execution.execution_handler import (
     SingleExecutionHandler,
     BatchExecutionHandler,
 )
-from debugging_framework.input import Input
-from debugging_framework.oracle import OracleResult
-from debugging_framework.report import MultipleFailureReport
+from debugging_framework.input.input import Input
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.execution.report import MultipleFailureReport
+from debugging_framework.types import OracleResultType
 
 from debugging_benchmark.calculator.calculator import calculator_grammar as grammar
 
@@ -33,7 +34,7 @@ def oracle(test_input: str) -> Union[Tuple[OracleResult, Exception], OracleResul
         return OracleResult.PASSING
 
 
-def batch_oracle(test_inputs: Set[Input]):
+def batch_oracle(test_inputs: Set[Input] | Set[str]) -> List[OracleResultType]:
     result = list()
     for inp in test_inputs:
         try:
