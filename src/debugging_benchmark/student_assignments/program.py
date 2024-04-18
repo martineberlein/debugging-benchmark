@@ -9,14 +9,12 @@ class StudentAssignmentBenchmarkProgram(BenchmarkProgram):
     def __init__(
         self,
         name: str,
-        bug_id: int,
         grammar: Grammar,
         failing_inputs: List[str],
         passing_inputs: List[str],
         oracle: OracleType,
     ):
         super().__init__(name, grammar, oracle, failing_inputs, passing_inputs)
-        self.bug_id = bug_id
 
     def __repr__(self):
-        return f"StudentAssignmentBenchmarkProgram({self.name}_{self.bug_id})"
+        return f"StudentAssignmentBenchmarkProgram({self.name})"
