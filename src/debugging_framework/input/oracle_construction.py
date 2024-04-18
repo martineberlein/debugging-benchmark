@@ -1,92 +1,140 @@
-from typing import Callable, Dict, Type, Optional, Tuple, Any, Sequence
-
+from typing import Callable, Dict, Type, Optional, Any, Sequence
+from abc import ABC, abstractmethod
+import contextlib
 from copy import deepcopy
 
 from debugging_framework.input.oracle import OracleResult
 from debugging_framework.input.input import Input
 from debugging_framework.execution.timeout_manager import ManageTimeout
-from debugging_framework.execution.expceptions import UnexpectedResultError
-
-import contextlib
-
-
-def execute_program(program_, param: Sequence, timeout) -> Any:
-    with ManageTimeout(timeout):
-        # silencing the stdout for PuT
-        with contextlib.redirect_stdout(None):
-            dp = deepcopy(param)
-            return program_(*dp)
+from debugging_framework.execution.exceptions import UnexpectedResultError
+from debugging_framework.types import OracleResultType, OracleType
 
 
-def construct_oracle(
-        program_under_test: Callable,
-        program_oracle: Optional[Callable],
-        error_definitions: Optional[Dict[Type[Exception], OracleResult]] = None,
-        timeout: float = 1,
-        default_oracle_result: OracleResult = OracleResult.UNDEFINED,
+class OracleConstructor(ABC):
+    """
+    Abstract base class for creating oracle functions that evaluate program executions.
+    Attributes:
+        program (Callable): The program to be executed by the oracle.
+        harness_function (Optional[Callable]): Function to preprocess input before execution.
+        error_definitions (Dict[Type[Exception], OracleResult]): Custom mappings from exceptions to OracleResults.
+        default_oracle_result (OracleResult): Default OracleResult if no specific error mapping exists.
+        timeout (float): Maximum allowed execution time for the program in seconds.
+    """
+
+    def __init__(
+        self,
+        program: Callable,
         harness_function: Callable = None,
-) -> Callable[[Input], Tuple[OracleResult, Optional[Exception]]]:
-    error_definitions = error_definitions or {}
-    default_oracle_result = (
-        OracleResult.FAILING if not error_definitions else default_oracle_result
-    )
+        error_definitions: Optional[Dict[Type[Exception], OracleResult]] = None,
+        default_oracle_result: OracleResult = OracleResult.UNDEFINED,
+        timeout: float = 1.0,
+    ):
+        if error_definitions is not None and not isinstance(error_definitions, dict):
+            raise ValueError(
+                f"Invalid value for error_definitions: {error_definitions}"
+            )
 
-    if not isinstance(error_definitions, dict):
-        raise ValueError(f"Invalid value for expected_error: {error_definitions}")
+        self.program = program
+        self.harness_function = harness_function
+        self.error_definitions = error_definitions or {}
+        self.default_oracle_result = (
+            OracleResult.FAILING if not error_definitions else default_oracle_result
+        )
+        self.timeout = timeout
 
-    params = locals()
+    def execute_program(self, program: Callable, param: Sequence) -> Any:
+        """
+        Executes the given program with the specified parameters within a controlled timeout context.
+        :param Callable program: The program to execute.
+        :param Sequence param: Parameters to pass to the program.
+        :return Any: The result of the program execution.
+        """
+        with ManageTimeout(self.timeout):
+            with contextlib.redirect_stdout(None):  # Silencing stdout.
+                return program(*deepcopy(param))
 
-    # Choose oracle construction method based on presence of program_oracle
-    if program_oracle:
-        oracle_constructor = _construct_functional_oracle
-    else:
-        oracle_constructor = _construct_failure_oracle
-        params.pop("program_oracle")
-
-    return oracle_constructor(**params)
+    @abstractmethod
+    def build(self) -> OracleType:
+        """
+        Constructs and returns an oracle function.
+        """
+        pass
 
 
-def _construct_functional_oracle(
-        program_under_test: Callable,
+class FailureOracleConstructor(OracleConstructor):
+    """
+    Concrete implementation of OracleConstructor for generating oracles that
+    identify failures based on exceptions thrown during program execution.
+    """
+
+    def build(self) -> OracleType:
+        """
+        Builds an oracle that evaluates program executions by checking for exceptions
+        and comparing them against predefined error definitions.
+        :return OracleType: A callable that takes an input and returns a tuple of OracleResult and any exception.
+        """
+
+        def oracle(inp: Input | str) -> OracleResultType:
+            param = (
+                self.harness_function(str(inp)) if self.harness_function else str(inp)
+            )
+            try:
+                self.execute_program(self.program, param)
+            except Exception as e:
+                return (
+                    self.error_definitions.get(type(e), self.default_oracle_result),
+                    e,
+                )
+            return OracleResult.PASSING, None
+
+        return oracle
+
+
+class FunctionalOracleConstructor(OracleConstructor):
+    """
+    Concrete implementation of OracleConstructor for generating oracles that evaluate
+    the correctness of program outputs against expected results produced by a separate oracle program.
+    Attributes:
+        program_oracle (Callable): The reference oracle program used for generating expected results.
+    """
+
+    def __init__(
+        self,
+        program: Callable,
         program_oracle: Callable,
-        error_definitions: Dict[Type[Exception], OracleResult],
-        timeout: float,
-        default_oracle_result: OracleResult,
-        harness_function: Callable,
-):
-    def oracle(inp: Input) -> Tuple[OracleResult, Optional[Exception]]:
-        # param = list(map(int, str(inp).strip().split()))  # This might become a problem
-        param = harness_function(str(inp)) if harness_function else str(inp)
+        harness_function: Callable = None,
+        error_definitions: Optional[Dict[Type[Exception], OracleResult]] = None,
+        default_oracle_result: OracleResult = OracleResult.UNDEFINED,
+        timeout: float = 1.0,
+    ):
+        super().__init__(
+            program, harness_function, error_definitions, default_oracle_result, timeout
+        )
+        self.program_oracle = program_oracle
 
-        try:
-            produced_result = execute_program(program_under_test, param, timeout)
-            expected_result = execute_program(program_oracle, param, timeout)
+    def build(self) -> OracleType:
+        """
+        Builds an oracle that compares the results of the target program against those generated by a reference oracle.
+        :return OracleType: A callable that takes an input and returns a tuple of OracleResult and any exception.
+        """
 
-            if (expected_result != produced_result) or (type(expected_result) is not type(produced_result)):
-                raise UnexpectedResultError("Results do not match")
-        except Exception as e:
-            return error_definitions.get(type(e), default_oracle_result), e
-        return OracleResult.PASSING, None
+        def oracle(inp: Input | str) -> OracleResultType:
+            param = (
+                self.harness_function(str(inp)) if self.harness_function else str(inp)
+            )
+            try:
+                produced_result = self.execute_program(self.program, param)
+                expected_result = self.execute_program(self.program_oracle, param)
 
-    return oracle
+                if (expected_result != produced_result) or (
+                    type(expected_result) is not type(produced_result)
+                ):
+                    raise UnexpectedResultError("Results do not match")
+            except Exception as e:
+                return (
+                    self.error_definitions.get(type(e), self.default_oracle_result),
+                    e,
+                )
+            return OracleResult.PASSING, None
 
-
-def _construct_failure_oracle(
-        program_under_test: Callable,
-        error_definitions: Dict[Type[Exception], OracleResult],
-        timeout: float,
-        default_oracle_result: OracleResult,
-        harness_function: Callable,
-):
-    def oracle(inp: Input) -> Tuple[OracleResult, Optional[Exception]]:
-        param = harness_function(str(inp)) if harness_function else str(inp)
-        try:
-            with ManageTimeout(timeout):
-                # silencing the stdout for PuT
-                with contextlib.redirect_stdout(None):
-                    program_under_test(*param)
-        except Exception as e:
-            return error_definitions.get(type(e), default_oracle_result), e
-        return OracleResult.PASSING, None
-
-    return oracle
+        return oracle
