@@ -69,13 +69,17 @@ class BenchmarkProgram(ABC):
         """
         return self.oracle
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self, only_passing: bool = False) -> Dict[str, Any]:
         """
-        Serializes essential elements of the program to a dictionary.
-        :return Dict[str, Any]: The dictionary containing grammar, oracle, and initial inputs.
+        Serializes essential elements of the program to a dictionary, optionally filtering for only passing inputs.
+        :param bool only_passing: If True, the dictionary includes only passing inputs under 'initial_inputs'.
+                                  If False, it includes all initial inputs. Defaults to False.
+        :return Dict[str, Any]: A dictionary with keys 'grammar', 'oracle', and 'initial_inputs'. The 'initial_inputs'
+                                key contains either all initial inputs or only those that are passing, based on the
+                                value of the `only_passing` parameter.
         """
         return {
             "grammar": self.get_grammar(),
             "oracle": self.get_oracle(),
-            "initial_inputs": self.get_initial_inputs(),
+            "initial_inputs": self.get_passing_inputs() if only_passing else self.get_initial_inputs(),
         }
