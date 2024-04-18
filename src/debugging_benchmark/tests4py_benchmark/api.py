@@ -4,20 +4,19 @@ from pathlib import Path
 from tests4py import api
 from tests4py.projects import Project
 from tests4py.api.test import RunReport
-from tests4py.api.report import TestResult
+from tests4py.api.report import TestResult, GetTestReport
 
 from debugging_framework.input.input import Input
 from debugging_framework.input.oracle import OracleResult
-from debugging_framework.execution.expceptions import Tests4PySubjectException
+from debugging_framework.execution.exceptions import Tests4PySubjectException
 from debugging_framework.types import HarnessFunctionType
-
 
 # Set default working directory
 DEFAULT_WORK_DIR = Path("/tmp")
 
 
 def build_project(
-    project: Project, work_dir: Path = DEFAULT_WORK_DIR, buggy: bool = True
+        project: Project, work_dir: Path = DEFAULT_WORK_DIR, buggy: bool = True
 ) -> None:
     """Build the given project."""
     project.buggy = buggy
@@ -37,17 +36,23 @@ def map_result(result: TestResult) -> OracleResult:
 
 
 def run_project_from_dir(
-    project_dir: Path, inp: Union[str, Input], harness_function: HarnessFunctionType
+        project_dir: Path, inp: Union[str, Input], harness_function: HarnessFunctionType
 ) -> RunReport:
     """Run the project from the given directory with the provided input."""
     args = harness_function(inp)
     return api.run(project_dir, args, invoke_oracle=True)
 
 
+def get_tests(project: Project, failing: bool = False, as_strings=True):
+    report: GetTestReport = api.get_tests(project, as_strings=as_strings)
+    inputs = report.failing_tests if failing else report.passing_tests
+    return inputs
+
+
 def construct_oracle(
-    project: Project,
-    harness_function: HarnessFunctionType,
-    work_dir: Path = DEFAULT_WORK_DIR,
+        project: Project,
+        harness_function: HarnessFunctionType,
+        work_dir: Path = DEFAULT_WORK_DIR,
 ) -> Callable[[Union[str, Input]], Tuple[OracleResult, Optional[Exception]]]:
     """Construct an oracle for the given project."""
 
