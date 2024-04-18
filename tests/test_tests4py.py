@@ -8,13 +8,13 @@ from debugging_framework.fuzzingbook.fuzzer import GrammarFuzzer
 from debugging_framework.fuzzingbook.helper import tree_to_string
 from debugging_framework.input.oracle import OracleResult
 from debugging_framework.benchmark.program import BenchmarkProgram
-from debugging_benchmark.tests4py.repository import (
+from debugging_benchmark.tests4py_benchmark.repository import (
     PysnooperBenchmarkRepository,
-    # CookieCutterBenchmarkRepository,
+    CookieCutterBenchmarkRepository,
+    ToyExampleTests4PyBenchmarkRepository
 )
 
 
-@unittest.skip
 class TestTests4Py(unittest.TestCase):
     subjects: List[BenchmarkProgram]
 
@@ -22,10 +22,8 @@ class TestTests4Py(unittest.TestCase):
     def setUpClass(cls):
         repositories = [
             PysnooperBenchmarkRepository(),
-            # CookieCutterBenchmarkRepository(),
-            # ToyExampleTests4PyBenchmarkRepository(),
-            # YoutubeDLBenchmarkRepository(),
-            # FastAPIBenchmarkRepository()
+            CookieCutterBenchmarkRepository(),
+            ToyExampleTests4PyBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
@@ -54,13 +52,23 @@ class TestTests4Py(unittest.TestCase):
                 self.assertIsInstance(oracle, OracleResult)
                 self.assertIsInstance(exception, Union[Exception, None])
 
-    def test_tests4py_verify_oracle(self):
+    def test_tests4py_verify_passing_oracle(self):
         for subject in self.subjects:
-            for inp in subject.get_initial_inputs():
-                oracle, exception = subject.oracle(inp)
-                self.assertIsInstance(oracle, OracleResult)
-                self.assertTrue(oracle != OracleResult.UNDEFINED)
-                self.assertIsInstance(exception, Union[Exception, None])
+            for inp in subject.get_passing_inputs():
+                with self.subTest(subject=subject, input=inp):
+                    oracle, exception = subject.oracle(inp)
+                    self.assertIsInstance(oracle, OracleResult)
+                    self.assertTrue(oracle == OracleResult.PASSING)
+                    self.assertIs(exception, None)
+
+    def test_tests4py_verify_failing_oracle(self):
+        for subject in self.subjects:
+            for inp in subject.get_failing_inputs():
+                with self.subTest(subject=subject, input=inp):
+                    oracle, exception = subject.oracle(inp)
+                    self.assertIsInstance(oracle, OracleResult)
+                    self.assertEqual(oracle, OracleResult.FAILING)
+                    self.assertIsInstance(exception, Exception)
 
 
 if __name__ == "__main__":
