@@ -4,9 +4,9 @@ import logging
 
 from debugging_framework.benchmark.repository import BenchmarkRepository
 from debugging_framework.input.oracle import OracleResult
-from debugging_benchmark.tests4py.project import *
-from debugging_benchmark.tests4py.program import Tests4PyBenchmarkProgram
-from debugging_benchmark.tests4py.api import (
+from debugging_benchmark.tests4py_benchmark.project import *
+from debugging_benchmark.tests4py_benchmark.program import Tests4PyBenchmarkProgram
+from debugging_benchmark.tests4py_benchmark.api import (
     build_project,
     construct_oracle,
 )
@@ -102,13 +102,6 @@ class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
         super().__init__(projects)
 
 
-class YoutubeDLBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
-        self.name = "Tests4Py-YoutubeDL"
-        projects: List[Tests4PyProject] = [YoutubeDL1Tests4PyProject()]
-        super().__init__(projects)
-
-
 class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self):
         self.name = "Tests4Py-Middle"
@@ -134,5 +127,7 @@ class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
             ExpressionTests4PyProject(),
             Markup1Tests4PyProject(),
             Markup2Tests4PyProject(),
+            Middle1Tests4PyProject(),
+            Middle2Tests4PyProject(),
         ]
         super().__init__(projects)
