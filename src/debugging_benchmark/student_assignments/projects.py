@@ -1,31 +1,31 @@
-from typing import List, Sequence, Any, Callable
+from typing import List, Sequence, Any
 from pathlib import Path
 from dataclasses import dataclass
 import os
-import string
 from abc import ABC
 
 from debugging_framework.types import Grammar
-from debugging_benchmark.student_assignments.program import StudentAssignmentBenchmarkProgram
 from debugging_framework.types import HarnessFunctionType
 from debugging_benchmark.student_assignments.grammars import *
 
 
 class StudentAssignmentProject:
     def __init__(
-            self,
-            name: str,
-            function_name: str,
-            path_to_program: Path,
-            grammar: Grammar = None,
-            failing_inputs: List[str] = None,
-            passing_inputs: List[str] = None,
-            harness_function: HarnessFunctionType = None,
+        self,
+        name: str,
+        function_name: str,
+        path_to_program: Path,
+        grammar: Grammar = None,
+        failing_inputs: List[str] = None,
+        passing_inputs: List[str] = None,
+        harness_function: HarnessFunctionType = None,
     ):
         self.grammar = grammar
         self.failing_inputs = failing_inputs
         self.passing_inputs = passing_inputs
-        self.harness_function: HarnessFunctionType = harness_function if harness_function else self.harness_function
+        self.harness_function: HarnessFunctionType = (
+            harness_function if harness_function else self.harness_function
+        )
 
         self.name = name
         self.function_name = function_name
@@ -43,12 +43,11 @@ class StudentAssignmentProject:
 
 
 class GCDStudentAssignmentProject(StudentAssignmentProject, ABC):
-
     def __init__(
-            self,
-            failing_inputs: List[str],
-            passing_inputs: List[str],
-            path: Path,
+        self,
+        failing_inputs: List[str],
+        passing_inputs: List[str],
+        path: Path,
     ):
         super().__init__(
             name="GCD",
@@ -69,7 +68,7 @@ class GCD1StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["43 38", "10 2", "4 4"],
             passing_inputs=[],
-            path=super().get_dir() / Path("prog_1")
+            path=super().get_dir() / Path("prog_1"),
         )
 
 
@@ -79,7 +78,7 @@ class GCD2StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["43 38"],
             passing_inputs=["10 2", "4 4"],
-            path=super().get_dir() / Path("prog_2")
+            path=super().get_dir() / Path("prog_2"),
         )
 
 
@@ -89,7 +88,7 @@ class GCD3StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["21 21", "4 4"],
             passing_inputs=["10 2"],
-            path=super().get_dir() / Path("prog_3")
+            path=super().get_dir() / Path("prog_3"),
         )
 
 
@@ -99,7 +98,7 @@ class GCD4StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["21 38"],
             passing_inputs=["10 2", "4 4"],
-            path=super().get_dir() / Path("prog_4")
+            path=super().get_dir() / Path("prog_4"),
         )
 
 
@@ -109,7 +108,7 @@ class GCD5StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["43 38"],
             passing_inputs=["10 2", "4 4"],
-            path=super().get_dir() / Path("prog_5")
+            path=super().get_dir() / Path("prog_5"),
         )
 
 
@@ -119,7 +118,7 @@ class GCD6StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["21 21", "4 4"],
             passing_inputs=["10 2"],
-            path=super().get_dir() / Path("prog_6")
+            path=super().get_dir() / Path("prog_6"),
         )
 
 
@@ -129,7 +128,7 @@ class GCD7StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["43 38", "10 2"],
             passing_inputs=["4 4"],
-            path=super().get_dir() / Path("prog_7")
+            path=super().get_dir() / Path("prog_7"),
         )
 
 
@@ -139,7 +138,7 @@ class GCD8StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["1940673456000 194067"],
             passing_inputs=["10 2", "4 4"],
-            path=super().get_dir() / Path("prog_8")
+            path=super().get_dir() / Path("prog_8"),
         )
 
 
@@ -149,7 +148,7 @@ class GCD9StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["8 80", "4 4"],
             passing_inputs=["10 2"],
-            path=super().get_dir() / Path("prog_9")
+            path=super().get_dir() / Path("prog_9"),
         )
 
 
@@ -159,8 +158,9 @@ class GCD10StudentAssignmentProject(GCDStudentAssignmentProject):
         super().__init__(
             failing_inputs=["8 80", "10 2"],
             passing_inputs=["4 4"],
-            path=super().get_dir() / Path("prog_10")
+            path=super().get_dir() / Path("prog_10"),
         )
+
 
 #
 # class SieveOfEratosthenesStudentAssignmentBenchmarkRepository(

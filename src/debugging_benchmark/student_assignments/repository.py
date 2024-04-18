@@ -5,14 +5,15 @@ import os
 
 from debugging_framework.benchmark.repository import BenchmarkRepository
 from debugging_framework.input.oracle import OracleResult
-from debugging_benchmark.student_assignments.program import StudentAssignmentBenchmarkProgram
+from debugging_benchmark.student_assignments.program import (
+    StudentAssignmentBenchmarkProgram,
+)
 from debugging_framework.benchmark.loader import load_function_from_class
 import debugging_benchmark.student_assignments.projects as sap_projects
 from debugging_framework.input.oracle_construction import FunctionalOracleConstructor
 
 
 class StudentAssignmentRepository(BenchmarkRepository, ABC):
-
     def __init__(self, projects: List[sap_projects.StudentAssignmentProject]):
         """
         Initializes the repository with a list of StudentAssignmentProject instances.
@@ -21,25 +22,21 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         self.projects = projects
 
     @staticmethod
-    def get_ground_truth_location(project: sap_projects.StudentAssignmentProject) -> Path:
+    def get_ground_truth_location(
+        project: sap_projects.StudentAssignmentProject,
+    ) -> Path:
         base_dir = project.get_dir()
         return base_dir / Path("reference1.py")
 
     def load_ground_truth(self, project: sap_projects.StudentAssignmentProject):
         path_to_ground_truth = self.get_ground_truth_location(project)
-        return load_function_from_class(
-            path_to_ground_truth, project.function_name
-        )
+        return load_function_from_class(path_to_ground_truth, project.function_name)
 
     @staticmethod
     def load_implementation(project: sap_projects.StudentAssignmentProject) -> Callable:
-        path_to_implementation = os.path.join(
-            project.path_to_program, Path("buggy.py")
-        )
+        path_to_implementation = os.path.join(project.path_to_program, Path("buggy.py"))
         print(path_to_implementation)
-        return load_function_from_class(
-            path_to_implementation, project.function_name
-        )
+        return load_function_from_class(path_to_implementation, project.function_name)
 
     def _construct_test_program(
         self,
@@ -47,7 +44,6 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         err_def: Dict[Exception, OracleResult] = None,
         default_oracle: OracleResult = None,
     ) -> StudentAssignmentBenchmarkProgram:
-
         ground_truth = self.load_ground_truth(project=project)
         program = self.load_implementation(project=project)
 
@@ -57,7 +53,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
             error_definitions=err_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
-            harness_function=project.harness_function
+            harness_function=project.harness_function,
         ).build()
 
         return StudentAssignmentBenchmarkProgram(
@@ -73,7 +69,6 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         err_def: Dict[Exception, OracleResult] = None,
         default_oracle: OracleResult = None,
     ) -> List[StudentAssignmentBenchmarkProgram]:
-
         constructed_programs: List[StudentAssignmentBenchmarkProgram] = []
         for project in self.projects:
             try:
@@ -102,6 +97,6 @@ class GCDStudentAssignmentRepository(StudentAssignmentRepository):
             sap_projects.GCD7StudentAssignmentProject(),
             sap_projects.GCD8StudentAssignmentProject(),
             sap_projects.GCD9StudentAssignmentProject(),
-            sap_projects.GCD10StudentAssignmentProject()
+            sap_projects.GCD10StudentAssignmentProject(),
         ]
         super().__init__(projects)
