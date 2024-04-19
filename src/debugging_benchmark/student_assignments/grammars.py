@@ -3,7 +3,7 @@ import os
 
 from debugging_framework.types import Grammar
 
-gcd_grammar: Grammar = {
+two_numbers_grammar: Grammar = {
     "<start>": ["<input>"],
     "<input>": ["<first> <second>"],
     "<first>": ["<integer>"],
@@ -15,4 +15,15 @@ gcd_grammar: Grammar = {
     "<digits>": ["<digit>", "<digit><digits>"],
 }
 
-__all__ = ["gcd_grammar"]
+sieve_of_eratosthenes_grammar: Grammar = {
+    "<start>": ["<input>"],
+    "<input>": ["<integer>"],
+    "<integer>": ["<one_nine><maybe_digits>", "0"],
+    "<one_nine>": [str(num) for num in range(1, 10)],
+    "<digit>": list(string.digits),
+    "<maybe_digits>": ["", "<digits>"],
+    "<digits>": ["<digit>", "<digit><digits>"],
+}
+
+
+__all__ = ["two_numbers_grammar", "sieve_of_eratosthenes_grammar"]

@@ -117,3 +117,20 @@ class SieveOfEratosthenesStudentAssignmentRepository(StudentAssignmentRepository
             sap_projects.SieveOfEratosthenes10StudentAssignmentProject(),
         ]
         super().__init__(projects)
+
+
+class NPrStudentAssignmentRepository(StudentAssignmentRepository):
+    def __init__(self):
+        projects: List[sap_projects.StudentAssignmentProject] = [
+            sap_projects.NPr1StudentAssignmentProject(),
+            sap_projects.NPr2StudentAssignmentProject(),
+            sap_projects.NPr3StudentAssignmentProject(),
+            sap_projects.NPr4StudentAssignmentProject(),
+            sap_projects.NPr5StudentAssignmentProject(),
+            sap_projects.NPr6StudentAssignmentProject(),
+            sap_projects.NPr7StudentAssignmentProject(),
+            sap_projects.NPr8StudentAssignmentProject(),
+            sap_projects.NPr9StudentAssignmentProject(),
+            sap_projects.NPr10StudentAssignmentProject(),
+        ]
+        super().__init__(projects)
