@@ -11,7 +11,8 @@ from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark.repository import (
     PysnooperBenchmarkRepository,
     CookieCutterBenchmarkRepository,
-    ToyExampleTests4PyBenchmarkRepository
+    ToyExampleTests4PyBenchmarkRepository,
+    CalculatorBenchmarkRepository
 )
 
 
@@ -24,6 +25,7 @@ class TestTests4Py(unittest.TestCase):
             PysnooperBenchmarkRepository(),
             CookieCutterBenchmarkRepository(),
             ToyExampleTests4PyBenchmarkRepository(),
+            # CalculatorBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
