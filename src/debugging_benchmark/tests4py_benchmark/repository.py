@@ -81,7 +81,7 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
                 program = self._construct_benchmark_program(project)
                 constructed_programs.append(program)
             except Exception as e:
-                logging.error(f"Failed to build project {project.__name__}: {str(e)}")
+                logging.error(f"Failed to build project {project}: {str(e)}")
         return constructed_programs
 
 
