@@ -134,3 +134,20 @@ class NPrStudentAssignmentRepository(StudentAssignmentRepository):
             sap_projects.NPr10StudentAssignmentProject(),
         ]
         super().__init__(projects)
+
+
+class FibonacciStudentAssignmentRepository(StudentAssignmentRepository):
+    def __init__(self):
+        projects: List[sap_projects.StudentAssignmentProject] = [
+            sap_projects.Fibonacci1StudentAssignmentProject(),
+            sap_projects.Fibonacci2StudentAssignmentProject(),
+            sap_projects.Fibonacci3StudentAssignmentProject(),
+            sap_projects.Fibonacci4StudentAssignmentProject(),
+            sap_projects.Fibonacci5StudentAssignmentProject(),
+            sap_projects.Fibonacci6StudentAssignmentProject(),
+            sap_projects.Fibonacci7StudentAssignmentProject(),
+            sap_projects.Fibonacci8StudentAssignmentProject(),
+            sap_projects.Fibonacci9StudentAssignmentProject(),
+            sap_projects.Fibonacci10StudentAssignmentProject(),
+        ]
+        super().__init__(projects)

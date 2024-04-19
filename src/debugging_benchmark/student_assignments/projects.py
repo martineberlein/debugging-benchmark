@@ -173,7 +173,7 @@ class SieveOfEratosthenesStudentAssignmentProject(StudentAssignmentProject, ABC)
             name="Sieve-of-Eratosthenes",
             function_name="sieveOfEratosthenes",
             path_to_program=path,
-            grammar=sieve_of_eratosthenes_grammar,
+            grammar=single_number_grammar,
             failing_inputs=failing_inputs,
             passing_inputs=passing_inputs,
         )
@@ -422,194 +422,126 @@ class NPr10StudentAssignmentProject(NPrStudentAssignmentProject):
         )
 
 
-# class FibonacciStudentAssignmentBenchmarkRepository(StudentAssignmentRepository):
-#     def __init__(self):
-#         self.name: str = "Fibonacci"
-#         self._implementation_function_name: str = "nFibonacci"
-#         self.programs = [
-#             fib_1,
-#             fib_2,
-#             fib_3,
-#             fib_4,
-#             fib_5,
-#             fib_6,
-#             fib_7,
-#             fib_8,
-#             fib_9,
-#             fib_10,
-#         ]
-#
-#     def get_implementation_function_name(self):
-#         return self._implementation_function_name
-#
-#     def get_name(self) -> str:
-#         return self.name
-#
-#     def get_dir(self) -> Path:
-#         return os.path.join(super().get_dir(), Path("problem_4_Fibonacci_to_N"))
-#
-#     @staticmethod
-#     def get_grammar() -> Grammar:
-#         return {
-#             "<start>": ["<input>"],
-#             "<input>": ["<integer>"],
-#             "<integer>": ["<one_nine><maybe_digits>"],
-#             "<one_nine>": [str(num) for num in range(1, 10)],
-#             "<digit>": list(string.digits),
-#             "<maybe_digits>": ["", "<digits>"],
-#             "<digits>": ["<digit>", "<digit><digits>"],
-#         }
-#
-#     @staticmethod
-#     def get_initial_inputs() -> List[str]:
-#         return ["1", "5"]
-#
-#     @staticmethod
-#     def harness_function(input_str: str) -> Sequence[Any]:
-#         param = list(map(int, str(input_str).strip().split()))
-#         return param
-#
-#
-# @dataclass(repr=False)
-# class fib_1(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["5"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_2(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1000000000"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_3(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1"]
-#     passing_input = []
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_4(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1"]
-#     passing_input = []
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_5(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["5"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_6(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1"]
-#     passing_input = []
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_7(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["4"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_8(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["5"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_9(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["5"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class fib_10(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["2"]
-#     passing_input = ["1"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
+class FibonacciStudentAssignmentProject(StudentAssignmentProject, ABC):
+    def __init__(
+        self,
+        failing_inputs: List[str],
+        passing_inputs: List[str],
+        path: Path,
+    ):
+        super().__init__(
+            name="Fibonacci",
+            function_name="nFibonacci",
+            path_to_program=path,
+            grammar=single_number_grammar,
+            failing_inputs=failing_inputs,
+            passing_inputs=passing_inputs,
+        )
+
+    def get_dir(self) -> Path:
+        return self.get_base_dir() / Path("problem_4_Fibonacci_to_N")
+
+
+@dataclass
+class Fibonacci1StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["5"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_1"),
+        )
+
+
+@dataclass
+class Fibonacci2StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1000000000"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_2"),
+        )
+
+
+@dataclass
+class Fibonacci3StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1"],
+            passing_inputs=[],
+            path=super().get_dir() / Path("prog_3"),
+        )
+
+
+@dataclass
+class Fibonacci4StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1"],
+            passing_inputs=[],
+            path=super().get_dir() / Path("prog_4"),
+        )
+
+
+@dataclass
+class Fibonacci5StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["5"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_5"),
+        )
+
+
+@dataclass
+class Fibonacci6StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1"],
+            passing_inputs=[],
+            path=super().get_dir() / Path("prog_6"),
+        )
+
+
+@dataclass
+class Fibonacci7StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["4"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_7"),
+        )
+
+
+@dataclass
+class Fibonacci8StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["5"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_8"),
+        )
+
+
+@dataclass
+class Fibonacci9StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["5"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_9"),
+        )
+
+
+@dataclass
+class Fibonacci10StudentAssignmentProject(FibonacciStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["2"],
+            passing_inputs=["1"],
+            path=super().get_dir() / Path("prog_10"),
+        )
+
+
 # class NumberOfDivisorsAssignmentBenchmarkRepository(StudentAssignmentRepository):
 #     def __init__(self):
 #         self.name: str = "Number-of-Divisors"

@@ -15,7 +15,7 @@ two_numbers_grammar: Grammar = {
     "<digits>": ["<digit>", "<digit><digits>"],
 }
 
-sieve_of_eratosthenes_grammar: Grammar = {
+single_number_grammar: Grammar = {
     "<start>": ["<input>"],
     "<input>": ["<integer>"],
     "<integer>": ["<one_nine><maybe_digits>", "0"],
@@ -26,4 +26,4 @@ sieve_of_eratosthenes_grammar: Grammar = {
 }
 
 
-__all__ = ["two_numbers_grammar", "sieve_of_eratosthenes_grammar"]
+__all__ = ["two_numbers_grammar", "single_number_grammar"]
