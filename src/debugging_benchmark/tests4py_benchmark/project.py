@@ -29,7 +29,9 @@ class Tests4PyProject:
     ):
         self.project = project
         self.grammar = grammar if grammar else project.grammar
-        self.failing_inputs = failing_inputs if failing_inputs else get_tests(project, failing=True)
+        self.failing_inputs = (
+            failing_inputs if failing_inputs else get_tests(project, failing=True)
+        )
         self.passing_inputs = passing_inputs if passing_inputs else get_tests(project)
         self.harness_function: HarnessFunctionType = harness_function
 
@@ -57,7 +59,7 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
         super().__init__(
             project=api.pysnooper_2,
             # grammar=grammar_pysnooper,
-            harness_function=pysnooper_harness_function
+            harness_function=pysnooper_harness_function,
         )
 
 
@@ -67,7 +69,7 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
         super().__init__(
             project=api.pysnooper_3,
             # grammar=grammar_pysnooper,
-            harness_function=pysnooper_harness_function
+            harness_function=pysnooper_harness_function,
         )
 
 
@@ -144,19 +146,13 @@ class ExpressionTests4PyProject(Tests4PyProject):
 @dataclass
 class Markup1Tests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(
-            project=api.markup_1,
-            harness_function=markup_harness_function
-        )
+        super().__init__(project=api.markup_1, harness_function=markup_harness_function)
 
 
 @dataclass
 class Markup2Tests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(
-            project=api.markup_2,
-            harness_function=markup_harness_function
-        )
+        super().__init__(project=api.markup_2, harness_function=markup_harness_function)
 
 
 if __name__ == "__main__":

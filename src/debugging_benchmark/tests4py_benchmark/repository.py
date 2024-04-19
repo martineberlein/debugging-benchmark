@@ -18,12 +18,19 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
     for Python projects managed by the Tests4Py framework.
     """
 
-    def __init__(self, projects: List[Tests4PyProject]):
+    def __init__(
+        self,
+        projects: List[Tests4PyProject],
+        force_checkout=False,
+        update_checkout=False,
+    ):
         """
         Initializes the repository with a list of Tests4PyProject instances.
         :param List[Tests4PyProject] projects: The projects to be included in the benchmark repository.
         """
         self.projects = projects
+        self.force_checkout = force_checkout
+        self.update_checkout = update_checkout
 
     @staticmethod
     def _construct_benchmark_program(
@@ -66,7 +73,11 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
         constructed_programs = []
         for project in self.projects:
             try:
-                build_project(project.project)
+                build_project(
+                    project.project,
+                    force=self.force_checkout,
+                    update=self.update_checkout,
+                )
                 program = self._construct_benchmark_program(project)
                 constructed_programs.append(program)
             except Exception as e:
@@ -75,52 +86,52 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
 
 
 class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = "Tests4Py-Pysnooper"
         projects: List[Tests4PyProject] = [
             Pysnooper2Tests4PyProject(),
             Pysnooper3Tests4PyProject(),
         ]
-        super().__init__(projects)
+        super().__init__(projects, **kwargs)
 
 
 class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = "Tests4Py-CookieCutter"
         projects: List[Tests4PyProject] = [
             CookieCutter2Tests4PyProject(),
             CookieCutter3Tests4PyProject(),
             # CookieCutter4Tests4PyProject(),
         ]
-        super().__init__(projects)
+        super().__init__(projects, **kwargs)
 
 
 class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = "Tests4Py-FastAPI"
         projects: List[Tests4PyProject] = [FastAPI1Tests4PyProject()]
-        super().__init__(projects)
+        super().__init__(projects, **kwargs)
 
 
 class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = "Tests4Py-Middle"
         projects: List[Tests4PyProject] = [
             Middle1Tests4PyProject(),
             Middle2Tests4PyProject(),
         ]
-        super().__init__(projects)
+        super().__init__(projects, **kwargs)
 
 
 class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = "Tests4Py-Calculator"
         projects: List[Tests4PyProject] = [CalculatorTests4PyProject()]
-        super().__init__(projects)
+        super().__init__(projects, **kwargs)
 
 
 class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = "Tests4Py-ToyExample"
         projects: List[Tests4PyProject] = [
             CalculatorTests4PyProject(),
@@ -130,4 +141,4 @@ class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
             Middle1Tests4PyProject(),
             Middle2Tests4PyProject(),
         ]
-        super().__init__(projects)
+        super().__init__(projects, **kwargs)

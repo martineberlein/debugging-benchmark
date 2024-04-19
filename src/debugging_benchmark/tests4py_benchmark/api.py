@@ -16,11 +16,15 @@ DEFAULT_WORK_DIR = Path("/tmp")
 
 
 def build_project(
-        project: Project, work_dir: Path = DEFAULT_WORK_DIR, buggy: bool = True
+    project: Project,
+    work_dir: Path = DEFAULT_WORK_DIR,
+    buggy: bool = True,
+    force=False,
+    update=False,
 ) -> None:
     """Build the given project."""
     project.buggy = buggy
-    checkout_report = api.checkout(project, work_dir)
+    checkout_report = api.checkout(project, work_dir, force=force, update=update)
     assert checkout_report.successful
     compile_report = api.build(work_dir / project.get_identifier())
     assert compile_report.successful
@@ -36,7 +40,7 @@ def map_result(result: TestResult) -> OracleResult:
 
 
 def run_project_from_dir(
-        project_dir: Path, inp: Union[str, Input], harness_function: HarnessFunctionType
+    project_dir: Path, inp: Union[str, Input], harness_function: HarnessFunctionType
 ) -> RunReport:
     """Run the project from the given directory with the provided input."""
     args = harness_function(inp)
@@ -50,9 +54,9 @@ def get_tests(project: Project, failing: bool = False, as_strings=True):
 
 
 def construct_oracle(
-        project: Project,
-        harness_function: HarnessFunctionType,
-        work_dir: Path = DEFAULT_WORK_DIR,
+    project: Project,
+    harness_function: HarnessFunctionType,
+    work_dir: Path = DEFAULT_WORK_DIR,
 ) -> Callable[[Union[str, Input]], Tuple[OracleResult, Optional[Exception]]]:
     """Construct an oracle for the given project."""
 

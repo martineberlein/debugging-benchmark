@@ -22,9 +22,9 @@ class TestTests4Py(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         repositories = [
-            PysnooperBenchmarkRepository(),
-            CookieCutterBenchmarkRepository(),
-            ToyExampleTests4PyBenchmarkRepository(),
+            PysnooperBenchmarkRepository(force_checkout=True, update_checkout=True),
+            CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
+            ToyExampleTests4PyBenchmarkRepository(force_checkout=True, update_checkout=True),
             # CalculatorBenchmarkRepository(),
         ]
         cls.subjects = []
