@@ -167,3 +167,20 @@ class NumberOfDivisorsStudentAssignmentRepository(StudentAssignmentRepository):
             sap_projects.NumberOfDivisors10StudentAssignmentProject(),
         ]
         super().__init__(projects)
+
+
+class BubbleSortStudentAssignmentRepository(StudentAssignmentRepository):
+    def __init__(self):
+        projects: List[sap_projects.StudentAssignmentProject] = [
+            sap_projects.BubbleSort1StudentAssignmentProject(),
+            sap_projects.BubbleSort2StudentAssignmentProject(),
+            sap_projects.BubbleSort3StudentAssignmentProject(),
+            sap_projects.BubbleSort4StudentAssignmentProject(),
+            sap_projects.BubbleSort5StudentAssignmentProject(),
+            sap_projects.BubbleSort6StudentAssignmentProject(),
+            sap_projects.BubbleSort7StudentAssignmentProject(),
+            sap_projects.BubbleSort8StudentAssignmentProject(),
+            sap_projects.BubbleSort9StudentAssignmentProject(),
+            sap_projects.BubbleSort10StudentAssignmentProject(),
+        ]
+        super().__init__(projects)
