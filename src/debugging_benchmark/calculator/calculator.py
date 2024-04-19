@@ -1,12 +1,12 @@
 import math
-from pathlib import Path
 from typing import Union, Callable, List, Dict
 import string
 
 from debugging_framework.types import Grammar
-from debugging_framework.oracle import OracleResult
-from debugging_framework.input import Input
-from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.input.input import Input
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_framework.benchmark.repository import BenchmarkRepository
 
 
 def arith_eval(inp: Union[Input, str]) -> float:
@@ -46,40 +46,18 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
         name: str,
         bug_id: int,
         grammar: Grammar,
-        initial_inputs: List[str],
+        failing_inputs: List[str],
+        passing_inputs: List[str],
         oracle: Callable,
     ):
-        super().__init__(name, grammar, oracle, initial_inputs)
+        super().__init__(name, grammar, oracle, failing_inputs, passing_inputs)
         self.bug_id = bug_id
 
     def __repr__(self):
-        return f"{self.name}_{self.bug_id}"
-
-    def get_name(self) -> str:
-        return self.__repr__()
-
-    def get_grammar(self):
-        return self.grammar
-
-    def get_initial_inputs(self):
-        return self.initial_inputs
-
-    def get_oracle(self):
-        return self.oracle
+        return f"Calculator{self.name}_{self.bug_id}"
 
 
 class CalculatorBenchmarkRepository(BenchmarkRepository):
-    def __init__(self):
-        self.name = "Calculator"
-
-    def get_all_test_programs(self) -> List[BenchmarkProgram]:
-        pass
-
-    def get_implementation_function_name(self):
-        pass
-
-    def get_dir(self) -> Path:
-        pass
 
     def build(
         self,
@@ -88,10 +66,11 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
     ) -> List[BenchmarkProgram]:
         return [
             CalculatorBenchmarkProgram(
-                name=self.name,
+                name="Calculator",
                 bug_id=1,
                 grammar=calculator_grammar,
                 oracle=calculator_oracle,
-                initial_inputs=calculator_initial_inputs,
+                failing_inputs=["sqrt(-900)"],
+                passing_inputs=["cos(10)"]
             )
         ]

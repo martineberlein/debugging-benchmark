@@ -2,11 +2,11 @@ import unittest
 
 import pandas as pd
 
-from debugging_framework.evaluator import Evaluation
-from debugging_benchmark.student_assignments import (
-    SieveOfEratosthenesStudentAssignmentBenchmarkRepository,
+from debugging_framework.evaluation.evaluator import Evaluation
+from debugging_benchmark.student_assignments.repository import (
+    GCDStudentAssignmentRepository,
 )
-from debugging_framework.tools import InputsFromHellEvaluationFuzzer
+from debugging_framework.evaluation.tools import InputsFromHellEvaluationFuzzer
 
 
 class TestEvaluator(unittest.TestCase):
@@ -16,12 +16,12 @@ class TestEvaluator(unittest.TestCase):
         ]
 
         self.subjects = (
-            SieveOfEratosthenesStudentAssignmentBenchmarkRepository().build()
+            GCDStudentAssignmentRepository().build()
         )
 
     def test_evaluation(self):
         result = Evaluation(
-            tools=self.tools, subjects=self.subjects[0:1], repetitions=1, timeout=3600
+            tool=self.tools[0], subjects=self.subjects[0:1], repetitions=1
         ).run()
         self.assertTrue(isinstance(result, pd.DataFrame))
 

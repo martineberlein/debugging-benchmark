@@ -1,23 +1,11 @@
 import unittest
-import string
-from debugging_framework.grammar import *
+
+from debugging_framework.fuzzingbook.grammar import *
+from debugging_benchmark.calculator.calculator import calculator_grammar
 
 
 class TestGrammar(unittest.TestCase):
     def setUp(self) -> None:
-        calculator_grammar: Grammar = {
-            "<start>": ["<arith_expr>"],
-            "<arith_expr>": ["<function>(<number>)"],
-            "<function>": ["sqrt", "sin", "cos", "tan"],
-            "<number>": ["<maybe_minus><one_nine><maybe_digits><maybe_frac>"],
-            "<maybe_minus>": ["", "-"],
-            "<maybe_frac>": ["", ".<digits>"],
-            "<one_nine>": [str(num) for num in range(1, 10)],
-            "<digit>": [digit for digit in string.digits],
-            "<maybe_digits>": ["", "<digits>"],
-            "<digits>": ["<digit>", "<digit><digits>"],
-        }
-
         self.grammar = calculator_grammar
 
     # TODO: mute stderr

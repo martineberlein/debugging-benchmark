@@ -35,7 +35,6 @@ dependencies = [
     "psutil~=5.9.6",
     "shap>=0.41",
     "lightgbm>=3.3.2",
-    "tests4py",
 ]
 
 # für coverage 
