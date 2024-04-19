@@ -35,7 +35,6 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
     @staticmethod
     def load_implementation(project: sap_projects.StudentAssignmentProject) -> Callable:
         path_to_implementation = os.path.join(project.path_to_program, Path("buggy.py"))
-        print(path_to_implementation)
         return load_function_from_class(path_to_implementation, project.function_name)
 
     def _construct_test_program(
