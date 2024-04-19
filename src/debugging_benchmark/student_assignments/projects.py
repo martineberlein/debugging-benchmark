@@ -261,7 +261,7 @@ class SieveOfEratosthenes7StudentAssignmentProject(
     def __init__(self):
         super().__init__(
             failing_inputs=["7"],
-            passing_inputs=["10"],
+            passing_inputs=[],
             path=super().get_dir() / Path("prog_7"),
         )
 

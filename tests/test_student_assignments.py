@@ -10,16 +10,16 @@ from debugging_benchmark.student_assignments.repository import (
     StudentAssignmentBenchmarkProgram,
     StudentAssignmentRepository,
     GCDStudentAssignmentRepository,
+    SieveOfEratosthenesStudentAssignmentRepository,
+    NPrStudentAssignmentRepository,
+    FibonacciStudentAssignmentRepository,
+    BubbleSortStudentAssignmentRepository,
+    NumberOfDivisorsStudentAssignmentRepository,
     # SquareRootAssignmentBenchmarkRepository,
-    # GCDStudentAssignmentBenchmarkRepository,
-    # SieveOfEratosthenesStudentAssignmentBenchmarkRepository,
     # MiddleAssignmentBenchmarkRepository,
-    # FibonacciStudentAssignmentBenchmarkRepository,
-    # BubbleSortAssignmentBenchmarkRepository,
     # PalindromeAssignmentBenchmarkRepository,
     # RemoveVowelAssignmentBenchmarkRepository,
     # MergeStringsAssignmentBenchmarkRepository,
-    # NPrStudentAssignmentBenchmarkRepository,
 )
 
 
@@ -31,13 +31,13 @@ class TestStudentAssignments(unittest.TestCase):
     def setUpClass(cls):
         cls.repos = [
             GCDStudentAssignmentRepository(),
-            # NPrStudentAssignmentBenchmarkRepository(),
+            NPrStudentAssignmentRepository(),
             # SquareRootAssignmentBenchmarkRepository(),
-            # GCDStudentAssignmentBenchmarkRepository(),
-            # SieveOfEratosthenesStudentAssignmentBenchmarkRepository(),
+            SieveOfEratosthenesStudentAssignmentRepository(),
+            NumberOfDivisorsStudentAssignmentRepository(),
             # MiddleAssignmentBenchmarkRepository(),
-            # FibonacciStudentAssignmentBenchmarkRepository(),
-            # BubbleSortAssignmentBenchmarkRepository(),
+            FibonacciStudentAssignmentRepository(),
+            BubbleSortStudentAssignmentRepository(),
             # PalindromeAssignmentBenchmarkRepository(),
             # RemoveVowelAssignmentBenchmarkRepository(),
             # MergeStringsAssignmentBenchmarkRepository(),
@@ -53,14 +53,6 @@ class TestStudentAssignments(unittest.TestCase):
         for program in self.programs:
             self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
         self.assertNotEqual(len(self.programs), 0)
-
-    @unittest.skip
-    def test_build_NPr(self):
-        # repo = NPrStudentAssignmentBenchmarkRepository()
-        repo = None
-        programs = repo.build()
-        for program in programs:
-            self.assertTrue(isinstance(program, StudentAssignmentBenchmarkProgram))
 
     def test_subject_valid_grammars(self):
         for program in self.programs:
