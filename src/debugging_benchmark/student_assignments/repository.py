@@ -100,3 +100,20 @@ class GCDStudentAssignmentRepository(StudentAssignmentRepository):
             sap_projects.GCD10StudentAssignmentProject(),
         ]
         super().__init__(projects)
+
+
+class SieveOfEratosthenesStudentAssignmentRepository(StudentAssignmentRepository):
+    def __init__(self):
+        projects: List[sap_projects.StudentAssignmentProject] = [
+            sap_projects.SieveOfEratosthenes1StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes2StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes3StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes4StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes5StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes6StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes7StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes8StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes9StudentAssignmentProject(),
+            sap_projects.SieveOfEratosthenes10StudentAssignmentProject(),
+        ]
+        super().__init__(projects)
