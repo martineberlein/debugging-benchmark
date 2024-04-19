@@ -151,3 +151,21 @@ class FibonacciStudentAssignmentRepository(StudentAssignmentRepository):
             sap_projects.Fibonacci10StudentAssignmentProject(),
         ]
         super().__init__(projects)
+
+
+class NumberOfDivisorsStudentAssignmentRepository(StudentAssignmentRepository):
+    def __init__(self):
+        projects: List[sap_projects.StudentAssignmentProject] = [
+            sap_projects.NumberOfDivisors1StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors2StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors3StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors4StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors5StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors6StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors7StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors8StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors9StudentAssignmentProject(),
+            sap_projects.NumberOfDivisors10StudentAssignmentProject(),
+        ]
+        super().__init__(projects)
+

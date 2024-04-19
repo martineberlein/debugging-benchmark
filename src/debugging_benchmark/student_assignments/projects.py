@@ -542,194 +542,126 @@ class Fibonacci10StudentAssignmentProject(FibonacciStudentAssignmentProject):
         )
 
 
-# class NumberOfDivisorsAssignmentBenchmarkRepository(StudentAssignmentRepository):
-#     def __init__(self):
-#         self.name: str = "Number-of-Divisors"
-#         self._implementation_function_name: str = "count_divisors"
-#         self.programs = [
-#             div_1,
-#             div_2,
-#             div_3,
-#             div_4,
-#             div_5,
-#             div_6,
-#             div_7,
-#             div_8,
-#             div_9,
-#             div_10,
-#         ]
-#
-#     def get_implementation_function_name(self):
-#         return self._implementation_function_name
-#
-#     def get_name(self) -> str:
-#         return self.name
-#
-#     def get_dir(self) -> Path:
-#         return os.path.join(super().get_dir(), Path("problem_5_Number-of-divisors"))
-#
-#     @staticmethod
-#     def get_grammar() -> Grammar:
-#         return {
-#             "<start>": ["<input>"],
-#             "<input>": ["<integer>"],
-#             "<integer>": ["<one_nine><maybe_digits>"],
-#             "<one_nine>": [str(num) for num in range(1, 10)],
-#             "<digit>": list(string.digits),
-#             "<maybe_digits>": ["", "<digits>"],
-#             "<digits>": ["<digit>", "<digit><digits>"],
-#         }
-#
-#     @staticmethod
-#     def get_initial_inputs() -> List[str]:
-#         return ["6", "10"]
-#
-#     @staticmethod
-#     def harness_function(input_str: str) -> Sequence[Any]:
-#         param = list(map(int, str(input_str).strip().split()))
-#         return param
-#
-#
-# @dataclass(repr=False)
-# class div_1(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1", "6", "10"]
-#     passing_input = []
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_2(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["100000"]
-#     passing_input = ["6", "10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_3(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["7"]
-#     passing_input = ["6", "10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_4(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["30"]
-#     passing_input = ["6", "10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_5(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["18"]
-#     passing_input = ["6", "10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_6(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["6"]
-#     passing_input = ["10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_7(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["18"]
-#     passing_input = ["6", "10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_8(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["7"]
-#     passing_input = ["6", "10"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_9(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1", "10"]
-#     passing_input = ["6"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
-# @dataclass(repr=False)
-# class div_10(StudentAssignmentBenchmarkProgram):
-#     name: str
-#     bug_id: int
-#     grammar: Grammar
-#
-#     oracle: Callable
-#     failing_input = ["1", "10"]
-#     passing_input = ["6"]
-#
-#     def get_initial_inputs(self) -> List[str]:
-#         return self.failing_input + self.passing_input
-#
-#
+class NumberOfDivisorsStudentAssignmentProject(StudentAssignmentProject, ABC):
+    def __init__(
+        self,
+        failing_inputs: List[str],
+        passing_inputs: List[str],
+        path: Path,
+    ):
+        super().__init__(
+            name="Number-of-Divisors",
+            function_name="count_divisors",
+            path_to_program=path,
+            grammar=single_number_grammar,
+            failing_inputs=failing_inputs,
+            passing_inputs=passing_inputs,
+        )
+
+    def get_dir(self) -> Path:
+        return self.get_base_dir() / Path("problem_5_Number-of-divisors")
+
+
+@dataclass
+class NumberOfDivisors1StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1", "6", "10"],
+            passing_inputs=[],
+            path=super().get_dir() / Path("prog_1"),
+        )
+
+
+@dataclass
+class NumberOfDivisors2StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1000000"],
+            passing_inputs=["6", "10"],
+            path=super().get_dir() / Path("prog_2"),
+        )
+
+
+@dataclass
+class NumberOfDivisors3StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["7"],
+            passing_inputs=["6", "10"],
+            path=super().get_dir() / Path("prog_3"),
+        )
+
+
+@dataclass
+class NumberOfDivisors4StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["30"],
+            passing_inputs=["6", "10"],
+            path=super().get_dir() / Path("prog_4"),
+        )
+
+
+@dataclass
+class NumberOfDivisors5StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["18"],
+            passing_inputs=["6", "10"],
+            path=super().get_dir() / Path("prog_5"),
+        )
+
+
+@dataclass
+class NumberOfDivisors6StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["6"],
+            passing_inputs=["10"],
+            path=super().get_dir() / Path("prog_6"),
+        )
+
+
+@dataclass
+class NumberOfDivisors7StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["18"],
+            passing_inputs=["6", "10"],
+            path=super().get_dir() / Path("prog_7"),
+        )
+
+
+@dataclass
+class NumberOfDivisors8StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["7"],
+            passing_inputs=["6", "10"],
+            path=super().get_dir() / Path("prog_8"),
+        )
+
+
+@dataclass
+class NumberOfDivisors9StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1", "10"],
+            passing_inputs=["6"],
+            path=super().get_dir() / Path("prog_9"),
+        )
+
+
+@dataclass
+class NumberOfDivisors10StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+    def __init__(self):
+        super().__init__(
+            failing_inputs=["1", "10"],
+            passing_inputs=["6"],
+            path=super().get_dir() / Path("prog_10"),
+        )
+
+
 # class BubbleSortAssignmentBenchmarkRepository(StudentAssignmentRepository):
 #     def __init__(self):
 #         self.name: str = "BubbleSort"
