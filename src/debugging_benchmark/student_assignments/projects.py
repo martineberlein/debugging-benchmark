@@ -563,7 +563,9 @@ class NumberOfDivisorsStudentAssignmentProject(StudentAssignmentProject, ABC):
 
 
 @dataclass
-class NumberOfDivisors1StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors1StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["1", "6", "10"],
@@ -573,7 +575,9 @@ class NumberOfDivisors1StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors2StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors2StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["1000000"],
@@ -583,7 +587,9 @@ class NumberOfDivisors2StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors3StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors3StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["7"],
@@ -593,7 +599,9 @@ class NumberOfDivisors3StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors4StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors4StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["30"],
@@ -603,7 +611,9 @@ class NumberOfDivisors4StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors5StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors5StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["18"],
@@ -613,7 +623,9 @@ class NumberOfDivisors5StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors6StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors6StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["6"],
@@ -623,7 +635,9 @@ class NumberOfDivisors6StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors7StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors7StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["18"],
@@ -633,7 +647,9 @@ class NumberOfDivisors7StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors8StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors8StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["7"],
@@ -643,7 +659,9 @@ class NumberOfDivisors8StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors9StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors9StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["1", "10"],
@@ -653,7 +671,9 @@ class NumberOfDivisors9StudentAssignmentProject(NumberOfDivisorsStudentAssignmen
 
 
 @dataclass
-class NumberOfDivisors10StudentAssignmentProject(NumberOfDivisorsStudentAssignmentProject):
+class NumberOfDivisors10StudentAssignmentProject(
+    NumberOfDivisorsStudentAssignmentProject
+):
     def __init__(self):
         super().__init__(
             failing_inputs=["1", "10"],

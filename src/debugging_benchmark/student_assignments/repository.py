@@ -168,4 +168,3 @@ class NumberOfDivisorsStudentAssignmentRepository(StudentAssignmentRepository):
             sap_projects.NumberOfDivisors10StudentAssignmentProject(),
         ]
         super().__init__(projects)
-
