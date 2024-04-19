@@ -7,10 +7,10 @@ import os
 
 from debugging_framework.types import Grammar
 from debugging_framework.input.oracle import OracleResult
-from debugging_framework.input.oracle_construction import construct_oracle
 from debugging_framework.benchmark.loader import load_object_dynamically
 from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_framework.benchmark.repository import BenchmarkRepository
+from debugging_framework.input.oracle_construction import FunctionalOracleConstructor
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):
@@ -90,13 +90,13 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
         ground_truth = self.load_ground_truth(implementation_function_name)
         program = self.load_implementation(solution_type, formatted_bug_id, implementation_function_name)
 
-        oracle = construct_oracle(
-            program,
-            ground_truth,
-            error_def,
+        oracle = FunctionalOracleConstructor(
+            program=program,
+            program_oracle=ground_truth,
+            error_definitions=error_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
-            harness_function=self.harness_function,
+            harness_function=self.harness_function
         )
 
         return RefactoryBenchmarkProgram(

@@ -65,7 +65,7 @@ class Evaluation:
                             2           UnexpectedResult
         """
 
-        subject_names = [(sub.name, sub.bug_id) for sub in self.subjects]
+        subject_names = [str(sub) for sub in self.subjects]
         tool_name = self.tool.name
         return initialize_dataframe(subject_names, [tool_name], self.repetitions)
 
@@ -91,14 +91,14 @@ class Evaluation:
         df_results = self.initialize_result_dataframe()
 
         for subject in self.subjects:
-            VLOGGER.info(f"Evaluating Subject {subject.name}_{subject.bug_id}")
+            VLOGGER.info(f"Evaluating Subject {str(subject)}")
             param = {**subject.to_dict(), **self.tool_param}
 
             #repetition = run later in tabular
             for i in range(1, self.repetitions + 1):
                 report = self.run_tool(self.tool, param)
                 df_results.at[
-                    (i, self.tool.name, subject.bug_id), ("Result")
+                    (i, self.tool.name, str(subject)), ("Result")
                 ] = report.to_dict()
 
         if self.out_file:

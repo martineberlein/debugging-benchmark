@@ -1,7 +1,7 @@
 import unittest
 from debugging_benchmark.database import DatabaseHelper
-from debugging_benchmark.student_assignments.student_assignments import (
-    GCDStudentAssignmentBenchmarkRepository,
+from debugging_benchmark.student_assignments.repository import (
+    GCDStudentAssignmentRepository,
 )
 
 from debugging_framework.input.oracle import OracleResult
@@ -10,7 +10,7 @@ from debugging_framework.input.oracle import OracleResult
 class TestStudentAssignments(unittest.TestCase):
     def setUp(self):
         self._instance = DatabaseHelper.instance()
-        repo = GCDStudentAssignmentBenchmarkRepository()
+        repo = GCDStudentAssignmentRepository()
         self._programs = repo.build()
 
         def oracle(inp: str):

@@ -3,8 +3,8 @@ import unittest
 import pandas as pd
 
 from debugging_framework.evaluation.evaluator import Evaluation
-from debugging_benchmark.student_assignments.student_assignments import (
-    SieveOfEratosthenesStudentAssignmentBenchmarkRepository,
+from debugging_benchmark.student_assignments.repository import (
+    GCDStudentAssignmentRepository,
 )
 from debugging_framework.evaluation.tools import InputsFromHellEvaluationFuzzer
 
@@ -16,7 +16,7 @@ class TestEvaluator(unittest.TestCase):
         ]
 
         self.subjects = (
-            SieveOfEratosthenesStudentAssignmentBenchmarkRepository().build()
+            GCDStudentAssignmentRepository().build()
         )
 
     def test_evaluation(self):

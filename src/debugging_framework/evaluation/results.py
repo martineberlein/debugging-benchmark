@@ -31,7 +31,7 @@ def initialize_dataframe(
                             2           UnexpectedResult
     """
 
-    subject_ids = [id for (_, id) in subject_names]
+    subject_ids = subject_names
     #columns = pd.MultiIndex.from_tuples(subject_names, names=["Subject", "ID"])
     columns = pd.Index(["Result"], dtype = "str")
     index = pd.MultiIndex.from_product(
