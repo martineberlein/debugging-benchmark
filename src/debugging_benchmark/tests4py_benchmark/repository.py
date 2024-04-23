@@ -101,7 +101,7 @@ class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
         projects: List[Tests4PyProject] = [
             CookieCutter2Tests4PyProject(),
             CookieCutter3Tests4PyProject(),
-            # CookieCutter4Tests4PyProject(),
+            CookieCutter4Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
 

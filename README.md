@@ -27,14 +27,14 @@ Next, we'll fuzz each calculator subject to generate passing and failing inputs.
 The GrammarBasedEvaluationFuzzer is utilized here to create inputs based on the grammar and rules defined in the calculator benchmark.
 
 ```python
-from debugging_framework.tools import GrammarBasedEvaluationFuzzer
+from debugging_framework.evaluation.tools import GrammarBasedEvaluationFuzzer
 
 print(f"Fuzzing the calculator repository...")
 
 for calculator_subject in calculator_subjects:
     print(f"Fuzzing the calculator subject ({calculator_subject})...")
     param = calculator_subject.to_dict()
-    
+
     fuzzer = GrammarBasedEvaluationFuzzer(**param)
     failing_inputs = fuzzer.run().get_all_failing_inputs()
 
