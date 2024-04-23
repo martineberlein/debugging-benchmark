@@ -6,4 +6,6 @@ shap>=0.41
 lightgbm>=3.3.2
 
 # tests4py
-git+https://github.com/smythi93/Tests4Py
+# git+https://github.com/smythi93/Tests4Py
+
+git+https://github.com/martineberlein/Tests4Py

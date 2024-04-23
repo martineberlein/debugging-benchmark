@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from tests4py import api
 from tests4py.projects import Project
 
+from debugging_benchmark.tests4py_benchmark.grammars import grammar_pysnooper
 from debugging_framework.types import Grammar
 from debugging_framework.input.input import Input
 from debugging_framework.types import HarnessFunctionType
@@ -58,8 +59,12 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.pysnooper_2,
-            # grammar=grammar_pysnooper,
+            grammar=grammar_pysnooper,
             harness_function=pysnooper_harness_function,
+            passing_inputs=[inp + " " for inp in get_tests(api.pysnooper_2)],
+            failing_inputs=[
+                inp + " " for inp in get_tests(api.pysnooper_2, failing=True)
+            ],
         )
 
 
@@ -68,8 +73,12 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.pysnooper_3,
-            # grammar=grammar_pysnooper,
+            grammar=grammar_pysnooper,
             harness_function=pysnooper_harness_function,
+            passing_inputs=[inp + " " for inp in get_tests(api.pysnooper_3)],
+            failing_inputs=[
+                inp + " " for inp in get_tests(api.pysnooper_3, failing=True)
+            ],
         )
 
 
