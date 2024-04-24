@@ -164,6 +164,62 @@ class Markup2Tests4PyProject(Tests4PyProject):
         super().__init__(project=api.markup_2, harness_function=markup_harness_function)
 
 
+@dataclass
+class HTTPie1Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.httpie_1,
+        )
+
+
+@dataclass
+class HTTPie2Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.httpie_2,
+        )
+
+
+@dataclass
+class Sanic1Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.sanic_1,
+        )
+
+
+@dataclass
+class Sanic2Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.sanic_2,
+        )
+
+
+@dataclass
+class Sanic3Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.sanic_3,
+        )
+
+
+@dataclass
+class Sanic4Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.sanic_4,
+        )
+
+
+@dataclass
+class Sanic5Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.sanic_5,
+        )
+
+
 if __name__ == "__main__":
     pro = CookieCutter2Tests4PyProject()
     print(pro.grammar)

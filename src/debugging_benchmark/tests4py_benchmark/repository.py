@@ -142,3 +142,26 @@ class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
             Middle2Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
+
+
+class HTTPieBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self, **kwargs):
+        self.name = "Tests4Py-HTTPie"
+        projects: List[Tests4PyProject] = [
+            HTTPie1Tests4PyProject(),
+            HTTPie2Tests4PyProject(),
+        ]
+        super().__init__(projects, **kwargs)
+
+
+class SanicBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self, **kwargs):
+        self.name = "Tests4Py-Sanic"
+        projects: List[Tests4PyProject] = [
+            Sanic1Tests4PyProject(),
+            Sanic2Tests4PyProject(),
+            Sanic3Tests4PyProject(),
+            Sanic4Tests4PyProject(),
+            Sanic5Tests4PyProject(),
+        ]
+        super().__init__(projects, **kwargs)
