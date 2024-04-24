@@ -127,6 +127,16 @@ class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
         super().__init__(projects, **kwargs)
 
 
+class MarkUpBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self, **kwargs):
+        self.name = "Tests4Py-MarkUp"
+        projects: List[Tests4PyProject] = [
+            Markup1Tests4PyProject(),
+            Markup2Tests4PyProject(),
+        ]
+        super().__init__(projects, **kwargs)
+
+
 class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-Calculator"

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from tests4py import api
 from tests4py.projects import Project
 
-from debugging_benchmark.tests4py_benchmark.grammars import grammar_pysnooper
+from debugging_benchmark.tests4py_benchmark.grammars import grammar_pysnooper, grammar_middle
 from debugging_framework.types import Grammar
 from debugging_framework.input.input import Input
 from debugging_framework.types import HarnessFunctionType
@@ -141,6 +141,7 @@ class Middle1Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.middle_1,
+            grammar=grammar_middle
         )
 
 
@@ -149,6 +150,7 @@ class Middle2Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.middle_2,
+            grammar=grammar_middle
         )
 
 
