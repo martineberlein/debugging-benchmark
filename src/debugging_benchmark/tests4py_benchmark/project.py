@@ -121,6 +121,22 @@ class FastAPI1Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
+class FastAPI2Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_2,
+        )
+
+
+@dataclass
+class FastAPI3Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_3,
+        )
+
+
+@dataclass
 class Middle1Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
