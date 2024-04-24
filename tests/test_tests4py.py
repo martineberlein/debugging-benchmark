@@ -12,7 +12,8 @@ from debugging_benchmark.tests4py_benchmark.repository import (
     PysnooperBenchmarkRepository,
     CookieCutterBenchmarkRepository,
     ToyExampleTests4PyBenchmarkRepository,
-    CalculatorBenchmarkRepository
+    HTTPieBenchmarkRepository,
+    SanicBenchmarkRepository,
 )
 
 
@@ -25,7 +26,8 @@ class TestTests4Py(unittest.TestCase):
             PysnooperBenchmarkRepository(force_checkout=True, update_checkout=True),
             CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
             ToyExampleTests4PyBenchmarkRepository(force_checkout=True, update_checkout=True),
-            # CalculatorBenchmarkRepository(),
+            HTTPieBenchmarkRepository(force_checkout=True, update_checkout=True),
+            SanicBenchmarkRepository(force_checkout=True, update_checkout=True),
         ]
         cls.subjects = []
         for repo in repositories:
