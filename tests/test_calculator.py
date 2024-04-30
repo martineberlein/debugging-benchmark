@@ -38,7 +38,8 @@ class TestCalculator(unittest.TestCase):
         ]
 
         for inp, expected_result in inputs:
-            self.assertEqual(oracle(inp), expected_result)
+            result, _ = oracle(inp)
+            self.assertEqual(result, expected_result)
 
 
 if __name__ == "__main__":
