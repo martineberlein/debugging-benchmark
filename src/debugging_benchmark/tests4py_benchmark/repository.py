@@ -109,7 +109,11 @@ class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
 class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-FastAPI"
-        projects: List[Tests4PyProject] = [FastAPI1Tests4PyProject()]
+        projects: List[Tests4PyProject] = [
+            FastAPI1Tests4PyProject(),
+            FastAPI2Tests4PyProject(),
+            FastAPI3Tests4PyProject(),
+        ]
         super().__init__(projects, **kwargs)
 
 
@@ -119,6 +123,16 @@ class MiddleBenchmarkRepository(Tests4PyBenchmarkRepository):
         projects: List[Tests4PyProject] = [
             Middle1Tests4PyProject(),
             Middle2Tests4PyProject(),
+        ]
+        super().__init__(projects, **kwargs)
+
+
+class MarkUpBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self, **kwargs):
+        self.name = "Tests4Py-MarkUp"
+        projects: List[Tests4PyProject] = [
+            Markup1Tests4PyProject(),
+            Markup2Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
 

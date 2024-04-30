@@ -1,5 +1,5 @@
 import math
-from typing import Union, Callable, List, Dict
+from typing import Union, Callable, List, Dict, Tuple
 import string
 
 from debugging_framework.types import Grammar
@@ -15,12 +15,14 @@ def arith_eval(inp: Union[Input, str]) -> float:
     )
 
 
-def calculator_oracle(inp: Union[Input, str]) -> OracleResult:
+def calculator_oracle(
+    inp: Union[Input, str]
+) -> Tuple[OracleResult, Union[Exception, None]]:
     try:
         arith_eval(inp)
     except ValueError:
-        return OracleResult.FAILING
-    return OracleResult.PASSING
+        return OracleResult.FAILING, ValueError()
+    return OracleResult.PASSING, None
 
 
 calculator_grammar: Grammar = {
@@ -58,7 +60,6 @@ class CalculatorBenchmarkProgram(BenchmarkProgram):
 
 
 class CalculatorBenchmarkRepository(BenchmarkRepository):
-
     def build(
         self,
         err_def: Dict[Exception, OracleResult] = None,
@@ -71,6 +72,6 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
                 grammar=calculator_grammar,
                 oracle=calculator_oracle,
                 failing_inputs=["sqrt(-900)"],
-                passing_inputs=["cos(10)"]
+                passing_inputs=["cos(10)"],
             )
         ]

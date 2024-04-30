@@ -1,6 +1,15 @@
 import string
 from debugging_framework.types import Grammar
 
+grammar_middle: Grammar = {
+    "<start>": ["<x> <y> <z>"],
+    "<x>": ["<integer>"],
+    "<y>": ["<integer>"],
+    "<z>": ["<integer>"],
+    "<integer>": ["<integer_>", "-<integer_>"],
+    "<integer_>": ["<digit>", "<digit><integer_>"],
+    "<digit>": [str(num) for num in range(0, 10)],
+}
 
 grammar_pysnooper: Grammar = {
     "<start>": ["<options>"],
