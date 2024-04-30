@@ -1,6 +1,9 @@
 import unittest
 
-from debugging_framework.coverage import population_coverage, population_branch_coverage
+from debugging_framework.fuzzingbook.coverage import (
+    population_coverage,
+    population_branch_coverage,
+)
 from .resources.program_simple_coverage import program_simple
 
 

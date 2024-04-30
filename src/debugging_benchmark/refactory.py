@@ -6,10 +6,11 @@ import string
 import os
 
 from debugging_framework.types import Grammar
-from debugging_framework.oracle import OracleResult
-from debugging_framework.oracle_construction import construct_oracle
-from debugging_framework.benchmark import load_object_dynamically
-from debugging_framework.benchmark import BenchmarkProgram, BenchmarkRepository
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.benchmark.loader import load_object_dynamically
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_framework.benchmark.repository import BenchmarkRepository
+from debugging_framework.input.oracle_construction import FunctionalOracleConstructor
 
 
 class RefactoryBenchmarkProgram(BenchmarkProgram):
@@ -27,19 +28,7 @@ class RefactoryBenchmarkProgram(BenchmarkProgram):
         self.implementation_function_name = implementation_function_name
 
     def __repr__(self):
-        return f"{self.name}_{self.bug_id}"
-
-    def get_name(self) -> str:
-        return self.__repr__()
-
-    def get_grammar(self):
-        return self.grammar
-
-    def get_initial_inputs(self):
-        return self.initial_inputs
-
-    def get_oracle(self):
-        return self.oracle
+        return f"RefactoryBenchmarkProgram{self.name}_{self.bug_id}"
 
 
 class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
@@ -56,12 +45,12 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
         )
     #waren vorher nicht vorhanden aber tests sind durchgelaufen???
     @staticmethod
-    @abstractmethod    
+    @abstractmethod
     def harness_function(input_str: str) -> Sequence[Any]:
-            raise NotImplementedError(
-                "Every Question has a unique harness function"
-            )
-        
+        raise NotImplementedError(
+            "Every Question has a unique harness function"
+        )
+    
     def get_dir(self) -> Path:
         this_file_path_dir = os.path.dirname(os.path.abspath(__file__))
         return Path(this_file_path_dir) / Path("refactory")
@@ -101,13 +90,13 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
         ground_truth = self.load_ground_truth(implementation_function_name)
         program = self.load_implementation(solution_type, formatted_bug_id, implementation_function_name)
 
-        oracle = construct_oracle(
-            program,
-            ground_truth,
-            error_def,
+        oracle = FunctionalOracleConstructor(
+            program=program,
+            program_oracle=ground_truth,
+            error_definitions=error_def,
             default_oracle_result=default_oracle,
             timeout=0.01,
-            harness_function=self.harness_function,
+            harness_function=self.harness_function
         )
 
         return RefactoryBenchmarkProgram(
@@ -121,23 +110,23 @@ class RefactoryBenchmarkRepository(BenchmarkRepository, ABC):
 
     def build(
         self,
-        error_def: Dict[Type[Exception], OracleResult] = None,
+        err_def: Dict[Type[Exception], OracleResult] = None,
         default_oracle: OracleResult = None,
         solution_type: str = "wrong",
     ) -> List[RefactoryBenchmarkProgram]:
         path_to_subjects = self.get_dir() / Path(f"code/{solution_type}")
-        number_of_subjects = len(list(path_to_subjects.resolve().glob(f"*.py")))
+        number_of_subjects = len(list(path_to_subjects.resolve().glob("*.py")))
 
         constructed_test_programs: List[RefactoryBenchmarkProgram] = []
         for bug_id in range(1, number_of_subjects):
             try:
                 for implementation_function_name in self.get_implementation_function_name():
                     subject = self._construct_test_program(
-                        bug_id, implementation_function_name, error_def, default_oracle, solution_type
+                        bug_id, implementation_function_name, err_def, default_oracle, solution_type
                 )
                     constructed_test_programs.append(subject)
             except Exception as e:
-                print(f"Subject {str(bug_id)} could not be build.")
+                print(f"Subject {str(bug_id)} could not be build. {e}")
 
         return constructed_test_programs
 

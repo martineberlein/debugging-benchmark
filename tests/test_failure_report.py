@@ -1,6 +1,6 @@
 import unittest
 
-from debugging_framework.report import (
+from debugging_framework.execution.report import (
     MultipleFailureReport,
     Failure,
     SingleFailureReport,

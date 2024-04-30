@@ -2,9 +2,9 @@ import unittest
 
 from isla.parser import EarleyParser
 
-from debugging_framework.grammar import is_valid_grammar
-from debugging_framework.helper import tree_to_string
-from debugging_framework.oracle import OracleResult
+from debugging_framework.fuzzingbook.grammar import is_valid_grammar
+from debugging_framework.fuzzingbook.helper import tree_to_string
+from debugging_framework.input.oracle import OracleResult
 from debugging_benchmark.calculator.calculator import (
     CalculatorBenchmarkRepository,
     CalculatorBenchmarkProgram,
@@ -38,7 +38,8 @@ class TestCalculator(unittest.TestCase):
         ]
 
         for inp, expected_result in inputs:
-            self.assertEqual(oracle(inp), expected_result)
+            result, _ = oracle(inp)
+            self.assertEqual(result, expected_result)
 
 
 if __name__ == "__main__":

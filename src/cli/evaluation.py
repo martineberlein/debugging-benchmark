@@ -1,9 +1,9 @@
 import argparse
 
-from debugging_framework.evaluator import Evaluation
-from debugging_framework.tools import (GrammarBasedEvaluationFuzzer,
-                                    InputsFromHellEvaluationFuzzer,
-                                    ISLaGrammarEvaluationFuzzer)
+from debugging_framework.evaluation.evaluator import Evaluation
+from debugging_framework.evaluation.tools import (GrammarBasedEvaluationFuzzer,
+                                                  InputsFromHellEvaluationFuzzer,
+                                                  ISLaGrammarEvaluationFuzzer)
 
 from debugging_benchmark.student_assignments import (
     NPrStudentAssignmentBenchmarkRepository,

@@ -30,6 +30,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -e .[dev]
+        python3 -m pip install -r requirements.txt
     - name: Create Coverage Report
       run: |
         python3 -m pytest --html=report.html --self-contained-html --cov-report xml:coverage.xml --cov-report term --cov-config=.coveragerc --cov="debugging_framework" --cov="debugging_benchmark" --ignore-glob="*test_coverage.py" tests/
