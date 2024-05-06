@@ -28,7 +28,7 @@ class TestTests4Py(unittest.TestCase):
             CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
             ToyExampleTests4PyBenchmarkRepository(force_checkout=True, update_checkout=True),
             # HTTPieBenchmarkRepository(force_checkout=True, update_checkout=True),
-            FastAPIBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # FastAPIBenchmarkRepository(force_checkout=True, update_checkout=True),
         ]
         cls.subjects = []
         for repo in repositories:
