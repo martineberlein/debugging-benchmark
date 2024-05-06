@@ -10,6 +10,7 @@ from debugging_framework.types import Grammar
 from debugging_framework.input.input import Input
 from debugging_framework.types import HarnessFunctionType
 from debugging_benchmark.tests4py_benchmark.api import get_tests
+from debugging_benchmark.calculator.calculator import calculator_grammar
 
 
 def default_tests4py_api_harness_function(inp: Union[str, Input]) -> List[str]:
@@ -159,6 +160,7 @@ class CalculatorTests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.calculator_1,
+            grammar=calculator_grammar
         )
 
 
