@@ -11,10 +11,13 @@ from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark.repository import (
     PysnooperBenchmarkRepository,
     CookieCutterBenchmarkRepository,
-    ToyExampleTests4PyBenchmarkRepository,
     # HTTPieBenchmarkRepository,
     # SanicBenchmarkRepository,
     FastAPIBenchmarkRepository,
+    MarkUpBenchmarkRepository,
+    CalculatorBenchmarkRepository,
+    ExpressionBenchmarkRepository,
+    MiddleBenchmarkRepository
 )
 
 
@@ -24,11 +27,15 @@ class TestTests4Py(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         repositories = [
-            PysnooperBenchmarkRepository(force_checkout=True, update_checkout=True),
-            CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
-            ToyExampleTests4PyBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # PysnooperBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
             # HTTPieBenchmarkRepository(force_checkout=True, update_checkout=True),
             # FastAPIBenchmarkRepository(force_checkout=True, update_checkout=True),
+            CalculatorBenchmarkRepository(force_checkout=True, update_checkout=True),
+            ExpressionBenchmarkRepository(force_checkout=True, update_checkout=True),
+            MiddleBenchmarkRepository(force_checkout=True, update_checkout=True),
+            MarkUpBenchmarkRepository(force_checkout=True, update_checkout=True),
+
         ]
         cls.subjects = []
         for repo in repositories:
