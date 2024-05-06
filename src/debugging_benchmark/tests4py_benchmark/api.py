@@ -25,7 +25,6 @@ def build_project(
     """Build the given project."""
     project.buggy = buggy
     checkout_report = api.checkout(project, work_dir, force=force, update=update)
-    print(checkout_report)
     assert checkout_report.successful, f"Checkout for Project {project} failed!"
     compile_report = api.build(work_dir / project.get_identifier())
     assert compile_report.successful, f"Building Project {project} failed!"
