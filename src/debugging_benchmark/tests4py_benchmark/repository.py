@@ -134,7 +134,7 @@ class MarkUpBenchmarkRepository(Tests4PyBenchmarkRepository):
         self.name = "Tests4Py-MarkUp"
         projects: List[Tests4PyProject] = [
             Markup1Tests4PyProject(),
-            # Markup2Tests4PyProject(),
+            Markup2Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
 
@@ -160,7 +160,7 @@ class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
             CalculatorTests4PyProject(),
             ExpressionTests4PyProject(),
             Markup1Tests4PyProject(),
-            # Markup2Tests4PyProject(),
+            Markup2Tests4PyProject(),
             Middle1Tests4PyProject(),
             Middle2Tests4PyProject(),
         ]
