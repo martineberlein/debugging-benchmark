@@ -18,6 +18,8 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
     for Python projects managed by the Tests4Py framework.
     """
 
+    name: str
+
     def __init__(
         self,
         projects: List[Tests4PyProject],
@@ -83,7 +85,10 @@ class Tests4PyBenchmarkRepository(BenchmarkRepository, ABC):
             except Exception as e:
                 logging.error(f"Failed to build project {project}: {str(e)}")
 
-        assert len(self.projects) == len(constructed_programs)
+        assert len(self.projects) == len(constructed_programs), (
+            f"Could not build all programs for Benchmark {self.name},"
+            f" expected {len(self.projects)} Projects got {len(constructed_programs)}"
+        )
         return constructed_programs
 
 
