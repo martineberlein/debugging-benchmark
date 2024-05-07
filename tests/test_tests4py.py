@@ -31,11 +31,14 @@ class TestTests4Py(unittest.TestCase):
             # CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
             # HTTPieBenchmarkRepository(force_checkout=True, update_checkout=True),
             # FastAPIBenchmarkRepository(force_checkout=True, update_checkout=True),
-            CalculatorBenchmarkRepository(force_checkout=True, update_checkout=True),
-            ExpressionBenchmarkRepository(force_checkout=True, update_checkout=True),
-            MiddleBenchmarkRepository(force_checkout=True, update_checkout=True),
-            MarkUpBenchmarkRepository(force_checkout=True, update_checkout=True),
-
+            # CalculatorBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # ExpressionBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # MiddleBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # MarkUpBenchmarkRepository(force_checkout=True, update_checkout=True),
+            CalculatorBenchmarkRepository(),
+            ExpressionBenchmarkRepository(),
+            MiddleBenchmarkRepository(),
+            MiddleBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
