@@ -5,7 +5,11 @@ from dataclasses import dataclass
 from tests4py import api
 from tests4py.projects import Project
 
-from debugging_benchmark.tests4py_benchmark.grammars import grammar_pysnooper, grammar_middle
+from debugging_benchmark.tests4py_benchmark.grammars import (
+    grammar_pysnooper,
+    grammar_middle,
+    grammar_markup,
+)
 from debugging_framework.types import Grammar
 from debugging_framework.input.input import Input
 from debugging_framework.types import HarnessFunctionType
@@ -140,28 +144,19 @@ class FastAPI3Tests4PyProject(Tests4PyProject):
 @dataclass
 class Middle1Tests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(
-            project=api.middle_1,
-            grammar=grammar_middle
-        )
+        super().__init__(project=api.middle_1, grammar=grammar_middle)
 
 
 @dataclass
 class Middle2Tests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(
-            project=api.middle_2,
-            grammar=grammar_middle
-        )
+        super().__init__(project=api.middle_2, grammar=grammar_middle)
 
 
 @dataclass
 class CalculatorTests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(
-            project=api.calculator_1,
-            grammar=calculator_grammar_with_zero
-        )
+        super().__init__(project=api.calculator_1, grammar=calculator_grammar_with_zero)
 
 
 @dataclass
@@ -175,13 +170,21 @@ class ExpressionTests4PyProject(Tests4PyProject):
 @dataclass
 class Markup1Tests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(project=api.markup_1, harness_function=markup_harness_function)
+        super().__init__(
+            project=api.markup_1,
+            grammar=grammar_markup,
+            harness_function=markup_harness_function,
+        )
 
 
 @dataclass
 class Markup2Tests4PyProject(Tests4PyProject):
     def __init__(self):
-        super().__init__(project=api.markup_2, harness_function=markup_harness_function)
+        super().__init__(
+            project=api.markup_2,
+            grammar=grammar_markup,
+            harness_function=markup_harness_function,
+        )
 
 
 @dataclass
