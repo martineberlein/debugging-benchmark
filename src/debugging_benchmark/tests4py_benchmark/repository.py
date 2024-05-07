@@ -188,3 +188,14 @@ class SanicBenchmarkRepository(Tests4PyBenchmarkRepository):
             Sanic5Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
+
+
+__all__ = [
+    "CalculatorBenchmarkRepository",
+    "MiddleBenchmarkRepository",
+    "ExpressionBenchmarkRepository",
+    "MarkUpBenchmarkRepository",
+    "PysnooperBenchmarkRepository",
+    "CookieCutterBenchmarkRepository",
+    "ToyExampleTests4PyBenchmarkRepository",
+]
