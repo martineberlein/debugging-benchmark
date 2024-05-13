@@ -6,9 +6,10 @@ from tests4py import api
 from tests4py.projects import Project
 
 from debugging_benchmark.tests4py_benchmark.grammars import (
-    grammar_pysnooper,
     grammar_middle,
     grammar_markup,
+    grammar_pysnooper_1,
+    grammar_pysnooper_2,
 )
 from debugging_framework.types import Grammar
 from debugging_framework.input.input import Input
@@ -64,7 +65,7 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.pysnooper_2,
-            grammar=grammar_pysnooper,
+            grammar=grammar_pysnooper_1,
             harness_function=pysnooper_harness_function,
             passing_inputs=[inp + " " for inp in get_tests(api.pysnooper_2)],
             failing_inputs=[
@@ -78,7 +79,7 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.pysnooper_3,
-            grammar=grammar_pysnooper,
+            grammar=grammar_pysnooper_2,
             harness_function=pysnooper_harness_function,
             passing_inputs=[inp + " " for inp in get_tests(api.pysnooper_3)],
             failing_inputs=[
@@ -184,6 +185,30 @@ class Markup2Tests4PyProject(Tests4PyProject):
             project=api.markup_2,
             grammar=grammar_markup,
             harness_function=markup_harness_function,
+        )
+
+
+@dataclass
+class TheFuck1Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.thefuck_1,
+        )
+
+
+@dataclass
+class TheFuck5Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.thefuck_5,
+        )
+
+
+@dataclass
+class TheFuck6Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.thefuck_6,
         )
 
 
