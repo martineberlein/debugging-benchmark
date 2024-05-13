@@ -10,6 +10,7 @@ from debugging_benchmark.tests4py_benchmark.grammars import (
     grammar_markup,
     grammar_pysnooper_1,
     grammar_pysnooper_2,
+    grammar_cookiecutter,
 )
 from debugging_framework.types import Grammar
 from debugging_framework.input.input import Input
@@ -94,6 +95,7 @@ class CookieCutter2Tests4PyProject(Tests4PyProject):
         project = api.cookiecutter_2
         super().__init__(
             project=project,
+            grammar=grammar_cookiecutter,
             harness_function=cookiecutter_harness_function,
         )
 
@@ -104,6 +106,7 @@ class CookieCutter3Tests4PyProject(Tests4PyProject):
         project = api.cookiecutter_3
         super().__init__(
             project=project,
+            grammar=grammar_cookiecutter,
             harness_function=cookiecutter_harness_function,
         )
 
@@ -114,6 +117,7 @@ class CookieCutter4Tests4PyProject(Tests4PyProject):
         project = api.cookiecutter_4
         super().__init__(
             project=project,
+            grammar=grammar_cookiecutter,
             harness_function=cookiecutter_harness_function,
         )
 

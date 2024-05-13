@@ -234,9 +234,77 @@ grammar_youtube_dl_1 = {
 }
 
 
+import string
+
+grammar_cookiecutter = {
+    "<start>": ["<config>\n<hooks>"],
+    "<config>": ["{<full_name>,<email>,<github_username>,<project_name>,<repo_name>,<project_short_description>,<release_date>,<year>,<version>}"],
+    "<hooks>": ["", "<hook_list>"],
+    "<hook_list>": ["<hook>", "<hook_list>\n<hook>"],
+    "<hook>": ["<pre_hook>", "<post_hook>"],
+    "<pre_hook>": ["pre:<hook_content>"],
+    "<post_hook>": ["post:<hook_content>"],
+    "<hook_content>": ["echo,<str_with_spaces>", "exit,<int>"],
+    "<full_name>": [
+        '"full_name":"<str_with_spaces>"',
+        '"full_name":[<str_with_spaces_list>]',
+    ],
+    "<email>": ['"email":"<email_address>"', '"email":[<email_list>]'],
+    "<github_username>": [
+        '"github_username":"<str>"',
+        '"github_username":[<str_list>]',
+    ],
+    "<project_name>": [
+        '"project_name":"<str_with_spaces>"',
+        '"project_name":[<str_with_spaces_list>]',
+    ],
+    "<repo_name>": ['"repo_name":"<str>"', '"repo_name":[<str_list>]'],
+    "<project_short_description>": [
+        '"project_short_description":"<str_with_spaces>"',
+        '"project_short_description":[<str_with_spaces_list>]',
+    ],
+    "<release_date>": ['"release_date":"<date>"', '"release_date":[<date_list>]'],
+    "<year>": ['"year":"<int>"', '"year":[<int_list>]'],
+    "<version>": ['"version":"<v>"', '"version":[<version_list>]'],
+    "<str_with_spaces_list>": [
+        '"<str_with_spaces>"',
+        '<str_with_spaces_list>,"<str_with_spaces>"',
+    ],
+    "<email_list>": ['"<email_address>"', '<email_list>,"<email_address>"'],
+    "<str_list>": ['"<str>"', '<str_list>,"<str>"'],
+    "<int_list>": ['"<int>"', '<int_list>,"<int>"'],
+    "<date_list>": ['"<date>"', '<date_list>,"<date>"'],
+    "<version_list>": ['"<v>"', '<version_list>,"<v>"'],
+    "<chars>": ["", "<chars><char>"],
+    "<char>": [char for char in string.ascii_letters + string.digits + "_"],
+    "<chars_with_spaces>": ["", "<chars_with_spaces><char_with_spaces>"],
+    "<char_with_spaces>": [char for char in string.ascii_letters + string.digits + "_ "],
+    "<str>": ["<char><chars>"],
+    "<str_with_spaces>": ["<char_with_spaces><chars_with_spaces>"],
+    "<email_address>": ["<str>@<str>.<str>"],
+    "<date>": ["<day>.<month>.<int>", "<int>-<month>-<day>"],
+    "<month>": ["0<nonzero>", "<nonzero>", "10", "11", "12"],
+    "<day>": [
+        "0<nonzero>",
+        "<nonzero>",
+        "10",
+        "1<nonzero>",
+        "20",
+        "2<nonzero>",
+        "30",
+        "31",
+    ],
+    "<v>": ["<digit><digits>", "<v>.<digit><digits>"],
+    "<int>": ["<nonzero><digits>", "0"],
+    "<digits>": ["", "<digits><digit>"],
+    "<nonzero>": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "<digit>": [char for char in string.digits],
+}
+
+
 if __name__ == "__main__":
     from debugging_framework.fuzzingbook.grammar import is_valid_grammar
 
     assert is_valid_grammar(grammar_pysnooper_1)
     assert is_valid_grammar(grammar_pysnooper_2)
-    print(grammar_pysnooper_1)
+    assert is_valid_grammar(grammar_cookiecutter)

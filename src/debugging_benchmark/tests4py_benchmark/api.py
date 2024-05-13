@@ -79,7 +79,7 @@ def construct_oracle(
         # print("successful:", report.successful)
         if map_result(report.test_result) == OracleResult.UNDEFINED:
             return OracleResult.UNDEFINED, Tests4PySubjectException(
-                f"Feedback{report.feedback}, Raised: {report.raised}"
+                f"{report.to_dict()}"
             )
 
         # print("raised:", report.raised)

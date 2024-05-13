@@ -195,6 +195,17 @@ class SanicBenchmarkRepository(Tests4PyBenchmarkRepository):
         super().__init__(projects, **kwargs)
 
 
+class TheFuckBenchmarkRepository(Tests4PyBenchmarkRepository):
+    def __init__(self, **kwargs):
+        self.name = "Tests4Py-HTTPie"
+        projects: List[Tests4PyProject] = [
+            TheFuck1Tests4PyProject(),
+            TheFuck5Tests4PyProject(),
+            TheFuck6Tests4PyProject(),
+        ]
+        super().__init__(projects, **kwargs)
+
+
 __all__ = [
     "CalculatorBenchmarkRepository",
     "MiddleBenchmarkRepository",
@@ -203,4 +214,5 @@ __all__ = [
     "PysnooperBenchmarkRepository",
     "CookieCutterBenchmarkRepository",
     "ToyExampleTests4PyBenchmarkRepository",
+    "TheFuckBenchmarkRepository",
 ]
