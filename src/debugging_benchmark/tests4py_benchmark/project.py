@@ -57,7 +57,7 @@ def cookiecutter_harness_function(inp: Union[str, Input]) -> List[str]:
     return parts if parts else []
 
 
-def markup_harness_function(inp: Union[str, Input]) -> List[str]:
+def t4p_dummy_harness_function(inp: Union[str, Input]) -> List[str]:
     return [str(inp)]
 
 
@@ -169,6 +169,7 @@ class ExpressionTests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.expression_1,
+            harness_function=t4p_dummy_harness_function
         )
 
 
@@ -178,7 +179,7 @@ class Markup1Tests4PyProject(Tests4PyProject):
         super().__init__(
             project=api.markup_1,
             grammar=grammar_markup,
-            harness_function=markup_harness_function,
+            harness_function=t4p_dummy_harness_function,
         )
 
 
@@ -188,7 +189,7 @@ class Markup2Tests4PyProject(Tests4PyProject):
         super().__init__(
             project=api.markup_2,
             grammar=grammar_markup,
-            harness_function=markup_harness_function,
+            harness_function=t4p_dummy_harness_function,
         )
 
 
