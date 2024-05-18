@@ -8,6 +8,7 @@ from tests4py.projects import Project
 from debugging_benchmark.tests4py_benchmark.grammars import (
     grammar_middle,
     grammar_markup,
+    grammar_expression,
     grammar_pysnooper_1,
     grammar_pysnooper_2,
     grammar_cookiecutter,
@@ -169,7 +170,8 @@ class ExpressionTests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.expression_1,
-            harness_function=t4p_dummy_harness_function
+            harness_function=t4p_dummy_harness_function,
+            grammar=grammar_expression,
         )
 
 

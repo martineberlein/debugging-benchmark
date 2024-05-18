@@ -11,6 +11,28 @@ grammar_middle: Grammar = {
     "<digit>": [str(num) for num in range(0, 10)],
 }
 
+
+grammar_expression = {
+    "<start>": ["<arith_expr>"],
+    "<arith_expr>": [
+        "<arith_expr><operator><arith_expr>",
+        "<number>",
+        "(<arith_expr>)",
+    ],
+    "<operator>": [" + ", " - ", " * ", " / "],
+    "<number>": [
+        "<maybe_minus><non_zero_digit><maybe_digits>", "0"
+    ],
+    "<maybe_minus>": ["", "~ "],
+    "<non_zero_digit>": [
+        str(num) for num in range(1, 10)
+    ],  # Exclude 0 from starting digits
+    "<digit>": list(string.digits),
+    "<maybe_digits>": ["", "<digits>"],
+    "<digits>": ["<digit>", "<digit><digits>"],
+}
+
+
 grammar_markup = {
     "<start>": ["<structure>"],
     "<structure>": ["<string>", "<html><structure>", "<string><html><structure>"],
@@ -238,7 +260,9 @@ import string
 
 grammar_cookiecutter = {
     "<start>": ["<config>\n<hooks>"],
-    "<config>": ["{<full_name>,<email>,<github_username>,<project_name>,<repo_name>,<project_short_description>,<release_date>,<year>,<version>}"],
+    "<config>": [
+        "{<full_name>,<email>,<github_username>,<project_name>,<repo_name>,<project_short_description>,<release_date>,<year>,<version>}"
+    ],
     "<hooks>": ["", "<hook_list>"],
     "<hook_list>": ["<hook>", "<hook_list>\n<hook>"],
     "<hook>": ["<pre_hook>", "<post_hook>"],
@@ -278,7 +302,9 @@ grammar_cookiecutter = {
     "<chars>": ["", "<chars><char>"],
     "<char>": [char for char in string.ascii_letters + string.digits + "_"],
     "<chars_with_spaces>": ["", "<chars_with_spaces><char_with_spaces>"],
-    "<char_with_spaces>": [char for char in string.ascii_letters + string.digits + "_ "],
+    "<char_with_spaces>": [
+        char for char in string.ascii_letters + string.digits + "_ "
+    ],
     "<str>": ["<char><chars>"],
     "<str_with_spaces>": ["<char_with_spaces><chars_with_spaces>"],
     "<email_address>": ["<str>@<str>.<str>"],
