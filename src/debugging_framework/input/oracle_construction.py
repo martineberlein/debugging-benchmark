@@ -129,7 +129,7 @@ class FunctionalOracleConstructor(OracleConstructor):
                 if (expected_result != produced_result) or (
                     type(expected_result) is not type(produced_result)
                 ):
-                    raise UnexpectedResultError("Results do not match")
+                    raise UnexpectedResultError(f"Results do not match: got {produced_result}, expected {expected_result}")
             except Exception as e:
                 return (
                     self.error_definitions.get(type(e), self.default_oracle_result),
