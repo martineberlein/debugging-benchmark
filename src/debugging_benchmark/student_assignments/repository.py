@@ -41,7 +41,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
         self,
         project: sap_projects.StudentAssignmentProject,
         err_def: Dict[Exception, OracleResult] = None,
-        default_oracle: OracleResult = None,
+        default_oracle: OracleResult = OracleResult.UNDEFINED,
     ) -> StudentAssignmentBenchmarkProgram:
         ground_truth = self.load_ground_truth(project=project)
         program = self.load_implementation(project=project)
@@ -66,7 +66,7 @@ class StudentAssignmentRepository(BenchmarkRepository, ABC):
     def build(
         self,
         err_def: Dict[Exception, OracleResult] = None,
-        default_oracle: OracleResult = None,
+        default_oracle: OracleResult = OracleResult.UNDEFINED,
     ) -> List[StudentAssignmentBenchmarkProgram]:
         constructed_programs: List[StudentAssignmentBenchmarkProgram] = []
         for project in self.projects:
