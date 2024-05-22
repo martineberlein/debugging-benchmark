@@ -1,8 +1,8 @@
 import unittest
 from typing import Tuple, Union
 
-from debugging_framework.oracle import OracleResult
-from debugging_framework.report import TResultMonad
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.execution.report import TResultMonad
 
 
 def program(test_input: str):

@@ -6,8 +6,6 @@ on:
     push:
       branches: [ "stable" ]
       tags: '*'
-    pull_request:
-      branches: [ "stable" ]
 
 jobs:
     build-package:

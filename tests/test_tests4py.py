@@ -3,32 +3,42 @@ from typing import Union, List
 
 from isla.parser import EarleyParser
 
-from debugging_framework.grammar import is_valid_grammar
-from debugging_framework.grammar_fuzzer import GrammarFuzzer
-from debugging_framework.helper import tree_to_string
-from debugging_framework.oracle import OracleResult
-from debugging_framework.benchmark import BenchmarkProgram
-from debugging_benchmark.tests4py_benchmark import (
+from debugging_framework.fuzzingbook.grammar import is_valid_grammar
+from debugging_framework.fuzzingbook.fuzzer import GrammarFuzzer
+from debugging_framework.fuzzingbook.helper import tree_to_string
+from debugging_framework.input.oracle import OracleResult
+from debugging_framework.benchmark.program import BenchmarkProgram
+from debugging_benchmark.tests4py_benchmark.repository import (
     PysnooperBenchmarkRepository,
-    # YoutubeDLBenchmarkRepository,
     CookieCutterBenchmarkRepository,
-    # FastAPIBenchmarkRepository,
-    # ToyExampleTests4PyBenchmarkRepository,
+    # HTTPieBenchmarkRepository,
+    # SanicBenchmarkRepository,
+    FastAPIBenchmarkRepository,
+    MarkUpBenchmarkRepository,
+    CalculatorBenchmarkRepository,
+    ExpressionBenchmarkRepository,
+    MiddleBenchmarkRepository
 )
 
 
-@unittest.skip
 class TestTests4Py(unittest.TestCase):
     subjects: List[BenchmarkProgram]
 
     @classmethod
     def setUpClass(cls):
         repositories = [
-            PysnooperBenchmarkRepository(),
-            CookieCutterBenchmarkRepository(),
-            # ToyExampleTests4PyBenchmarkRepository(),
-            # YoutubeDLBenchmarkRepository(),
-            # FastAPIBenchmarkRepository()
+            # PysnooperBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # CookieCutterBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # HTTPieBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # FastAPIBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # CalculatorBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # ExpressionBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # MiddleBenchmarkRepository(force_checkout=True, update_checkout=True),
+            # MarkUpBenchmarkRepository(force_checkout=True, update_checkout=True),
+            CalculatorBenchmarkRepository(),
+            ExpressionBenchmarkRepository(),
+            MiddleBenchmarkRepository(),
+            MiddleBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
@@ -43,7 +53,7 @@ class TestTests4Py(unittest.TestCase):
     def test_tests4py_initial_inputs_parsing(self):
         for subject in self.subjects:
             parser = EarleyParser(subject.grammar)
-            for inp in subject.initial_inputs:
+            for inp in subject.get_initial_inputs():
                 for tree in parser.parse(inp):
                     self.assertEqual(inp, tree_to_string(tree))
 
@@ -57,13 +67,23 @@ class TestTests4Py(unittest.TestCase):
                 self.assertIsInstance(oracle, OracleResult)
                 self.assertIsInstance(exception, Union[Exception, None])
 
-    def test_tests4py_verify_oracle(self):
+    def test_tests4py_verify_passing_oracle(self):
         for subject in self.subjects:
-            for inp in subject.initial_inputs:
-                oracle, exception = subject.oracle(inp)
-                self.assertIsInstance(oracle, OracleResult)
-                self.assertTrue(oracle != OracleResult.UNDEFINED)
-                self.assertIsInstance(exception, Union[Exception, None])
+            for inp in subject.get_passing_inputs():
+                with self.subTest(subject=subject, input=inp):
+                    oracle, exception = subject.oracle(inp)
+                    self.assertIsInstance(oracle, OracleResult)
+                    self.assertTrue(oracle == OracleResult.PASSING)
+                    self.assertIs(exception, None)
+
+    def test_tests4py_verify_failing_oracle(self):
+        for subject in self.subjects:
+            for inp in subject.get_failing_inputs():
+                with self.subTest(subject=subject, input=inp):
+                    oracle, exception = subject.oracle(inp)
+                    self.assertIsInstance(oracle, OracleResult)
+                    self.assertEqual(oracle, OracleResult.FAILING)
+                    self.assertIsInstance(exception, Exception)
 
 
 if __name__ == "__main__":
