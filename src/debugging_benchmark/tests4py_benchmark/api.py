@@ -25,9 +25,13 @@ def build_project(
     """Build the given project."""
     project.buggy = buggy
     checkout_report = api.checkout(project, work_dir, force=force, update=update)
-    assert checkout_report.successful, f"Checkout for Project {project} failed! {checkout_report}"
+    assert (
+        checkout_report.successful
+    ), f"Checkout for Project {project} failed! {checkout_report}"
     compile_report = api.build(work_dir / project.get_identifier())
-    assert compile_report.successful, f"Building Project {project} failed! {compile_report}"
+    assert (
+        compile_report.successful
+    ), f"Building Project {project} failed! {compile_report}"
 
 
 def map_result(result: TestResult) -> OracleResult:
@@ -73,12 +77,13 @@ def construct_oracle(
         # print("test_result:", report.test_result)
         # print("feedback:", report.feedback)
         # print("successful:", report.successful)
+        if map_result(report.test_result) == OracleResult.UNDEFINED:
+            return OracleResult.UNDEFINED, Tests4PySubjectException(
+                f"{report.to_dict()}"
+            )
+
         # print("raised:", report.raised)
-        result = (
-            map_result(report.test_result)
-            if report.successful
-            else OracleResult.UNDEFINED
-        )
-        return result, exception
+        if report.successful:
+            return map_result(report.test_result), exception
 
     return oracle
