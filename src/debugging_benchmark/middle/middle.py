@@ -48,9 +48,9 @@ def middle(x, y, z):
 
 class MiddleBenchmarkRepository(BenchmarkRepository):
     def build(
-            self,
-            err_def: Dict[Exception, OracleResult] = None,
-            default_oracle: OracleResult = None,
+        self,
+        err_def: Dict[Exception, OracleResult] = None,
+        default_oracle: OracleResult = None,
     ) -> List[BenchmarkProgram]:
         oracle = FunctionalOracleConstructor(
             program=middle,
@@ -58,13 +58,15 @@ class MiddleBenchmarkRepository(BenchmarkRepository):
             harness_function=middle_harness,
         ).build()
 
-        return [BenchmarkProgram(
-            name="middle",
-            grammar=middle_grammar,
-            oracle=oracle,
-            failing_inputs=["4 2 5"],
-            passing_inputs=["1 2 3", "3 2 1"],
-        )]
+        return [
+            BenchmarkProgram(
+                name="middle",
+                grammar=middle_grammar,
+                oracle=oracle,
+                failing_inputs=["4 2 5"],
+                passing_inputs=["1 2 3", "3 2 1"],
+            )
+        ]
 
 
 if __name__ == "__main__":

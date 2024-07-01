@@ -21,9 +21,7 @@ expression_grammar: Grammar = {
         "(<arith_expr>)",
     ],
     "<operator>": [" + ", " - ", " * ", " / "],
-    "<number>": [
-        "<maybe_minus><non_zero_digit><maybe_digits>", "0"
-    ],
+    "<number>": ["<maybe_minus><non_zero_digit><maybe_digits>", "0"],
     "<maybe_minus>": ["", "~ "],
     "<non_zero_digit>": [
         str(num) for num in range(1, 10)
@@ -50,23 +48,32 @@ def expression_harness(inp: str | Input):
 
 class ExpressionBenchmarkRepository(BenchmarkRepository):
     def build(
-            self,
-            err_def: Dict[Exception, OracleResult] = None,
-            default_oracle: OracleResult = None,
+        self,
+        err_def: Dict[Exception, OracleResult] = None,
+        default_oracle: OracleResult = None,
     ) -> List[BenchmarkProgram]:
         oracle = FunctionalOracleConstructor(
             program=evaluate,
             program_oracle=expression_oracle,
-            harness_function=expression_harness
+            harness_function=expression_harness,
         ).build()
 
-        return [BenchmarkProgram(
-            name="expression",
-            grammar=expression_grammar,
-            oracle=oracle,
-            failing_inputs=["1 / (1 - 1)", "9 / 0"],
-            passing_inputs=["1 + 3", "2 * 3", "4 - 2", "1 / 2", "1 / 1", "1 / 2 + 3"],
-        )]
+        return [
+            BenchmarkProgram(
+                name="expression",
+                grammar=expression_grammar,
+                oracle=oracle,
+                failing_inputs=["1 / (1 - 1)", "9 / 0"],
+                passing_inputs=[
+                    "1 + 3",
+                    "2 * 3",
+                    "4 - 2",
+                    "1 / 2",
+                    "1 / 1",
+                    "1 / 2 + 3",
+                ],
+            )
+        ]
 
 
 if __name__ == "__main__":
