@@ -12,6 +12,7 @@ from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_benchmark.calculator.calculator import CalculatorBenchmarkRepository
 from debugging_benchmark.middle.middle import MiddleBenchmarkRepository
 from debugging_benchmark.expression.expression import ExpressionBenchmarkRepository
+from debugging_benchmark.markup.markup import MarkupBenchmarkRepository
 
 
 class TestToySubjects(unittest.TestCase):
@@ -22,14 +23,15 @@ class TestToySubjects(unittest.TestCase):
         repositories = [
             CalculatorBenchmarkRepository(),
             MiddleBenchmarkRepository(),
-            ExpressionBenchmarkRepository()
+            ExpressionBenchmarkRepository(),
+            MarkupBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
             subjects = repo.build()
             for subject in subjects:
                 cls.subjects.append(subject)
-        assert len(cls.subjects) == 3
+        assert len(cls.subjects) == 4
 
     def test_valid_grammars(self):
         for subject in self.subjects:
