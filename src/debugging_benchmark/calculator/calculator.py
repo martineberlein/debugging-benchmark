@@ -56,23 +56,6 @@ calculator_grammar_with_zero: Grammar = {
 calculator_initial_inputs = ["cos(12)", "sqrt(-900)"]
 
 
-class CalculatorBenchmarkProgram(BenchmarkProgram):
-    def __init__(
-        self,
-        name: str,
-        bug_id: int,
-        grammar: Grammar,
-        failing_inputs: List[str],
-        passing_inputs: List[str],
-        oracle: Callable,
-    ):
-        super().__init__(name, grammar, oracle, failing_inputs, passing_inputs)
-        self.bug_id = bug_id
-
-    def __repr__(self):
-        return f"Calculator{self.name}_{self.bug_id}"
-
-
 class CalculatorBenchmarkRepository(BenchmarkRepository):
     def build(
         self,
@@ -80,9 +63,8 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
         default_oracle: OracleResult = None,
     ) -> List[BenchmarkProgram]:
         return [
-            CalculatorBenchmarkProgram(
-                name="Calculator",
-                bug_id=1,
+            BenchmarkProgram(
+                name="calculator",
                 grammar=calculator_grammar,
                 oracle=calculator_oracle,
                 failing_inputs=["sqrt(-900)"],
