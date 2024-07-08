@@ -13,7 +13,7 @@ from debugging_benchmark.tests4py_benchmark.repository import (
     CookieCutterBenchmarkRepository,
     # HTTPieBenchmarkRepository,
     # SanicBenchmarkRepository,
-    FastAPIBenchmarkRepository,
+    # FastAPIBenchmarkRepository,
     MarkUpBenchmarkRepository,
     CalculatorBenchmarkRepository,
     ExpressionBenchmarkRepository,
@@ -38,7 +38,7 @@ class TestTests4Py(unittest.TestCase):
             CalculatorBenchmarkRepository(),
             ExpressionBenchmarkRepository(),
             MiddleBenchmarkRepository(),
-            MiddleBenchmarkRepository(),
+            MarkUpBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
