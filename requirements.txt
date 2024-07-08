@@ -9,3 +9,6 @@ lightgbm>=3.3.2
 # git+https://github.com/smythi93/Tests4Py
 
 git+https://github.com/martineberlein/Tests4Py
+docker~=7.1.0
+grammar_graph~=0.2.0
+scikit-learn~=1.5.1
