@@ -141,7 +141,7 @@ grammar_markup = {
     ],
 }
 
-grammar_pysnooper: Grammar = {
+_grammar_pysnooper_base: Grammar = {
     "<start>": ["<options>"],
     "<options>": [" ", "<flag><op>"],
     "<flag>": ["<overwrite><thread_info>"],
@@ -202,25 +202,25 @@ grammar_pysnooper: Grammar = {
     "<digits>": ["", "<digit><digits>"],
 }
 
-grammar_pysnooper_1: Grammar = {
-    **grammar_pysnooper,
+grammar_pysnooper_2: Grammar = {
+    **_grammar_pysnooper_base,
     **{"<op>": ["<output><depth><prefix><watch><custom_repr>"]},
 }
-grammar_pysnooper_1.pop("<variables>")
+grammar_pysnooper_2.pop("<variables>")
 
-grammar_pysnooper_2: Grammar = {
-    **grammar_pysnooper,
+grammar_pysnooper_3: Grammar = {
+    **_grammar_pysnooper_base,
     **{"<options>": [" ", "<op>"], "<op>": ["<output><depth><prefix><variables>"]},
 }
-grammar_pysnooper_2.pop("<flag>")
-grammar_pysnooper_2.pop("<watch>")
-grammar_pysnooper_2.pop("<custom_repr>")
-grammar_pysnooper_2.pop("<overwrite>")
-grammar_pysnooper_2.pop("<thread_info>")
-grammar_pysnooper_2.pop("<predicate_list>")
-grammar_pysnooper_2.pop("<t_function>")
-grammar_pysnooper_2.pop("<predicate>")
-grammar_pysnooper_2.pop("<p_function>")
+grammar_pysnooper_3.pop("<flag>")
+grammar_pysnooper_3.pop("<watch>")
+grammar_pysnooper_3.pop("<custom_repr>")
+grammar_pysnooper_3.pop("<overwrite>")
+grammar_pysnooper_3.pop("<thread_info>")
+grammar_pysnooper_3.pop("<predicate_list>")
+grammar_pysnooper_3.pop("<t_function>")
+grammar_pysnooper_3.pop("<predicate>")
+grammar_pysnooper_3.pop("<p_function>")
 
 
 grammar_youtube_dl_1 = {
@@ -331,6 +331,6 @@ grammar_cookiecutter = {
 if __name__ == "__main__":
     from debugging_framework.fuzzingbook.grammar import is_valid_grammar
 
-    assert is_valid_grammar(grammar_pysnooper_1)
     assert is_valid_grammar(grammar_pysnooper_2)
+    assert is_valid_grammar(grammar_pysnooper_3)
     assert is_valid_grammar(grammar_cookiecutter)
