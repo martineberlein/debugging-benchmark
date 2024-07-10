@@ -1,5 +1,7 @@
 import docker
 import os
+from pathlib import Path
+from docker.errors import BuildError, ImageNotFound, APIError
 
 
 class DockerManager:
@@ -11,6 +13,34 @@ class DockerManager:
         self.image = None
         self.dockerfile_path = None
 
+    def _image_exists(self, image_tag):
+        try:
+            self.client.images.get(image_tag)
+            return True
+        except ImageNotFound:
+            return False
+
+    def _build_image(self, dir_path=".", dockerfile=None, image_name="tests4py_base_image"):
+        try:
+            self.image, build_logs = self.client.images.build(
+                path=dir_path,
+                dockerfile=dockerfile,
+                tag=image_name,
+                rm=True
+            )
+            for chunk in build_logs:
+                if 'stream' in chunk:
+                    print(chunk['stream'].strip())
+        except BuildError as e:
+            print(f"Build failed: {e}")
+            self.cleanup()
+            raise
+
+    def build(self, dir_path=".", dockerfile=None, image_name="tests4py_base_image"):
+        if self._image_exists(image_name):
+            print(f"Image {image_name} already exists. Skipping build.")
+        else:
+            self._build_image(dir_path, dockerfile, image_name)
 
     def _write_files(self):
         dockerfile = '''
@@ -39,50 +69,31 @@ print(f"Message from the host: {message}")
         with open('../../debugging_benchmark/tests4py_benchmark/resources/requirements.txt', 'w') as file:
             file.write(requirements)
 
-    def _image_exists(self):
-        try:
-            self.image = self.client.images.get(self.image_tag)
-            return True
-        except docker.errors.ImageNotFound:
-            return False
-
-    def build(self):
-        if self._image_exists():
-            print(f"Image {self.image_tag} already exists. Skipping build.")
-            return
-        self._write_files()
-        try:
-            self.image, build_logs = self.client.images.build(path=".", tag=self.image_tag, rm=True)
-            print(self.image)
-            for chunk in build_logs:
-                if 'stream' in chunk:
-                    print(chunk['stream'].strip())
-        except docker.errors.BuildError as e:
-            print(f"Build failed: {e}")
-            self.cleanup()
-            raise
-
-    def run(self, message="Hello from inside the container!"):
-        if not self._image_exists():
+    def run(self, image_tag, container_name=None):
+        if not self._image_exists(image_tag):
             raise RuntimeError("Image has not been built. Call build() first.")
+        container = None
         try:
-            cmd = ["python3", "/app/script.py", message]
-            # command = f'python /app/script.py "{message}"'
-            self.container = self.client.containers.run(
-                self.image.id,
-                name=self.container_name,
+            cmd = ["python3", "-c", "print('12')"]
+            cmd = ["t4p", "systemtest", "test", "-p", "./tmp/pysnooper_2/tests4py_systemtest_diversity"]
+            image = self.client.images.get(image_tag)
+
+            container = self.client.containers.create(
+                image.id,
+                name=container_name,
                 detach=True,
-                # tty=True,
-                stdin_open=True,
                 command=cmd,
             )
-            logs = self.container.logs(stream=True)
+            container.start()
+            logs = container.logs(stream=True)
             for log in logs:
                 print(log.strip().decode('utf-8'))
         except Exception as e:
             print(f"Error running container: {e}")
-            self.cleanup()
             raise
+        finally:
+            if container:
+                container.remove(force=True)
 
     def cleanup(self):
         # Stop and remove containers with the specific label
@@ -108,19 +119,21 @@ print(f"Message from the host: {message}")
             if os.path.exists(file):
                 os.remove(file)
 
-    def create_container(self):
-        if not self._image_exists():
+    def create_container(self, image_tag, container_name=None):
+        if not self._image_exists(image_tag):
             raise RuntimeError("Image has not been built. Call build() first.")
         try:
-            self.container = self.client.containers.create(
-                self.image.id,
-                name=self.container_name,
+            image = self.client.images.get(image_tag)
+
+            container = self.client.containers.create(
+                image.id,
+                name=container_name,
                 detach=True,
                 tty=True,
                 stdin_open=True,
             )
-            self.container.start()
-        except docker.errors.APIError as e:
+            container.start()
+        except APIError as e:
             print(f"Error creating container: {e}")
             self.cleanup()
             raise
@@ -136,14 +149,73 @@ print(f"Message from the host: {message}")
             self.cleanup()
             raise
 
+    @staticmethod
+    def write_subject_dockerfile(subject):
+        dockerfile = f'''FROM tests4py_base_image
+
+# Install python using pyenv
+RUN bash -c "source ~/.bashrc && pyenv install {subject["pyenv-version"]} && pyenv global {subject["pyenv-version"]}"
+
+RUN bash -c "t4p checkout -p {subject["project_name"]} -i {subject["bug_ids"][0]}"
+RUN bash -c "t4p build"
+
+RUN bash -c "python3 -m pip install git+https://github.com/martineberlein/debugging-benchmark.git"
+
+COPY ./docker_setup.py /tmp/app
+
+RUN bash -c "python3 docker_setup.py {subject["project_name"]} {subject["bug_ids"][0]}"
+
+# Set the command to keep the container running
+CMD ["tail", "-f", "/dev/null"]
+'''
+        with open(f'Dockerfile.{subject["project_name"]}', 'w') as file:
+            file.write(dockerfile)
+
+
+import concurrent.futures
+
+
+def run_container(manager, image_tag, container_name):
+    manager.run(image_tag=image_tag, container_name=container_name)
+
+
+def parallel_run(manager, subject, num_containers=5):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_containers) as executor:
+        futures = [
+            executor.submit(
+                run_container,
+                manager,
+                f'{subject["project_name"]}_image',
+                f'{subject["project_name"]}_container_{i}'
+            )
+            for i in range(num_containers)
+        ]
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                print(f"Container run failed: {e}")
+
 
 if __name__ == "__main__":
+    subject_dir = {
+        "pysnooper": {"project_name": "pysnooper", "bug_ids": [2, 3], "pyenv-version": "3.8.4"},
+        "fastapi": {"project_name": "fastapi", "bug_ids": [1], "pyenv-version": "3.8.3"},
+    }
+
+    subject = subject_dir["pysnooper"]
+
     manager = DockerManager()
     try:
-        manager.build()
-        manager.create_container()
+        manager.build(dockerfile='Dockerfile.base')
+        manager.write_subject_dockerfile(subject)
+        manager.build(dockerfile=f'Dockerfile.{subject["project_name"]}', image_name=f'{subject["project_name"]}_image')
 
-        for i in range(100):
-            manager.exec_command(message=f"{i}: Hello from the host!")
+        parallel_run(manager, subject, num_containers=7)
+
+        # manager.create_container(image_tag=f'{subject["project_name"]}_image', container_name=f'{subject["project_name"]}_container_')
+
+        # for i in range(100):
+        #     manager.exec_command(message=f"{i}: Hello from the host!")
     finally:
         manager.cleanup()
