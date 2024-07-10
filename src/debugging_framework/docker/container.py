@@ -9,10 +9,12 @@ class DockerManager:
         self.container_name = container_name
         self.container = None
         self.image = None
+        self.dockerfile_path = None
+
 
     def _write_files(self):
         dockerfile = '''
-        FROM python:3.9-alpine
+        FROM python:3.12
         WORKDIR /app
         COPY script.py .
         COPY requirements.txt .
@@ -34,7 +36,7 @@ print(f"Message from the host: {message}")
         requirements = '''
         # Add your required Python packages here
         '''
-        with open('requirements.txt', 'w') as file:
+        with open('../../debugging_benchmark/tests4py_benchmark/resources/requirements.txt', 'w') as file:
             file.write(requirements)
 
     def _image_exists(self):
@@ -85,8 +87,9 @@ print(f"Message from the host: {message}")
     def cleanup(self):
         # Stop and remove containers with the specific label
         try:
-            self.container.kill()
-            self.container.remove()
+            #self.container.kill()
+            #self.container.remove()
+            pass
         except docker.errors.NotFound:
             print("Container already removed.")
         except Exception as e:
