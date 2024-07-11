@@ -1,4 +1,5 @@
 import unittest
+import os
 
 from isla.parser import EarleyParser
 
@@ -40,6 +41,20 @@ class TestCalculator(unittest.TestCase):
         for inp, expected_result in inputs:
             result, _ = oracle(inp)
             self.assertEqual(result, expected_result)
+
+    def test_dump_and_load(self):
+        file = "./BenchmarkProgram.pickle"
+
+        self.program.dump(file)
+        program = BenchmarkProgram.load(file)
+        self.assertEqual(program.get_name(), self.program.get_name())
+        self.assertEqual(program.get_grammar(), self.program.get_grammar())
+        self.assertEqual(program.get_oracle(), self.program.get_oracle())
+        self.assertEqual(program.get_failing_inputs(), self.program.get_failing_inputs())
+        self.assertEqual(program.get_passing_inputs(), self.program.get_passing_inputs())
+        self.assertEqual(program.get_initial_inputs(), self.program.get_initial_inputs())
+        if os.path.exists(file):
+            os.remove(file)
 
 
 if __name__ == "__main__":
