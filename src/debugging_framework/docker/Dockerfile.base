@@ -40,14 +40,13 @@ RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
 
 # Set the working directory
 WORKDIR /app
-
 # Copy the application files
 # COPY script.py .
-COPY requirements.txt .
+COPY requirements_docker.txt .
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install -r requirements_docker.txt \
 
 # Set the command to keep the container running
-# CMD ["tail", "-f", "/dev/null"]
+CMD ["tail", "-f", "/dev/null"]

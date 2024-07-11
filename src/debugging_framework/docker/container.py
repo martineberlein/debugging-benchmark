@@ -156,14 +156,14 @@ print(f"Message from the host: {message}")
 # Install python using pyenv
 RUN bash -c "source ~/.bashrc && pyenv install {subject["pyenv-version"]} # && pyenv global {subject["pyenv-version"]}"
 
-RUN bash -c "t4p checkout -p {subject["project_name"]} -i {subject["bug_ids"][0]}"
-RUN bash -c "t4p build"
+# RUN bash -c "t4p checkout -p {subject["project_name"]} -i {subject["bug_ids"][0]}"
+# RUN bash -c "t4p build" 
 
-RUN bash -c "pip install git+https://github.com/martineberlein/debugging-benchmark@dev"
+COPY ./docker_setup.py /app
 
-COPY ./docker_setup.py /tmp/app
+# RUN bash -c "python3 docker_setup.py {subject["project_name"]} {subject["bug_ids"][0]}"
 
-RUN bash -c "python3 docker_setup.py {subject["project_name"]} {subject["bug_ids"][0]}"
+RUN bash -c "python3 docker_setup.py"
 
 # Set the command to keep the container running
 CMD ["tail", "-f", "/dev/null"]

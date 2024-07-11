@@ -1,0 +1,7 @@
+psutil~=5.9.6
+setuptools~=70.3.0
+docker~=7.1.0
+
+# tests4py
+git+https://github.com/martineberlein/Tests4Py
+git+https://github.com/martineberlein/debugging-benchmark@dev
