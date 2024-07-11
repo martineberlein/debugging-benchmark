@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
 from abc import ABC
-import pickle
+import dill as pickle
 
 from debugging_framework.types import OracleType
 from debugging_framework.types import Grammar
@@ -93,3 +93,4 @@ class BenchmarkProgram(ABC):
     def load(cls, file_path):
         with open(file_path, 'rb') as file:
             return pickle.load(file)
+
