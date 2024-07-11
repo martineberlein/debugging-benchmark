@@ -154,12 +154,12 @@ print(f"Message from the host: {message}")
         dockerfile = f'''FROM tests4py_base_image
 
 # Install python using pyenv
-RUN bash -c "source ~/.bashrc && pyenv install {subject["pyenv-version"]} && pyenv global {subject["pyenv-version"]}"
+RUN bash -c "source ~/.bashrc && pyenv install {subject["pyenv-version"]} # && pyenv global {subject["pyenv-version"]}"
 
 RUN bash -c "t4p checkout -p {subject["project_name"]} -i {subject["bug_ids"][0]}"
 RUN bash -c "t4p build"
 
-RUN bash -c "python3 -m pip install git+https://github.com/martineberlein/debugging-benchmark.git"
+RUN bash -c "pip install git+https://github.com/martineberlein/debugging-benchmark@dev"
 
 COPY ./docker_setup.py /tmp/app
 
