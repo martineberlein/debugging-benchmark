@@ -46,7 +46,7 @@ COPY requirements_docker.txt .
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install -r requirements_docker.txt \
+    pip install -r requirements_docker.txt
 
 # Set the command to keep the container running
 CMD ["tail", "-f", "/dev/null"]
