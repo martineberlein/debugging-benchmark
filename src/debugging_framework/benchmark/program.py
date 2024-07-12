@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
 from abc import ABC
-import pickle
+import dill as pickle
 
 from debugging_framework.types import OracleType
 from debugging_framework.types import Grammar

@@ -6,3 +6,4 @@ jupyter~=1.0.0
 
 # tests4py
 git+https://github.com/martineberlein/Tests4Py
+dill~=0.3.8
