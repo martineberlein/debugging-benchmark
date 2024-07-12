@@ -2,6 +2,173 @@ import docker
 import os
 from pathlib import Path
 from docker.errors import BuildError, ImageNotFound, APIError
+from docker.models.images import Image
+from docker.models.containers import Container
+import tempfile
+import shutil
+import os
+
+from typing import List
+from tests4py.projects import Project
+
+from . import get_base_dockerfile, get_docker_runner_files
+
+BASE_IMAGE_TAG = 'base_image'
+
+
+def copy_files_to_temp(src_files, temp_dir):
+    for file in src_files:
+        shutil.copy(file, temp_dir)
+
+
+class DockerManagerNew:
+
+    def __init__(self, project: Project):
+        self.base_image = None
+        self.image = None
+        self.client = docker.from_env()
+        self.container: List[Container] = []
+        self.dockerfile_path = None
+
+        self.project: Project = project
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def _image_exists(self, image_tag: str) -> Image | None:
+        try:
+            return self.client.images.get(image_tag)
+        except ImageNotFound:
+            return None
+
+    def _build_image(self, path_to_docker_dir: str, dockerfile: str, image_tag: str) -> Image:
+        try:
+            image, build_logs = self.client.images.build(
+                path=path_to_docker_dir,
+                dockerfile=dockerfile,
+                tag=image_tag,
+                rm=True
+            )
+            for chunk in build_logs:
+                if 'stream' in chunk:
+                    print(chunk['stream'].strip())
+            return image
+        except BuildError as e:
+            print(f"Build failed: {e}")
+            self.cleanup()
+            raise
+
+    def build_image(self, path_to_docker_dir: str, image_tag: str, dockerfile: str = "Dockerfile") -> Image:
+        image = self._image_exists(image_tag)
+        if not image:
+            return self._build_image(path_to_docker_dir, dockerfile, image_tag)
+        print(f"Image {image_tag} already exists. Skipping build.")
+        return image
+
+    def build(self):
+        # build base image
+        base_dockerfile = get_base_dockerfile()
+        base_dockerfile_name = str(base_dockerfile.name)
+        base_dockerfile_path = str(base_dockerfile.parent)
+
+        base_image = self.build_image(path_to_docker_dir=base_dockerfile_path, image_tag=BASE_IMAGE_TAG, dockerfile=base_dockerfile_name)
+        self.base_image = base_image
+
+        # Create a temporary directory
+        with tempfile.TemporaryDirectory() as temp_dir:
+            print("Temporary directory created at:", temp_dir)
+
+            # build subject image
+            subject_image_tag = f'{self.project.get_identifier()}_image'
+            subject_dockerfile_name = f'Dockerfile.{self.project.get_identifier()}'
+
+            dockerfile_file_location = temp_dir + "/" + subject_dockerfile_name
+            self._create_subject_dockerfile(dockerfile_file_location)
+
+            # Copy files to the temporary directory
+            copy_files_to_temp(get_docker_runner_files(), temp_dir)
+            print(f"Files {get_docker_runner_files()}copied to temporary directory.")
+
+            # Perform build operations
+            self.image = self.build_image(path_to_docker_dir=temp_dir, image_tag=subject_image_tag, dockerfile=subject_dockerfile_name)
+
+    def build_container(self, number_of_containers: int):
+        container_name = f'{self.project.get_identifier()}_container'
+        for i in range(number_of_containers):
+            self._create_container(container_name=f'{container_name}_{i}')
+
+    def _create_container(self, container_name=None):
+        if not self.image:
+            raise RuntimeError("Image has not been built. Call build() first.")
+        try:
+            container = self.client.containers.create(
+                self.image.id,
+                name=container_name,
+                detach=True,
+                tty=True,
+                stdin_open=True,
+            )
+            container.start()
+
+            self.container.append(container)
+        except APIError as e:
+            print(f"Error creating container: {e}")
+            self.cleanup()
+            raise
+
+    def cleanup(self):
+        for container in self.container:
+            try:
+                container.kill()
+                container.remove()
+            except docker.errors.NotFound:
+                print("Container already removed.")
+            except Exception as e:
+                print(f"Error during container cleanup: {e}")
+
+    def _run_container(self, container):
+        try:
+            exec_result = container.exec_run(["python3", "docker_runner.py"], tty=True)
+            print(exec_result.output.decode('utf-8'))
+        except Exception as e:
+            print(f"Error executing command in container: {e}")
+            self.cleanup()
+            raise
+
+    def run(self):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(self.container)) as executor:
+            futures = [
+                executor.submit(
+                    self._run_container,
+                    container
+                )
+                for container in self.container
+            ]
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    print(f"Container run failed: {e}")
+
+    def _create_subject_dockerfile(self, file_location: str):
+        dockerfile = f'''FROM {BASE_IMAGE_TAG}
+
+# Install python using pyenv
+RUN bash -c "source ~/.bashrc && pyenv install {self.project.python_version}"
+
+COPY ./docker_setup.py /app
+COPY ./docker_runner.py /app
+
+RUN bash -c "python3 docker_setup.py {self.project.project_name} {self.project.bug_id}"
+
+# Set the command to keep the container running
+CMD ["tail", "-f", "/dev/null"]
+'''
+        with open(file_location, 'w') as file:
+            file.write(dockerfile)
 
 
 class DockerManager:
