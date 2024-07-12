@@ -4,4 +4,4 @@ docker~=7.1.0
 
 # tests4py
 git+https://github.com/martineberlein/Tests4Py
-git+https://github.com/martineberlein/debugging-benchmark@dev
+git+https://github.com/martineberlein/debugging-benchmark@docker
