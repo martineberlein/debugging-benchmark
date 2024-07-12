@@ -91,7 +91,7 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class CookieCutter2Tests4PyProject(Tests4PyProject):
+class Cookiecutter2Tests4PyProject(Tests4PyProject):
     def __init__(self):
         project = api.cookiecutter_2
         super().__init__(
@@ -102,7 +102,7 @@ class CookieCutter2Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class CookieCutter3Tests4PyProject(Tests4PyProject):
+class Cookiecutter3Tests4PyProject(Tests4PyProject):
     def __init__(self):
         project = api.cookiecutter_3
         super().__init__(
@@ -113,7 +113,7 @@ class CookieCutter3Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class CookieCutter4Tests4PyProject(Tests4PyProject):
+class Cookiecutter4Tests4PyProject(Tests4PyProject):
     def __init__(self):
         project = api.cookiecutter_4
         super().__init__(
@@ -124,7 +124,7 @@ class CookieCutter4Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class FastAPI1Tests4PyProject(Tests4PyProject):
+class Fastapi1Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.fastapi_1,
@@ -132,7 +132,7 @@ class FastAPI1Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class FastAPI2Tests4PyProject(Tests4PyProject):
+class Fastapi2Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.fastapi_2,
@@ -140,7 +140,7 @@ class FastAPI2Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class FastAPI3Tests4PyProject(Tests4PyProject):
+class Fastapi3Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.fastapi_3,

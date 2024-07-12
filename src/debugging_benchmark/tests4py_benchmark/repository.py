@@ -102,24 +102,24 @@ class PysnooperBenchmarkRepository(Tests4PyBenchmarkRepository):
         super().__init__(projects, **kwargs)
 
 
-class CookieCutterBenchmarkRepository(Tests4PyBenchmarkRepository):
+class CookiecutterBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-CookieCutter"
         projects: List[Tests4PyProject] = [
-            CookieCutter2Tests4PyProject(),
-            CookieCutter3Tests4PyProject(),
-            CookieCutter4Tests4PyProject(),
+            Cookiecutter2Tests4PyProject(),
+            Cookiecutter3Tests4PyProject(),
+            Cookiecutter4Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
 
 
-class FastAPIBenchmarkRepository(Tests4PyBenchmarkRepository):
+class FastapiBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-FastAPI"
         projects: List[Tests4PyProject] = [
-            FastAPI1Tests4PyProject(),
-            FastAPI2Tests4PyProject(),
-            FastAPI3Tests4PyProject(),
+            Fastapi1Tests4PyProject(),
+            Fastapi2Tests4PyProject(),
+            Fastapi3Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
 
@@ -212,7 +212,8 @@ __all__ = [
     "ExpressionBenchmarkRepository",
     "MarkUpBenchmarkRepository",
     "PysnooperBenchmarkRepository",
-    "CookieCutterBenchmarkRepository",
+    "CookiecutterBenchmarkRepository",
     "ToyExampleTests4PyBenchmarkRepository",
     "TheFuckBenchmarkRepository",
+    "Tests4PyBenchmarkRepository",
 ]
