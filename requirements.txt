@@ -3,6 +3,7 @@ setuptools~=70.3.0
 isla-solver~=1.14.4
 docker~=7.1.0
 jupyter~=1.0.0
+z3-solver>=4.13
 
 # tests4py
 git+https://github.com/martineberlein/Tests4Py

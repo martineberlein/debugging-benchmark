@@ -31,7 +31,8 @@ dependencies = [
     "isla-solver~=1.14.4",
     "psutil~=5.9.6",
     "tests4py @ git+https://github.com/martineberlein/Tests4Py",
-    "docker~=7.1.0"
+    "docker~=7.1.0",
+    "z3-solver>=4.13",
 ]
 
 # für coverage 
