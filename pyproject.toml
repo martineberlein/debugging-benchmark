@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "debugging-benchmark"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     { name = "Martin Eberlein", email = "ebermart@informatik.hu-berlin.de" },
     { name = "Kai Werk", email = "werkkai@hu-berlin.de" }
@@ -28,13 +28,11 @@ keywords = [ "debugging", "benchmark" ]
 requires-python = ">=3.10"
 dependencies = [
     "jupyter",
-    "isla-solver",
-    "numpy~=1.26.1",
-    "pandas~=2.1.2",
+    "isla-solver~=1.14.4",
     "psutil~=5.9.6",
-    "shap>=0.41",
-    "lightgbm>=3.3.2",
-    "tests4py @ git+https://github.com/martineberlein/Tests4Py"
+    "tests4py @ git+https://github.com/martineberlein/Tests4Py",
+    "docker~=7.1.0",
+    #"z3-solver>=4.13",
 ]
 
 # für coverage 
@@ -62,6 +60,4 @@ dev = [
     "pytest>=7.2.2",
     "pytest-cov>=4.1.0",
     "pytest-html>=3.2.0",
-    "pytest-rerunfailures>=11.1.2",
-    "parameterized>=0.8.1"
 ]

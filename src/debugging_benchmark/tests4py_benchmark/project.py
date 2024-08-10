@@ -9,8 +9,8 @@ from debugging_benchmark.tests4py_benchmark.grammars import (
     grammar_middle,
     grammar_markup,
     grammar_expression,
-    grammar_pysnooper_1,
     grammar_pysnooper_2,
+    grammar_pysnooper_3,
     grammar_cookiecutter,
 )
 from debugging_framework.types import Grammar
@@ -67,7 +67,7 @@ class Pysnooper2Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.pysnooper_2,
-            grammar=grammar_pysnooper_1,
+            grammar=grammar_pysnooper_2,
             harness_function=pysnooper_harness_function,
             passing_inputs=[inp + " " for inp in get_tests(api.pysnooper_2)],
             failing_inputs=[
@@ -81,7 +81,7 @@ class Pysnooper3Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.pysnooper_3,
-            grammar=grammar_pysnooper_2,
+            grammar=grammar_pysnooper_3,
             harness_function=pysnooper_harness_function,
             passing_inputs=[inp + " " for inp in get_tests(api.pysnooper_3)],
             failing_inputs=[
