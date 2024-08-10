@@ -13,9 +13,8 @@ middle_grammar: Grammar = {
     "<x>": ["<integer>"],
     "<y>": ["<integer>"],
     "<z>": ["<integer>"],
-    "<integer>": ["<integer_>", "-<integer_>"],
-    "<integer_>": ["<digit>", "<digit><integer_>"],
-    "<digit>": [str(num) for num in range(0, 10)],
+    "<integer>": ["<digit>", "<digit><integer>"],
+    "<digit>": [str(num) for num in range(1, 10)],
 }
 
 
@@ -23,7 +22,7 @@ def middle_harness(inp: Union[Input, str]):
     parts = shlex.split(str(inp))
     if parts and parts[-1] == "":
         parts.pop()
-    return parts if parts else []
+    return [int(part) for part in parts] if parts else []
 
 
 def middle_oracle(x, y, z):
@@ -72,3 +71,4 @@ class MiddleBenchmarkRepository(BenchmarkRepository):
 if __name__ == "__main__":
     prog = MiddleBenchmarkRepository().build()[0]
     print(prog.oracle(prog.passing_inputs[1]))
+    print(prog.oracle(prog.failing_inputs[0]))

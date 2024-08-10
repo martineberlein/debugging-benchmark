@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 from abc import ABC
+import dill as pickle
 
 from debugging_framework.types import OracleType
 from debugging_framework.types import Grammar
@@ -83,3 +84,13 @@ class BenchmarkProgram(ABC):
             "oracle": self.get_oracle(),
             "initial_inputs": self.get_passing_inputs() if only_passing else self.get_initial_inputs(),
         }
+
+    def dump(self, file_path):
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    @classmethod
+    def load(cls, file_path):
+        with open(file_path, 'rb') as file:
+            return pickle.load(file)
+
