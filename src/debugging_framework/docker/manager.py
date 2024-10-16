@@ -11,7 +11,7 @@ import os
 from typing import List
 from tests4py.projects import Project
 
-from . import get_base_dockerfile, get_docker_runner_files
+from debugging_framework.docker import get_base_dockerfile, get_docker_runner_files
 
 BASE_IMAGE_TAG = 'base_image'
 
@@ -26,7 +26,9 @@ class DockerManagerNew:
     def __init__(self, project: Project):
         self.base_image = None
         self.image = None
-        self.client = docker.from_env()
+        self.docker_socket = self._configure_docker_socket()
+        # self.client = docker.from_env()
+        self.client = docker.DockerClient(base_url=self.docker_socket)
         self.container: List[Container] = []
         self.dockerfile_path = None
 
@@ -37,6 +39,24 @@ class DockerManagerNew:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
+
+    @staticmethod
+    def _configure_docker_socket():
+        if os.path.exists("/var/run/docker.sock"):
+            docker_socket = "unix:///var/run/docker.sock"
+        else:
+            user = os.environ.get("USER")
+            if os.path.exists(f"/Users/{user}/.docker/run/docker.sock"):
+                docker_socket = f"unix:///Users/{user}/.docker/run/docker.sock"
+            else:
+                raise FileNotFoundError(
+                    (
+                        "Neither '/var/run/docker.sock' nor '/Users/<USER>/.docker/run/docker.sock' are available."
+                        "Please make sure you have Docker installed and running."
+                    )
+                )
+        os.environ["DOCKER_HOST"] = docker_socket
+        return docker_socket
 
     def _image_exists(self, image_tag: str) -> Image | None:
         try:
@@ -90,7 +110,7 @@ class DockerManagerNew:
 
             # Copy files to the temporary directory
             copy_files_to_temp(get_docker_runner_files(), temp_dir)
-            print(f"Files {get_docker_runner_files()}copied to temporary directory.")
+            print(f"Files {get_docker_runner_files()} copied to temporary directory.")
 
             # Perform build operations
             self.image = self.build_image(path_to_docker_dir=temp_dir, image_tag=subject_image_tag, dockerfile=subject_dockerfile_name)

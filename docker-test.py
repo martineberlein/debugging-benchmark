@@ -14,7 +14,9 @@ if __name__ == "__main__":
     manager = DockerManagerNew(project)
 
     try:
+        print("Starting")
         manager.build()
+        print("Built")
         manager.build_container(7)
         manager.run()
         manager.run()
