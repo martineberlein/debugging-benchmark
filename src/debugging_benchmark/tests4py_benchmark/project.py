@@ -148,6 +148,54 @@ class Fastapi3Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
+class Fastapi4Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_4,
+        )
+
+
+@dataclass
+class Fastapi5Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_5,
+        )
+
+
+@dataclass
+class Fastapi6Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_6,
+        )
+
+
+@dataclass
+class Fastapi7Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_7,
+        )
+
+
+@dataclass
+class Fastapi8Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_8,
+        )
+
+
+@dataclass
+class Fastapi9Tests4PyProject(Tests4PyProject):
+    def __init__(self):
+        super().__init__(
+            project=api.fastapi_9,
+        )
+
+
+@dataclass
 class Middle1Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(project=api.middle_1, grammar=grammar_middle)

@@ -120,6 +120,12 @@ class FastapiBenchmarkRepository(Tests4PyBenchmarkRepository):
             Fastapi1Tests4PyProject(),
             Fastapi2Tests4PyProject(),
             Fastapi3Tests4PyProject(),
+            Fastapi4Tests4PyProject(),
+            Fastapi5Tests4PyProject(),
+            Fastapi6Tests4PyProject(),
+            Fastapi7Tests4PyProject(),
+            Fastapi8Tests4PyProject(),
+            Fastapi9Tests4PyProject(),
         ]
         super().__init__(projects, **kwargs)
 
@@ -147,14 +153,14 @@ class MarkUpBenchmarkRepository(Tests4PyBenchmarkRepository):
 class CalculatorBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-Calculator"
-        projects: List[Tests4PyProject] = [CalculatorTests4PyProject()]
+        projects: List[Tests4PyProject] = [Calculator1Tests4PyProject()]
         super().__init__(projects, **kwargs)
 
 
 class ExpressionBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-Expression"
-        projects: List[Tests4PyProject] = [ExpressionTests4PyProject()]
+        projects: List[Tests4PyProject] = [Expression1Tests4PyProject()]
         super().__init__(projects, **kwargs)
 
 
@@ -162,8 +168,8 @@ class ToyExampleTests4PyBenchmarkRepository(Tests4PyBenchmarkRepository):
     def __init__(self, **kwargs):
         self.name = "Tests4Py-ToyExample"
         projects: List[Tests4PyProject] = [
-            CalculatorTests4PyProject(),
-            ExpressionTests4PyProject(),
+            Calculator1Tests4PyProject(),
+            Expression1Tests4PyProject(),
             Markup1Tests4PyProject(),
             Markup2Tests4PyProject(),
             Middle1Tests4PyProject(),
