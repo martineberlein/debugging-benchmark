@@ -6,7 +6,6 @@ import queue
 import tarfile
 import io
 import hashlib
-from pathlib import Path
 import concurrent.futures
 from docker.errors import BuildError, ImageNotFound, APIError
 from docker.models.images import Image
@@ -14,7 +13,9 @@ from docker.models.containers import Container
 import tempfile
 import shutil
 from typing import List, Dict
+
 from tests4py.projects import Project
+
 from debugging_framework.docker import get_base_dockerfile, get_docker_runner_files
 from debugging_framework.input.oracle import OracleResult
 
@@ -22,14 +23,17 @@ from debugging_framework.input.oracle import OracleResult
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-BASE_IMAGE_TAG = 'base_image'
+BASE_IMAGE_TAG = "base_image"
+
 
 def copy_files_to_temp(src_files, temp_dir):
     for file in src_files:
         shutil.copy(file, temp_dir)
 
+
 def get_input_hash(input_str: str) -> str:
-    return hashlib.sha256(input_str.encode('utf-8')).hexdigest()
+    return hashlib.sha256(input_str.encode("utf-8")).hexdigest()
+
 
 class DockerManagerNew:
 
@@ -73,23 +77,24 @@ class DockerManagerNew:
         except ImageNotFound:
             return None
 
-    def _build_image(self, path_to_docker_dir: str, dockerfile: str, image_tag: str) -> Image:
+    def _build_image(
+        self, path_to_docker_dir: str, dockerfile: str, image_tag: str
+    ) -> Image:
         try:
             image, build_logs = self.client.images.build(
-                path=path_to_docker_dir,
-                dockerfile=dockerfile,
-                tag=image_tag,
-                rm=True
+                path=path_to_docker_dir, dockerfile=dockerfile, tag=image_tag, rm=True
             )
             for chunk in build_logs:
-                if 'stream' in chunk:
-                    logger.info(chunk['stream'].strip())
+                if "stream" in chunk:
+                    logger.info(chunk["stream"].strip())
             return image
         except BuildError as e:
             logger.error(f"Build failed: {e}")
             raise
 
-    def build_image(self, path_to_docker_dir: str, image_tag: str, dockerfile: str = "Dockerfile") -> Image:
+    def build_image(
+        self, path_to_docker_dir: str, image_tag: str, dockerfile: str = "Dockerfile"
+    ) -> Image:
         image = self._image_exists(image_tag)
         if not image:
             return self._build_image(path_to_docker_dir, dockerfile, image_tag)
@@ -105,7 +110,7 @@ class DockerManagerNew:
         self.base_image = self.build_image(
             path_to_docker_dir=base_dockerfile_path,
             image_tag=BASE_IMAGE_TAG,
-            dockerfile=base_dockerfile_name
+            dockerfile=base_dockerfile_name,
         )
 
         # Create a temporary directory
@@ -113,27 +118,29 @@ class DockerManagerNew:
             logger.info("Temporary directory created at: %s", temp_dir)
 
             # Build subject image
-            subject_image_tag = f'{self.project.get_identifier()}_image'
-            subject_dockerfile_name = f'Dockerfile.{self.project.get_identifier()}'
+            subject_image_tag = f"{self.project.get_identifier()}_image"
+            subject_dockerfile_name = f"Dockerfile.{self.project.get_identifier()}"
 
             dockerfile_file_location = os.path.join(temp_dir, subject_dockerfile_name)
             self._create_subject_dockerfile(dockerfile_file_location)
 
             # Copy files to the temporary directory
             copy_files_to_temp(get_docker_runner_files(), temp_dir)
-            logger.info("Files %s copied to temporary directory.", get_docker_runner_files())
+            logger.info(
+                "Files %s copied to temporary directory.", get_docker_runner_files()
+            )
 
             # Perform build operations
             self.image = self.build_image(
                 path_to_docker_dir=temp_dir,
                 image_tag=subject_image_tag,
-                dockerfile=subject_dockerfile_name
+                dockerfile=subject_dockerfile_name,
             )
 
     def build_container(self, number_of_containers: int):
-        container_name = f'{self.project.get_identifier()}_container'
+        container_name = f"{self.project.get_identifier()}_container"
         for i in range(number_of_containers):
-            self._create_container(container_name=f'{container_name}_{i}')
+            self._create_container(container_name=f"{container_name}_{i}")
 
     def _create_container(self, container_name=None):
         if not self.image:
@@ -166,9 +173,9 @@ class DockerManagerNew:
         try:
             # Create a tar archive in memory containing the input file
             tarstream = io.BytesIO()
-            with tarfile.open(fileobj=tarstream, mode='w') as tar:
+            with tarfile.open(fileobj=tarstream, mode="w") as tar:
                 tarinfo = tarfile.TarInfo(name="input.txt")
-                input_bytes = input_str.encode('utf-8')
+                input_bytes = input_str.encode("utf-8")
                 tarinfo.size = len(input_bytes)
                 tar.addfile(tarinfo, io.BytesIO(input_bytes))
             tarstream.seek(0)
@@ -178,11 +185,13 @@ class DockerManagerNew:
 
             # Now run the project, assuming it reads from 'input.txt'
             command = ["python3", "docker_runner_inputs.py", "input.txt"]
-            exec_result = container.exec_run(cmd=command, workdir="/app", tty=False, demux=True)
+            exec_result = container.exec_run(
+                cmd=command, workdir="/app", tty=False, demux=True
+            )
             stdout, stderr = exec_result.output
             if stderr:
-                logger.error(stderr.decode('utf-8'))
-            output = stdout.decode('utf-8')
+                logger.error(stderr.decode("utf-8"))
+            output = stdout.decode("utf-8")
             return output.strip()
         except Exception as e:
             logger.error(f"Error executing command in container {container.name}: {e}")
@@ -210,19 +219,28 @@ class DockerManagerNew:
                         outputs[input_str] = oracle_result
                     input_queue.task_done()
                 except Exception as e:
-                    logger.error(f"Exception occurred while processing input in container {container.name}: {e}")
+                    logger.error(
+                        f"Exception occurred while processing input in container {container.name}: {e}"
+                    )
                     self._exception_event.set()
                     input_queue.task_done()
                     break
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(self.container)) as executor:
-            futures = [executor.submit(process_input, container) for container in self.container]
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=len(self.container)
+        ) as executor:
+            futures = [
+                executor.submit(process_input, container)
+                for container in self.container
+            ]
             # Wait for all tasks to be done
             input_queue.join()
 
         if self._exception_event.is_set():
             self.cleanup()
-            raise RuntimeError("An error occurred during input processing. See logs for details.")
+            raise RuntimeError(
+                "An error occurred during input processing. See logs for details."
+            )
 
         return outputs
 
@@ -235,7 +253,7 @@ class DockerManagerNew:
         return oracle_result
 
     def _create_subject_dockerfile(self, file_location: str):
-        dockerfile = f'''FROM {BASE_IMAGE_TAG}
+        dockerfile = f"""FROM {BASE_IMAGE_TAG}
 
 # Install python using pyenv
 RUN bash -c "source ~/.bashrc && pyenv install {self.project.python_version}"
@@ -251,9 +269,9 @@ WORKDIR /app
 
 # Set the command to keep the container running
 CMD ["tail", "-f", "/dev/null"]
-'''
+"""
         try:
-            with open(file_location, 'w') as file:
+            with open(file_location, "w") as file:
                 file.write(dockerfile)
         except IOError as e:
             logger.error(f"Error writing Dockerfile: {e}")
