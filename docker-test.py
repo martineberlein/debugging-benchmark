@@ -1,9 +1,4 @@
-from typing import List
-
-from debugging_framework.docker.manager import DockerManagerNew
-
-from tests4py.projects import Project
-from tests4py import api
+from debugging_framework.docker.manager import DockerManager
 
 if __name__ == "__main__":
 
@@ -11,15 +6,13 @@ if __name__ == "__main__":
         Fastapi3Tests4PyProject as Subproject,
     )
 
-    # from debugging_benchmark.tests4py_benchmark.project import Calculator1Tests4PyProject as Subproject
+    t4p_project = Subproject()
+    inputs = t4p_project.failing_inputs + t4p_project.passing_inputs
 
-    pro = Subproject()
-    inputs = pro.failing_inputs + pro.passing_inputs
-    project = pro.project
-
-    with DockerManagerNew(project) as docker_manager:
+    with DockerManager(t4p_project.project) as docker_manager:
         docker_manager.build()
         docker_manager.build_container(number_of_containers=5)
+
         # Run inputs and get OracleResult outputs
         outputs = docker_manager.run_inputs(inputs)
 

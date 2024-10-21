@@ -35,7 +35,7 @@ def get_input_hash(input_str: str) -> str:
     return hashlib.sha256(input_str.encode("utf-8")).hexdigest()
 
 
-class DockerManagerNew:
+class DockerManager:
 
     def __init__(self, project: Project):
         self.base_image = None
