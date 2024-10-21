@@ -174,8 +174,9 @@ class DockerManagerNew:
             # Now run the project, assuming it reads from 'input.txt'
             command = ["python3", "docker_runner_inputs.py", "input.txt"]
             exec_result = container.exec_run(cmd=command, workdir="/app", tty=False, demux=True)
-            sto, _ = exec_result.output
-            output = sto.decode('utf-8')
+            stdout, stderr = exec_result.output
+            output = stdout.decode('utf-8')
+            # print(stderr.decode('utf-8'))
             return output
         except Exception as e:
             print(f"Error executing command in container: {e}")
