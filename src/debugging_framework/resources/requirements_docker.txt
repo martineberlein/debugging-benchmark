@@ -1,9 +1,7 @@
 psutil~=5.9.6
 setuptools~=70.3.0
-isla-solver~=1.14.4
 docker~=7.1.0
-jupyter~=1.0.0
 
 # tests4py
 git+https://github.com/martineberlein/Tests4Py
-dill~=0.3.8
+git+https://github.com/martineberlein/debugging-benchmark@docker

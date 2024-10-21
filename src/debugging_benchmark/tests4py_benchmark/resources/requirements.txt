@@ -1,0 +1,14 @@
+numpy~=1.26.1
+pandas~=2.1.2
+psutil~=5.9.6
+setuptools~=68.2.0
+shap>=0.41
+lightgbm>=3.3.2
+
+# tests4py
+# git+https://github.com/smythi93/Tests4Py
+
+git+https://github.com/martineberlein/Tests4Py
+docker~=7.1.0
+grammar_graph~=0.2.0
+scikit-learn~=1.5.1
