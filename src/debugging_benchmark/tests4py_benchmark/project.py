@@ -160,13 +160,13 @@ class Middle2Tests4PyProject(Tests4PyProject):
 
 
 @dataclass
-class CalculatorTests4PyProject(Tests4PyProject):
+class Calculator1Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(project=api.calculator_1, grammar=calculator_grammar_with_zero)
 
 
 @dataclass
-class ExpressionTests4PyProject(Tests4PyProject):
+class Expression1Tests4PyProject(Tests4PyProject):
     def __init__(self):
         super().__init__(
             project=api.expression_1,
