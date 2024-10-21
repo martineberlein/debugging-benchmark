@@ -32,7 +32,6 @@ dependencies = [
     "psutil~=5.9.6",
     "tests4py @ git+https://github.com/martineberlein/Tests4Py",
     "docker~=7.1.0",
-    #"z3-solver>=4.13",
 ]
 
 # für coverage 
@@ -61,3 +60,6 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-html>=3.2.0",
 ]
+
+[tool.setuptools.package-data]
+"debugging_framework" = ["resources/*"]

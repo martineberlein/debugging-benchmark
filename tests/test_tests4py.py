@@ -10,7 +10,7 @@ from debugging_framework.input.oracle import OracleResult
 from debugging_framework.benchmark.program import BenchmarkProgram
 from debugging_benchmark.tests4py_benchmark.repository import (
     PysnooperBenchmarkRepository,
-    CookieCutterBenchmarkRepository,
+    CookiecutterBenchmarkRepository,
     # HTTPieBenchmarkRepository,
     # SanicBenchmarkRepository,
     # FastAPIBenchmarkRepository,
@@ -39,6 +39,8 @@ class TestTests4Py(unittest.TestCase):
             ExpressionBenchmarkRepository(),
             MiddleBenchmarkRepository(),
             MarkUpBenchmarkRepository(),
+            PysnooperBenchmarkRepository(),
+            CookiecutterBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
