@@ -39,6 +39,8 @@ class TestTests4Py(unittest.TestCase):
             ExpressionBenchmarkRepository(),
             MiddleBenchmarkRepository(),
             MarkUpBenchmarkRepository(),
+            PysnooperBenchmarkRepository(),
+            CookiecutterBenchmarkRepository(),
         ]
         cls.subjects = []
         for repo in repositories:
