@@ -28,3 +28,10 @@ class OracleResult(Enum):
         :return bool: True if the result is 'FAILING', otherwise False.
         """
         return self == OracleResult.FAILING
+
+    def is_undefined(self) -> bool:
+        """
+        Determines whether the oracle result indicates an undefined condition.
+        :return bool: True if the result is 'UNDEFINED', otherwise False.
+        """
+        return self == OracleResult.UNDEFINED
