@@ -4,7 +4,7 @@ from debugging_framework.input.oracle import OracleResult
 from .heartbeat import oracle, grammar, failing_inputs, passing_inputs
 
 
-class CalculatorBenchmarkRepository(BenchmarkRepository):
+class HeartbleedBenchmarkRepository(BenchmarkRepository):
     def build(
         self,
         err_def: dict[Exception, OracleResult] = None,
