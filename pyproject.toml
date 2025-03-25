@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "debugging-benchmark"
-version = "0.3.2"
+version = "0.3.3"
 authors = [
     { name = "Martin Eberlein", email = "ebermart@informatik.hu-berlin.de" },
     { name = "Kai Werk", email = "werkkai@hu-berlin.de" }
