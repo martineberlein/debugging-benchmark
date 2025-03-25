@@ -63,7 +63,7 @@ class MiddleBenchmarkRepository(BenchmarkRepository):
                 grammar=middle_grammar,
                 oracle=oracle,
                 failing_inputs=["4 2 5"],
-                passing_inputs=["1 2 3", "3 2 1"],
+                passing_inputs=["1 2 3", "3 9 12798", "43 31 2"],
             )
         ]
 
