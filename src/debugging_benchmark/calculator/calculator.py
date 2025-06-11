@@ -53,7 +53,8 @@ calculator_grammar_with_zero: Grammar = {
 }
 
 
-calculator_initial_inputs = ["cos(12)", "sqrt(-900)"]
+calculator_initial_inputs = ["sqrt(-900)","sqrt(-10)", "sqrt(1)", "sin(-900)", "sqrt(2)", "cos(10)"]
+
 
 
 class CalculatorBenchmarkRepository(BenchmarkRepository):
@@ -67,7 +68,7 @@ class CalculatorBenchmarkRepository(BenchmarkRepository):
                 name="calculator",
                 grammar=calculator_grammar,
                 oracle=calculator_oracle,
-                failing_inputs=["sqrt(-900)"],
-                passing_inputs=["cos(10)"],
+                failing_inputs=["sqrt(-900)","sqrt(-12)",],
+                passing_inputs=["sqrt(1)", "sin(-900)", "sqrt(2)", "cos(10)", "sqrt(0)"],
             )
         ]
