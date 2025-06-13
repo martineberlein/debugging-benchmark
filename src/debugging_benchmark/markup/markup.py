@@ -32,6 +32,23 @@ def markup_oracle(s):
     expected = expected.replace("^", "")
     return expected
 
+def markup_oracle(s):
+    tag = False
+    quote = False
+    out = ""
+
+    for c in s:
+        if c == "<" and not quote:
+            tag = True
+        elif c == ">" and not quote:
+            tag = False
+        elif (c == '"' or c == "'") and tag:
+            quote = not quote
+        elif not tag:
+            out = out + c
+
+    return out
+
 
 def remove_html_markup(s):
     tag = False
@@ -51,6 +68,24 @@ def remove_html_markup(s):
     return out
 
 
+def remove_html_markup_2(s):
+    tag = True
+    quote = False
+    out = ""
+
+    for c in s:
+        if c == "<" and not quote:
+            tag = True
+        elif c == ">" and not quote:
+            tag = False
+        elif (c == '"' or c == "'") and tag:
+            quote = not quote
+        elif not tag:
+            out = out + c
+
+    return out
+
+
 class MarkupBenchmarkRepository(BenchmarkRepository):
     def build(
         self,
@@ -63,13 +98,26 @@ class MarkupBenchmarkRepository(BenchmarkRepository):
             harness_function=markup_harness,
         ).build()
 
+        oracle_2 = FunctionalOracleConstructor(
+            program=remove_html_markup_2,
+            program_oracle=markup_oracle,
+            harness_function=markup_harness,
+        ).build()
+
         return [
             BenchmarkProgram(
-                name="markup",
+                name="markup1",
                 grammar=grammar_markup,
                 oracle=oracle,
-                failing_inputs=['"abc"'],
-                passing_inputs=["abc", "<b>abc</b>"],
+                failing_inputs=['"abc"', '<body>"xyz</body>'],
+                passing_inputs=["abc", "<head>abc</head>"],
+            ),
+            BenchmarkProgram(
+                name="markup2",
+                grammar=grammar_markup,
+                oracle=oracle_2,
+                failing_inputs=['"abc"', "'xyz"],
+                passing_inputs=["<body>'xyz'</body>", "<head>abc</head>"],
             )
         ]
 
